@@ -15,6 +15,10 @@ run/main_scene="res://scenes/world.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
 config/icon="res://art/icon.svg"
 
+[autoload]
+
+Soundtrackplayer="*res://scenes/soundtrack.tscn"
+
 [display]
 
 window/stretch/scale=4.0

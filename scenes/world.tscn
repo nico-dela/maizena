@@ -1,6 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=20 format=3 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/character/laboratorio.png" id="1_5id3o"]
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_wjpli"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://art/character/templo de los anfibios.png" id="2_osqrk"]
 [ext_resource type="Texture2D" uid="uid://dxs1vsn7urcf5" path="res://art/character/Grass.png" id="3_hk72v"]
 [ext_resource type="Texture2D" uid="uid://bhafsii3o8ipu" path="res://art/character/Hills.png" id="4_xfbu6"]
@@ -352,6 +353,7 @@ sources/6 = SubResource("TileSetAtlasSource_ewwd0")
 sources/7 = SubResource("TileSetAtlasSource_m4tsg")
 
 [node name="world" type="Node2D"]
+script = ExtResource("1_wjpli")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_11gys")
