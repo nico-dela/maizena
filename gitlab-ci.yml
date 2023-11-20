@@ -4,24 +4,24 @@ image: barichello/godot-ci:4.0.2
 # project.godot is at the repo root
 
 # Cache imported assets between runs
-cache:
-  key: import-assets
-  paths:
-    - .godot/imported/
+# cache:
+#   key: import-assets
+#   paths:
+#     - .godot/imported/
 
 stages:
-  - import-assets
+  # - import-assets
   - export
   - deploy
 
 variables:
-  EXPORT_NAME: test-project
+  EXPORT_NAME: maizena
 
 # Open the editor to import assets in case the cache was empty or outdated
-import-assets:
-  stage: import-assets
-  script:
-    - godot -v -e --quit --headless
+# import-assets:
+#   stage: import-assets
+#   script:
+#     - godot -v -e --quit --headless
 
 # linux:
 #   stage: export
@@ -106,37 +106,51 @@ web:
 #       - build/android
 
 # GitHub Pages Deploy
-deploy-github-pages:
-  stage: deploy
-  dependencies:
-    - web
-  script:
+# deploy-github-pages:
+#   stage: deploy
+#   dependencies:
+#     - web
+  # script:
     # This ensures the `gh-pages` branch is available.
-    - git fetch
-    - git checkout gh-pages
-    - rm -f *.md
-    - mv build/web/** .
-    - git config user.email $GIT_EMAIL
-    - git config user.name $GIT_USERNAME
-    - git remote add github $REMOTE_URL
-    - git add -A
-    - 'git commit -m "ci: Deploy GitHub Page | $EXPORT_NAME:$CI_JOB_NAME" -m "Deploy from GitLab pipeline #$CI_PIPELINE_ID" || true'
-    - git push github gh-pages -f
+    # - git fetch
+    # - git checkout gh-pages
+    # - rm -f *.md
+    # - mv build/web/** .
+    # - git config user.email $GIT_EMAIL
+    # - git config user.name $GIT_USERNAME
+    # - git remote add github $REMOTE_URL
+    # - git add -A
+    # - 'git commit -m "ci: Deploy GitHub Page | $EXPORT_NAME:$CI_JOB_NAME" -m "Deploy from GitLab pipeline #$CI_PIPELINE_ID" || true'
+    # - git push github gh-pages -f
 
 # GitLab Pages Deploy
+# pages:
+#   stage: deploy
+#   dependencies:
+#     - web
+#   script:
+#     This ensures the `pages` branch is available.
+#     - git fetch
+#     - git checkout pages
+#     - rm -f *.md
+#     - mv build/web/** ./public
+#   artifacts:
+#     paths:
+#       - public
+
 pages:
   stage: deploy
   dependencies:
     - web
   script:
-    # This ensures the `pages` branch is available.
-    - git fetch
-    - git checkout pages
-    - rm -f *.md
-    - mv build/web/** ./public
+    - rm -rf public
+    - cp -r build/web public
   artifacts:
     paths:
       - public
+  only:
+   - main
+
 
 # Itch.io Deploy
 # itchio:linux:
