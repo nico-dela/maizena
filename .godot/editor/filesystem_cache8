@@ -1,0 +1,42 @@
+fc8a56933c4b1c8d796fdb8f7a9f9475
+::res://::1700518863
+action.yml::TextFile::-1::1700516693::0::1::::<><>::
+gitlab-ci.yml::TextFile::-1::1700517412::0::1::::<><>::
+README.md::TextFile::-1::1700441416::0::1::::<><>::
+::res://art/::1700518379
+icon.svg::CompressedTexture2D::569311749669937116::1700516145::1700518865::1::::<><>::
+::res://art/character/::1700518379
+Fences.png::CompressedTexture2D::5643065774867059841::1700516145::1700518865::1::::<><>::
+Grass.png::CompressedTexture2D::8812381364795145816::1700516145::1700518865::1::::<><>::
+Hills.png::CompressedTexture2D::2878078752250892058::1700516145::1700518865::1::::<><>::
+laboratorio.png::CompressedTexture2D::8074310488038678351::1700516145::1700518865::1::::<><>::
+sanjin.png::CompressedTexture2D::6019636497724461046::1700516145::1700518865::1::::<><>::
+templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1700516145::1700518865::1::::<><>::
+Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1700516145::1700518865::1::::<><>::
+Water.png::CompressedTexture2D::4159706795001771249::1700516145::1700518865::1::::<><>::
+Wooden House.png::CompressedTexture2D::2954160572471588883::1700516145::1700518865::1::::<><>::
+::res://build/::1700518379
+index.apple-touch-icon.png::CompressedTexture2D::8490489271324017031::1700516145::1700518865::1::::<><>::
+index.icon.png::CompressedTexture2D::8334704108654730775::1700516146::1700518865::1::::<><>::
+index.png::CompressedTexture2D::6170475686030040685::1700516146::1700518865::1::::<><>::
+::res://menu/::1700516146
+AkiraExpanded-SuperBold 800.otf::FontFile::2906903596942872074::1700516146::1700518864::1::::<><>::
+::res://scenes/::1700518379
+player.tscn::PackedScene::6284760147262208712::1700516146::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
+soundtrack.tscn::PackedScene::8214520296324127879::1700516146::0::1::::<><>::res://scripts/soundtrackplayer.gd
+world.tscn::PackedScene::8499304833516323026::1700518379::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/character/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/character/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/character/Grass.png<>uid://bhafsii3o8ipu::::res://art/character/Hills.png<>uid://bxrqt8mpq6btq::::res://art/character/Tilled Dirt.png<>uid://bidaufsco4bw2::::res://art/character/Wooden House.png<>uid://cmnsp68w564un::::res://art/character/Fences.png<>uid://b0i807h0o1m6t::::res://art/character/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn
+::res://scripts/::1700516146
+player.gd::GDScript::-1::1700516146::0::1::::<>CharacterBody2D<>::
+soundtrackplayer.gd::GDScript::-1::1700516146::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
+world.gd::GDScript::-1::1700516146::0::1::::<>Node2D<>::
+::res://soundtracks/::1700516147
+01-Intro.mp3::AudioStreamMP3::5201758724910844183::1700516146::1700518865::1::::<><>::
+02-Repollo_Morado.mp3::AudioStreamMP3::3633479129432591423::1700516146::1700518865::1::::<><>::
+03-Sal.mp3::AudioStreamMP3::5933674947730533426::1700516146::1700518865::1::::<><>::
+04-Nadie_Me_Enseñó_a_Vivir.mp3::AudioStreamMP3::3730575725328618056::1700516147::1700518865::1::::<><>::
+05-Pororo.mp3::AudioStreamMP3::2276409354715801271::1700516147::1700518865::1::::<><>::
+06-Todo_lo_Que_Necesito.mp3::AudioStreamMP3::2304554444149624401::1700516147::1700518865::1::::<><>::
+07-Tus_Medias.mp3::AudioStreamMP3::3241548395016543414::1700516147::1700518865::1::::<><>::
+08-Arroz.mp3::AudioStreamMP3::1803399072451280046::1700516147::1700518865::1::::<><>::
+09-Recién_Me_Levanto.mp3::AudioStreamMP3::6568772944243602033::1700516147::1700518865::1::::<><>::
+10-Cumbia_Naruto.mp3::AudioStreamMP3::7797883625798886396::1700516147::1700518865::1::::<><>::
