@@ -13,11 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Godot 4
-        uses: actions/setup-godot@v2
-        with:
-          godot-version: 4.0
-
       - name: Export HTML5 game
         run: |
           docker run --rm -it -v $GITHUB_WORKSPACE:/workspace barichello/godot-ci:latest godot --export html5
