@@ -16,11 +16,3 @@ jobs:
       - name: Export HTML5 game
         run: |
           docker run --rm -it -v $GITHUB_WORKSPACE:/workspace barichello/godot-ci:latest godot --export html5
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-to-github-pages@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          publish-branch: gh-pages
-          publish-dir: ./build_html5
-          folder-name: game
