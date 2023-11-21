@@ -23,16 +23,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Godot Export
+      - name: godot-ci
         # You may pin to the exact commit or the version.
-        # uses: firebelley/godot-export@b0b8d3e350b7e4c376a865057961fa36e8ec3005
-        uses: firebelley/godot-export@v5.2.1
-        with:
-          # The download url of the Linux Headless Godot executable.
-          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/4.0/Godot_v4.0-stable_linux.x86_64.zip
-          # The url of the export templates corresponding to the Godot executable version.
-          godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.0/Godot_v4.0-stable_export_templates.tpz
-          # The path relative to the root of the git repository that contains the "project.godot" file.
-          relative_project_path: ./
+        # uses: abarichello/godot-ci@f8fb9f6629906c2f57f0cf4a9051a1a4a20efa1c
+        uses: abarichello/godot-ci@3.4.2
           
           
