@@ -32,7 +32,7 @@ jobs:
       - name: Web Build
         run: |
           mkdir -v -p build/web
-          cd $PROJECT_PATH
+          cd /workspace/$PROJECT_PATH
           godot -v --export "HTML5" ../build/web/index.html
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
@@ -47,5 +47,3 @@ jobs:
         with:
           branch: main # The branch the action should deploy to.
           folder: build/web # The folder the action should deploy.
-          
-          
