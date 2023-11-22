@@ -11,7 +11,7 @@ on:
 env:
   GODOT_VERSION: 4.1.3
   EXPORT_NAME: maizena
-  PROJECT_PATH: maizena
+  PROJECT_PATH: ./
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
