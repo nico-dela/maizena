@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pkqub3ypbmga"
-path="res://.godot/imported/templo de los anfibios.png-b091297cdc8736856f2e960faa63325f.ctex"
+path="res://.godot/imported/templo de los anfibios.png-9611dda7add5b34ba1a0603994ce22fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/tilesets/templo de los anfibios.png"
-dest_files=["res://.godot/imported/templo de los anfibios.png-b091297cdc8736856f2e960faa63325f.ctex"]
+source_file="res://art/character/templo de los anfibios.png"
+dest_files=["res://.godot/imported/templo de los anfibios.png-9611dda7add5b34ba1a0603994ce22fa.ctex"]
 
 [params]
 

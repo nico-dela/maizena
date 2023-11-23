@@ -1,29 +1,24 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1700614606
-export_presets.cfg::TextFile::-1::1700612719::0::1::::<><>::
+::res://::1700699183
+export_presets.cfg::TextFile::-1::1700614615::0::1::::<><>::
 ::res://art/::1700613980
 icon.svg::CompressedTexture2D::569311749669937116::1700612719::1700613980::1::::<><>::
-::res://art/character/::1700613980
-Fences.png::CompressedTexture2D::5643065774867059841::1700612719::1700613980::1::::<><>::
-Grass.png::CompressedTexture2D::8812381364795145816::1700612719::1700613980::1::::<><>::
-Hills.png::CompressedTexture2D::2878078752250892058::1700612719::1700613980::1::::<><>::
-laboratorio.png::CompressedTexture2D::8074310488038678351::1700612719::1700613980::1::::<><>::
+::res://art/character/::1700699027
+Fences.png::CompressedTexture2D::5643065774867059841::1700699102::1700699184::1::::<><>::
+Grass.png::CompressedTexture2D::8812381364795145816::1700699105::1700699184::1::::<><>::
+Hills.png::CompressedTexture2D::2878078752250892058::1700699108::1700699184::1::::<><>::
+laboratorio.png::CompressedTexture2D::8074310488038678351::1700699111::1700699184::1::::<><>::
 sanjin.png::CompressedTexture2D::6019636497724461046::1700612719::1700613980::1::::<><>::
-templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1700612719::1700613980::1::::<><>::
-Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1700612719::1700613980::1::::<><>::
-Water.png::CompressedTexture2D::4159706795001771249::1700612719::1700613980::1::::<><>::
-Wooden House.png::CompressedTexture2D::2954160572471588883::1700612719::1700613980::1::::<><>::
-::res://build/::1700614611
-::res://build/web/::1700614615
-index.apple-touch-icon.png::CompressedTexture2D::6693690971015602596::1700614615::1700614615::1::::<><>::
-index.icon.png::CompressedTexture2D::1271532053959268088::1700614615::1700614615::1::::<><>::
-index.png::CompressedTexture2D::3190851225069276887::1700614615::1700614615::1::::<><>::
+templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1700699114::1700699184::1::::<><>::
+Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1700699118::1700699184::1::::<><>::
+Water.png::CompressedTexture2D::4159706795001771249::1700699122::1700699184::1::::<><>::
+Wooden House.png::CompressedTexture2D::2954160572471588883::1700699129::1700699184::1::::<><>::
 ::res://menu/::1700613979
 AkiraExpanded-SuperBold 800.otf::FontFile::2906903596942872074::1700612719::1700613979::1::::<><>::
-::res://scenes/::1700613983
-player.tscn::PackedScene::6284760147262208712::1700612719::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
+::res://scenes/::1700699027
+player.tscn::PackedScene::6284760147262208712::1700699027::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
 soundtrack.tscn::PackedScene::8214520296324127879::1700612719::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1700613983::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/character/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/character/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/character/Grass.png<>uid://bhafsii3o8ipu::::res://art/character/Hills.png<>uid://bxrqt8mpq6btq::::res://art/character/Tilled Dirt.png<>uid://bidaufsco4bw2::::res://art/character/Wooden House.png<>uid://cmnsp68w564un::::res://art/character/Fences.png<>uid://b0i807h0o1m6t::::res://art/character/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn
+world.tscn::PackedScene::8499304833516323026::1700699027::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/character/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/character/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/character/Grass.png<>uid://bhafsii3o8ipu::::res://art/character/Hills.png<>uid://bxrqt8mpq6btq::::res://art/character/Tilled Dirt.png<>uid://bidaufsco4bw2::::res://art/character/Wooden House.png<>uid://cmnsp68w564un::::res://art/character/Fences.png<>uid://b0i807h0o1m6t::::res://art/character/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn
 ::res://scripts/::1700612719
 player.gd::GDScript::-1::1700612719::0::1::::<>CharacterBody2D<>::
 soundtrackplayer.gd::GDScript::-1::1700612719::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
