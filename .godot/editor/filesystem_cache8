@@ -1,0 +1,29 @@
+fc8a56933c4b1c8d796fdb8f7a9f9475
+::res://::1700692483
+README.md::TextFile::-1::1700443247::0::1::::<><>::
+::res://art/::1700697152
+icon.svg::CompressedTexture2D::569311749669937116::1700455825::1700455828::1::::<><>::
+::res://art/character/::1700697255
+sanjin.png::CompressedTexture2D::6019636497724461046::1700455825::1700455828::1::::<><>::
+::res://art/objects/::1700443828
+::res://art/tilesets/::1700697255
+Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1641377964::1700697314::1::::<><>::
+Basic Plants.png::CompressedTexture2D::8034803057783785342::1640163244::1700697314::1::::<><>::
+Egg item.png::CompressedTexture2D::5400766172289404349::1686898878::1700697314::1::::<><>::
+Fences.png::CompressedTexture2D::5643065774867059841::1640164532::1700697314::1::::<><>::
+Free_Chicken_House.png::CompressedTexture2D::4954365677262574754::1688788742::1700697314::1::::<><>::
+Grass.png::CompressedTexture2D::8812381364795145816::1688616334::1700697314::1::::<><>::
+Hills.png::CompressedTexture2D::2878078752250892058::1640157984::1700697314::1::::<><>::
+laboratorio.png::CompressedTexture2D::8074310488038678351::1700457359::1700697314::1::::<><>::
+Montaña.png::CompressedTexture2D::8427384133048594819::1700697152::1700697152::1::::<><>::
+OutdoorsTileset.png::CompressedTexture2D::3378091269356929415::1700450678::1700697314::1::::<><>::
+templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1700457359::1700697314::1::::<><>::
+Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1688612100::1700697314::1::::<><>::
+Water.png::CompressedTexture2D::4159706795001771249::1640164122::1700697314::1::::<><>::
+Wood Bridge.png::CompressedTexture2D::3438859987437671950::1642834830::1700697314::1::::<><>::
+Wooden House.png::CompressedTexture2D::2954160572471588883::1640165646::1700697314::1::::<><>::
+::res://scenes/::1700697205
+player.tscn::PackedScene::6284760147262208712::1700697205::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
+world.tscn::PackedScene::8499304833516323026::1700697205::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/character/laboratorio.png<>uid://pkqub3ypbmga::::res://art/character/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/character/Grass.png<>uid://bhafsii3o8ipu::::res://art/character/Hills.png<>uid://bxrqt8mpq6btq::::res://art/character/Tilled Dirt.png<>uid://bidaufsco4bw2::::res://art/character/Wooden House.png<>uid://cmnsp68w564un::::res://art/character/Fences.png<>uid://b0i807h0o1m6t::::res://art/character/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn
+::res://scripts/::1700455825
+player.gd::GDScript::-1::1700455825::0::1::::<>CharacterBody2D<>::
