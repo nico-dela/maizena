@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://boemw1emdmc8n"
-path="res://.godot/imported/OutdoorsTileset.png-5b9fd600df762c17ef9fbdac05ba4ba1.ctex"
+path="res://.godot/imported/OutdoorsTileset.png-0a58bca635a345f79578ada94c125bd2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/character/OutdoorsTileset.png"
-dest_files=["res://.godot/imported/OutdoorsTileset.png-5b9fd600df762c17ef9fbdac05ba4ba1.ctex"]
+source_file="res://art/tilesets/OutdoorsTileset.png"
+dest_files=["res://.godot/imported/OutdoorsTileset.png-0a58bca635a345f79578ada94c125bd2.ctex"]
 
 [params]
 
