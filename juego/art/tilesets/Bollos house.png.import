@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxs1vsn7urcf5"
-path="res://.godot/imported/Grass.png-f65b1dc81ecb64a41a03761a3f00fb80.ctex"
+uid="uid://gvkwwqj55d1l"
+path="res://.godot/imported/Bollos house.png-dab676aa7ec39fe67e4a46db21d23d8b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/character/Grass.png"
-dest_files=["res://.godot/imported/Grass.png-f65b1dc81ecb64a41a03761a3f00fb80.ctex"]
+source_file="res://art/tilesets/Bollos house.png"
+dest_files=["res://.godot/imported/Bollos house.png-dab676aa7ec39fe67e4a46db21d23d8b.ctex"]
 
 [params]
 

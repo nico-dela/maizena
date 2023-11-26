@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bidaufsco4bw2"
-path="res://.godot/imported/Wooden House.png-96a290fc1630e99786012422d932134f.ctex"
+uid="uid://covbnov3c3yc4"
+path="res://.godot/imported/aldea de las sombras.png-21c601b2f4be15d0742f2929ce1fcb30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/character/Wooden House.png"
-dest_files=["res://.godot/imported/Wooden House.png-96a290fc1630e99786012422d932134f.ctex"]
+source_file="res://art/tilesets/aldea de las sombras.png"
+dest_files=["res://.godot/imported/aldea de las sombras.png-21c601b2f4be15d0742f2929ce1fcb30.ctex"]
 
 [params]
 

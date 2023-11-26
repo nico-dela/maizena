@@ -1,22 +1,17 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1700780815
+::res://::1701003152
 export_presets.cfg::TextFile::-1::1700699880::0::1::::<><>::
 README.md::TextFile::-1::1700699880::0::1::::<><>::
 ::res://art/::1700700028
 icon.svg::CompressedTexture2D::569311749669937116::1700699880::1700700028::1::::<><>::
-::res://art/character/::1700699880
-Fences.png::CompressedTexture2D::5643065774867059841::1700699880::1700699880::1::::<><>::
-Grass.png::CompressedTexture2D::8812381364795145816::1700699880::1700699880::1::::<><>::
-Hills.png::CompressedTexture2D::2878078752250892058::1700699880::1700699880::1::::<><>::
-laboratorio.png::CompressedTexture2D::8074310488038678351::1700699880::1700699880::1::::<><>::
+::res://art/character/::1701036992
+personajes extras.png::CompressedTexture2D::376197541053718705::1701036948::1701036992::1::::<><>::
 sanjin.png::CompressedTexture2D::6019636497724461046::1700699880::1700699880::1::::<><>::
-templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1700699880::1700699880::1::::<><>::
-Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1700699880::1700699880::1::::<><>::
-Water.png::CompressedTexture2D::4159706795001771249::1700699880::1700699880::1::::<><>::
-Wooden House.png::CompressedTexture2D::2954160572471588883::1700699880::1700699880::1::::<><>::
-::res://art/tilesets/::1700700028
+::res://art/tilesets/::1701037062
+aldea de las sombras.png::CompressedTexture2D::5798921812511228545::1701024080::1701024080::1::::<><>::
 Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1700699880::1700700028::1::::<><>::
 Basic Plants.png::CompressedTexture2D::8034803057783785342::1700699880::1700700028::1::::<><>::
+Bollos house.png::CompressedTexture2D::465132632737788155::1701037062::1701037062::1::::<><>::
 Egg item.png::CompressedTexture2D::5400766172289404349::1700699880::1700700028::1::::<><>::
 Fences.png::CompressedTexture2D::5643065774867059841::1700699880::1700700028::1::::<><>::
 Free_Chicken_House.png::CompressedTexture2D::4954365677262574754::1700699880::1700700028::1::::<><>::
@@ -32,10 +27,10 @@ Wood Bridge.png::CompressedTexture2D::3438859987437671950::1700699880::170070002
 Wooden House.png::CompressedTexture2D::2954160572471588883::1700699880::1700700028::1::::<><>::
 ::res://menu/::1700699880
 AkiraExpanded-SuperBold 800.otf::FontFile::2906903596942872074::1700699880::1700699880::1::::<><>::
-::res://scenes/::1700703606
+::res://scenes/::1701036156
 player.tscn::PackedScene::6284760147262208712::1700699880::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg
 soundtrack.tscn::PackedScene::8214520296324127879::1700699880::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1700703606::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png
+world.tscn::PackedScene::8499304833516323026::1701036156::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png
 ::res://scripts/::1700699880
 player.gd::GDScript::-1::1700699880::0::1::::<>CharacterBody2D<>::
 soundtrackplayer.gd::GDScript::-1::1700699880::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
