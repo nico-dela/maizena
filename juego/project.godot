@@ -18,6 +18,7 @@ config/icon="res://art/icon.svg"
 [autoload]
 
 Soundtrackplayer="*res://scenes/soundtrack.tscn"
+Dialogmanager="*res://scripts/dialogmanager.gd"
 
 [display]
 

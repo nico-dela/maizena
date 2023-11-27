@@ -1,1 +1,5 @@
 res://scenes/world.tscn
+res://art/Text box/text_box.tscn
+res://scripts/dialogmanager.gd
+res://scripts/text_box.gd
+res://scenes/text_box.tscn
