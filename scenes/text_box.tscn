@@ -1,0 +1,96 @@
+[gd_scene load_steps=4 format=3 uid="uid://01t75xpjteua"]
+
+[ext_resource type="Texture2D" uid="uid://dv5ppnnoe3q1p" path="res://art/Text box/Dialog box.png" id="2_mrr8o"]
+[ext_resource type="FontFile" uid="uid://bemsklfdchf6w" path="res://art/Text box/Minimal5x5Monospaced.ttf" id="3_3l7l2"]
+
+[sub_resource type="GDScript" id="GDScript_uy6do"]
+script/source = "extends MarginContainer
+
+@onready var label = $MarginContainer/Label
+@onready var timer = $LetterDisplayTimer
+
+const MAX_WIDTH = 256
+
+var text = \"\"
+var lletter_index = 0
+
+var letter_time = 0.03
+var space_time = 0.06
+var puntuation_time = 0.2
+
+
+signal finished_displaying()
+
+
+func display_text(text_to_display: String):
+	text = text_to_display
+	label.text = text_to_display
+	
+	await resized
+	custom_minimum_size.x = min(size.x, MAX_WIDTH)
+	
+	if size.x > MAX_WIDTH:
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD
+		await resized
+		await resized
+		custom_minimum_size.y = size.y
+		
+	global_position.x -= size.x / 2
+	global_position.y -= size.y + 24
+	
+	label.text = \"\"
+	_display_letter()
+	
+func _display_letter():
+	label.text += text[letter_index]
+	
+	letter_index += 1
+	if letter_index >= text.length():
+		finished_displaying.emit()
+		return
+		
+	match text[letter_index]:
+		\"!\", \".\", \",\", \"?\":
+			timer.start(punctuation_time)
+		\" \":
+			timer.start(space_time)
+		_:
+			timer.start(letter_time)
+
+func _on_letter_display_timer_timeout():
+	_display_letter()
+"
+
+[node name="text_box" type="MarginContainer"]
+offset_right = 32.0
+offset_bottom = 32.0
+script = SubResource("GDScript_uy6do")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_mrr8o")
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 0
+theme_override_constants/shadow_outline_size = 0
+theme_override_constants/line_spacing = 0
+theme_override_fonts/font = ExtResource("3_3l7l2")
+vertical_alignment = 1
+
+[node name="LetterDisplayTimer" type="Timer" parent="."]
+one_shot = true

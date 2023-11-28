@@ -1,29 +1,55 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1700692483
-README.md::TextFile::-1::1700443247::0::1::::<><>::
-::res://art/::1700697152
-icon.svg::CompressedTexture2D::569311749669937116::1700455825::1700455828::1::::<><>::
-::res://art/character/::1700697255
-sanjin.png::CompressedTexture2D::6019636497724461046::1700455825::1700455828::1::::<><>::
-::res://art/objects/::1700443828
-::res://art/tilesets/::1700697255
-Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1641377964::1700697314::1::::<><>::
-Basic Plants.png::CompressedTexture2D::8034803057783785342::1640163244::1700697314::1::::<><>::
-Egg item.png::CompressedTexture2D::5400766172289404349::1686898878::1700697314::1::::<><>::
-Fences.png::CompressedTexture2D::5643065774867059841::1640164532::1700697314::1::::<><>::
-Free_Chicken_House.png::CompressedTexture2D::4954365677262574754::1688788742::1700697314::1::::<><>::
-Grass.png::CompressedTexture2D::8812381364795145816::1688616334::1700697314::1::::<><>::
-Hills.png::CompressedTexture2D::2878078752250892058::1640157984::1700697314::1::::<><>::
-laboratorio.png::CompressedTexture2D::8074310488038678351::1700457359::1700697314::1::::<><>::
-Montaña.png::CompressedTexture2D::8427384133048594819::1700697152::1700697152::1::::<><>::
-OutdoorsTileset.png::CompressedTexture2D::3378091269356929415::1700450678::1700697314::1::::<><>::
-templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1700457359::1700697314::1::::<><>::
-Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1688612100::1700697314::1::::<><>::
-Water.png::CompressedTexture2D::4159706795001771249::1640164122::1700697314::1::::<><>::
-Wood Bridge.png::CompressedTexture2D::3438859987437671950::1642834830::1700697314::1::::<><>::
-Wooden House.png::CompressedTexture2D::2954160572471588883::1640165646::1700697314::1::::<><>::
-::res://scenes/::1700697205
-player.tscn::PackedScene::6284760147262208712::1700697205::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
-world.tscn::PackedScene::8499304833516323026::1700697205::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/character/laboratorio.png<>uid://pkqub3ypbmga::::res://art/character/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/character/Grass.png<>uid://bhafsii3o8ipu::::res://art/character/Hills.png<>uid://bxrqt8mpq6btq::::res://art/character/Tilled Dirt.png<>uid://bidaufsco4bw2::::res://art/character/Wooden House.png<>uid://cmnsp68w564un::::res://art/character/Fences.png<>uid://b0i807h0o1m6t::::res://art/character/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn
-::res://scripts/::1700455825
-player.gd::GDScript::-1::1700455825::0::1::::<>CharacterBody2D<>::
+::res://::1701215241
+export_presets.cfg::TextFile::-1::1701215166::0::1::::<><>::
+README.md::TextFile::-1::1701215165::0::1::::<><>::
+::res://art/::1701215165
+icon.svg::CompressedTexture2D::569311749669937116::1701215165::1701215165::1::::<><>::
+::res://art/character/::1701215165
+personajes extras.png::CompressedTexture2D::376197541053718705::1701215165::1701215243::1::::<><>::
+sanjin.png::CompressedTexture2D::6019636497724461046::1701215165::1701215165::1::::<><>::
+::res://art/Text box/::1701215165
+Dialog box.png::CompressedTexture2D::8696097345428417379::1701215165::1701215243::1::::<><>::
+Minimal3x5.ttf::FontFile::516455883718300251::1701215165::1701215242::1::::<><>::
+Minimal5x5Monospaced.ttf::FontFile::2693059940722927808::1701215165::1701215242::1::::<><>::
+Minimal5x7.ttf::FontFile::8045290899239534962::1701215165::1701215242::1::::<><>::
+text 1.png::CompressedTexture2D::4211530367212647178::1701215165::1701215243::1::::<><>::
+::res://art/tilesets/::1701215166
+aldea de las sombras.png::CompressedTexture2D::5798921812511228545::1701215166::1701215243::1::::<><>::
+Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1701215165::1701215165::1::::<><>::
+Basic Plants.png::CompressedTexture2D::8034803057783785342::1701215165::1701215165::1::::<><>::
+Bollos house.png::CompressedTexture2D::465132632737788155::1701215166::1701215243::1::::<><>::
+Egg item.png::CompressedTexture2D::5400766172289404349::1701215166::1701215166::1::::<><>::
+Fences.png::CompressedTexture2D::5643065774867059841::1701215166::1701215166::1::::<><>::
+Free_Chicken_House.png::CompressedTexture2D::4954365677262574754::1701215166::1701215166::1::::<><>::
+Grass.png::CompressedTexture2D::8812381364795145816::1701215166::1701215166::1::::<><>::
+Hills.png::CompressedTexture2D::2878078752250892058::1701215166::1701215166::1::::<><>::
+laboratorio.png::CompressedTexture2D::8074310488038678351::1701215166::1701215166::1::::<><>::
+Montaña.png::CompressedTexture2D::8427384133048594819::1701215166::1701215166::1::::<><>::
+OutdoorsTileset.png::CompressedTexture2D::3378091269356929415::1701215166::1701215166::1::::<><>::
+templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1701215166::1701215166::1::::<><>::
+Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1701215166::1701215166::1::::<><>::
+Water.png::CompressedTexture2D::4159706795001771249::1701215166::1701215166::1::::<><>::
+Wood Bridge.png::CompressedTexture2D::3438859987437671950::1701215166::1701215166::1::::<><>::
+Wooden House.png::CompressedTexture2D::2954160572471588883::1701215166::1701215166::1::::<><>::
+::res://menu/::1701215166
+AkiraExpanded-SuperBold 800.otf::FontFile::2906903596942872074::1701215166::1701215242::1::::<><>::
+::res://scenes/::1701215166
+player.tscn::PackedScene::6284760147262208712::1701215166::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
+soundtrack.tscn::PackedScene::8214520296324127879::1701215166::0::1::::<><>::res://scripts/soundtrackplayer.gd
+text_box.tscn::PackedScene::1809607292749199616::1701215166::0::1::::<><>::uid://dv5ppnnoe3q1p::::res://art/Text box/Dialog box.png<>uid://bemsklfdchf6w::::res://art/Text box/Minimal5x5Monospaced.ttf
+world.tscn::PackedScene::8499304833516323026::1701215166::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>uid://b1adj4bx5favy::::res://art/Text box/text 1.png
+::res://scripts/::1701215166
+player.gd::GDScript::-1::1701215166::0::1::::<>CharacterBody2D<>::
+soundtrackplayer.gd::GDScript::-1::1701215166::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
+world.gd::GDScript::-1::1701215166::0::1::::<>Node2D<>::
+::res://soundtracks/::1701215169
+01-Intro.mp3::AudioStreamMP3::5201758724910844183::1701215166::1701215243::1::::<><>::
+02-Repollo_Morado.mp3::AudioStreamMP3::3633479129432591423::1701215167::1701215243::1::::<><>::
+03-Sal.mp3::AudioStreamMP3::5933674947730533426::1701215167::1701215243::1::::<><>::
+04-Nadie_Me_Enseñó_a_Vivir.mp3::AudioStreamMP3::3730575725328618056::1701215167::1701215243::1::::<><>::
+05-Pororo.mp3::AudioStreamMP3::2276409354715801271::1701215168::1701215243::1::::<><>::
+06-Todo_lo_Que_Necesito.mp3::AudioStreamMP3::2304554444149624401::1701215168::1701215243::1::::<><>::
+07-Tus_Medias.mp3::AudioStreamMP3::3241548395016543414::1701215169::1701215243::1::::<><>::
+08-Arroz.mp3::AudioStreamMP3::1803399072451280046::1701215169::1701215243::1::::<><>::
+09-Recién_Me_Levanto.mp3::AudioStreamMP3::6568772944243602033::1701215169::1701215243::1::::<><>::
+10-Cumbia_Naruto.mp3::AudioStreamMP3::7797883625798886396::1701215169::1701215243::1::::<><>::
