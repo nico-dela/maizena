@@ -2482,6 +2482,6 @@ layer_4/tile_data = PackedInt32Array(-2359292, 393217, 1, -2293756, 393217, 2, -
 position = Vector2(-219, -266)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-257, -323)
+position = Vector2(-241, -320)
 scale = Vector2(0.166667, 0.166667)
 texture = ExtResource("18_20s8w")

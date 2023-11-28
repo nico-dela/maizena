@@ -1,5 +1,5 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1701123587
+::res://::1701194372
 export_presets.cfg::TextFile::-1::1700699880::0::1::::<><>::
 README.md::TextFile::-1::1700699880::0::1::::<><>::
 ::res://art/::1701111578
@@ -33,10 +33,11 @@ Wood Bridge.png::CompressedTexture2D::3438859987437671950::1700699880::170070002
 Wooden House.png::CompressedTexture2D::2954160572471588883::1700699880::1700700028::1::::<><>::
 ::res://menu/::1700699880
 AkiraExpanded-SuperBold 800.otf::FontFile::2906903596942872074::1700699880::1700699880::1::::<><>::
-::res://scenes/::1701123166
+::res://scenes/::1701123642
 player.tscn::PackedScene::6284760147262208712::1700699880::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg
 soundtrack.tscn::PackedScene::8214520296324127879::1700699880::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1701123049::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png
+text_box.tscn::PackedScene::1809607292749199616::1701123642::0::1::::<><>::uid://dv5ppnnoe3q1p::::res://art/Text box/Dialog box.png<>uid://bemsklfdchf6w::::res://art/Text box/Minimal5x5Monospaced.ttf
+world.tscn::PackedScene::8499304833516323026::1701123635::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>uid://b1adj4bx5favy::::res://art/Text box/text 1.png
 ::res://scripts/::1701123167
 player.gd::GDScript::-1::1700699880::0::1::::<>CharacterBody2D<>::
 soundtrackplayer.gd::GDScript::-1::1700699880::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
