@@ -5,4 +5,4 @@ extends Node2D
 func _ready():
 	randomize()
 	
-	Soundtrackplayer.play_soundtrack(Soundtrackplayer.THEMES.REPOLLO)
+	Soundtrackplayer.play_all_soundtracks()

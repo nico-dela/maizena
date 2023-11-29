@@ -51,6 +51,11 @@ func replay_current_theme():
 	var theme_tracks: Array = TRACKS[current_theme]
 	streamPlayer.stream = theme_tracks[randi() % theme_tracks.size()]
 	streamPlayer.play()
+	
+func play_all_soundtracks():
+	for theme in THEMES.values():
+		play_soundtrack(theme)
+		await streamPlayer.finished
 
 func _on_AudioStreamPlayer_finished():
 	if is_repeating:

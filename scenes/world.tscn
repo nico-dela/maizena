@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=38 format=3 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_wjpli"]
@@ -18,6 +18,9 @@
 [ext_resource type="Texture2D" uid="uid://dscj1x67pe7ul" path="res://art/tilesets/Montaña.png" id="10_deyod"]
 [ext_resource type="Texture2D" uid="uid://bo82ry606ks2q" path="res://art/tilesets/Wood Bridge.png" id="12_khak5"]
 [ext_resource type="Texture2D" uid="uid://b1adj4bx5favy" path="res://art/Text box/text 1.png" id="18_20s8w"]
+[ext_resource type="Script" path="res://joystick/virtual_joystick.gd" id="19_yxuu0"]
+[ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
+[ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u6vws"]
 texture = ExtResource("1_5id3o")
@@ -2485,3 +2488,59 @@ position = Vector2(-219, -266)
 position = Vector2(-241, -320)
 scale = Vector2(0.166667, 0.166667)
 texture = ExtResource("18_20s8w")
+
+[node name="mobile_joystick" type="Node2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="mobile_joystick"]
+
+[node name="Virtual Joystick" type="Control" parent="mobile_joystick/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -10.0
+offset_top = -112.0
+offset_right = 290.0
+offset_bottom = 188.0
+grow_vertical = 0
+scale = Vector2(0.4, 0.4)
+script = ExtResource("19_yxuu0")
+deadzone_size = 2.0
+clampzone_size = 18.0
+joystick_mode = 1
+visibility_mode = 1
+
+[node name="Base" type="TextureRect" parent="mobile_joystick/CanvasLayer/Virtual Joystick"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(100, 100)
+mouse_force_pass_scroll_events = false
+texture = ExtResource("20_hhpxm")
+stretch_mode = 5
+
+[node name="Tip" type="TextureRect" parent="mobile_joystick/CanvasLayer/Virtual Joystick/Base"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 50)
+texture = ExtResource("21_lv1v6")
+stretch_mode = 5
