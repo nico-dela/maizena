@@ -2484,62 +2484,6 @@ layer_4/tile_data = PackedInt32Array(-2359292, 393217, 1, -2293756, 393217, 2, -
 [node name="player" parent="." instance=ExtResource("9_4xl32")]
 position = Vector2(-219, -266)
 
-[node name="mobile_joystick" type="Node2D" parent="."]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="mobile_joystick"]
-
-[node name="Virtual Joystick" type="Control" parent="mobile_joystick/CanvasLayer"]
-layout_mode = 3
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 1.00002
-offset_top = -175.0
-offset_right = 301.0
-offset_bottom = 125.0
-grow_vertical = 0
-scale = Vector2(0.4, 0.4)
-script = ExtResource("19_yxuu0")
-deadzone_size = 2.0
-clampzone_size = 18.0
-joystick_mode = 1
-visibility_mode = 1
-
-[node name="Base" type="TextureRect" parent="mobile_joystick/CanvasLayer/Virtual Joystick"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(100, 100)
-mouse_force_pass_scroll_events = false
-texture = ExtResource("20_hhpxm")
-stretch_mode = 5
-
-[node name="Tip" type="TextureRect" parent="mobile_joystick/CanvasLayer/Virtual Joystick/Base"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(50, 50)
-texture = ExtResource("21_lv1v6")
-stretch_mode = 5
-
 [node name="interactive_objects" type="Node" parent="."]
 
 [node name="cartel_sanjin" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
@@ -2607,3 +2551,59 @@ position = Vector2(-600, -823)
 
 [node name="cartel_aldea" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
 position = Vector2(-552, -726)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Virtual Joystick" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("19_yxuu0")
+deadzone_size = 5.0
+clampzone_size = 37.0
+visibility_mode = 1
+
+[node name="Base" type="TextureRect" parent="CanvasLayer/Virtual Joystick"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(100, 100)
+mouse_force_pass_scroll_events = false
+texture = ExtResource("20_hhpxm")
+stretch_mode = 5
+
+[node name="Tip" type="TextureRect" parent="CanvasLayer/Virtual Joystick/Base"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 50)
+texture = ExtResource("21_lv1v6")
+stretch_mode = 5

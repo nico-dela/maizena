@@ -1,6 +1,6 @@
-fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1701400857
-export_presets.cfg::TextFile::-1::1701215166::0::1::::<><>::
+8d8ed3fefe296d4ac7ac1dbb387c9c35
+::res://::1701453135
+export_presets.cfg::TextFile::-1::1701402380::0::1::::<><>::
 README.md::TextFile::-1::1701215165::0::1::::<><>::
 ::res://addons/::1701383358
 ::res://addons/dialogue_manager/::1701389197
@@ -58,17 +58,12 @@ main_view.gd::GDScript::-1::1701383359::0::1::::<>Control<>::
 main_view.tscn::PackedScene::4884668666408697448::1701383359::0::1::::<><>::res://addons/dialogue_manager/views/main_view.gd<>uid://civ6shmka5e8u
 settings_view.gd::GDScript::-1::1701383359::0::1::::<>TabContainer<>::
 settings_view.tscn::PackedScene::5839841081119266502::1701383359::0::1::::<><>::res://addons/dialogue_manager/views/settings_view.gd
-::res://art/::1701215165
-icon.svg::CompressedTexture2D::569311749669937116::1701215165::1701215165::1::::<><>::
+::res://art/::1701453073
+Kumo_estudio_1.png::CompressedTexture2D::5540207675534888242::1701450869::1701450905::1::::<><>::
+Maizen-icon-2.svg::CompressedTexture2D::9061803349674321008::1701452822::1701452832::1::::<><>::
 ::res://art/character/::1701215243
 personajes extras.png::CompressedTexture2D::376197541053718705::1701215165::1701215243::1::::<><>::
 sanjin.png::CompressedTexture2D::6019636497724461046::1701215165::1701215165::1::::<><>::
-::res://art/Text box/::1701215243
-Dialog box.png::CompressedTexture2D::8696097345428417379::1701215165::1701215243::1::::<><>::
-Minimal3x5.ttf::FontFile::516455883718300251::1701215165::1701215242::1::::<><>::
-Minimal5x5Monospaced.ttf::FontFile::2693059940722927808::1701215165::1701215242::1::::<><>::
-Minimal5x7.ttf::FontFile::8045290899239534962::1701215165::1701215242::1::::<><>::
-text 1.png::CompressedTexture2D::4211530367212647178::1701215165::1701215243::1::::<><>::
 ::res://art/tilesets/::1701215243
 aldea de las sombras.png::CompressedTexture2D::5798921812511228545::1701215166::1701215243::1::::<><>::
 Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1701215165::1701215165::1::::<><>::
@@ -87,7 +82,15 @@ Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1701215166::170121516
 Water.png::CompressedTexture2D::4159706795001771249::1701215166::1701215166::1::::<><>::
 Wood Bridge.png::CompressedTexture2D::3438859987437671950::1701215166::1701215166::1::::<><>::
 Wooden House.png::CompressedTexture2D::2954160572471588883::1701215166::1701215166::1::::<><>::
-::res://dialogues/::1701400895
+::res://build/::1701453222
+index.144x144.png::CompressedTexture2D::7821343738472327318::1701453222::1701453222::1::::<><>::
+index.180x180.png::CompressedTexture2D::3899132663396212840::1701453222::1701453222::1::::<><>::
+index.512x512.png::CompressedTexture2D::8332176033069502287::1701453222::1701453222::1::::<><>::
+index.apple-touch-icon.png::CompressedTexture2D::1933255902241839666::1701453222::1701453222::1::::<><>::
+index.icon.png::CompressedTexture2D::4029026263294591132::1701453222::1701453222::1::::<><>::
+index.manifest.json::JSON::-1::1701453222::0::1::::<><>::
+index.png::CompressedTexture2D::7162577463830372340::1701453222::1701453222::1::::<><>::
+::res://dialogues/::1701400974
 bicicleta.dialogue::Resource::2823062603241343877::1701400712::1701400712::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 boji.dialogue::Resource::9047928892181090837::1701400145::1701400145::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 bollo.dialogue::Resource::966614776552521974::1701400449::1701400449::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
@@ -116,18 +119,18 @@ virtual_joystick.tscn::PackedScene::8038149555967335895::1701218581::0::1::::<><
 joystick_base_outline.png::CompressedTexture2D::3288008411285325467::1701216217::1701216217::1::::<><>::
 joystick_tip.png::CompressedTexture2D::3132432681801126628::1701216217::1701216217::1::::<><>::
 joystick_tip_arrows.png::CompressedTexture2D::8548255698028078709::1701216217::1701216217::1::::<><>::
-::res://scenes/::1701400936
-interactive_object.tscn::PackedScene::7427494846015621429::1701400347::0::1::::<><>::res://scripts/interactive_object.gd
-player.tscn::PackedScene::6284760147262208712::1701400206::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
+::res://scenes/::1701453160
+interactive_object.tscn::PackedScene::7427494846015621429::1701453159::0::1::::<><>::res://scripts/interactive_object.gd
+player.tscn::PackedScene::6284760147262208712::1701453159::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
+text_box.tscn::PackedScene::6337948047775026803::1701453160::0::1::::<><>::
 soundtrack.tscn::PackedScene::8214520296324127879::1701215166::0::1::::<><>::res://scripts/soundtrackplayer.gd
-text_box.tscn::PackedScene::1809607292749199616::1701215166::0::1::::<><>::uid://dv5ppnnoe3q1p
-world.tscn::PackedScene::8499304833516323026::1701400936::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>uid://b1adj4bx5favy::::res://art/Text box/text 1.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
-::res://scripts/::1701400347
+world.tscn::PackedScene::8499304833516323026::1701453159::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
+::res://scripts/::1701452546
 global.gd::GDScript::-1::1701396480::0::1::::<>Node<>::
-interactive_object.gd::GDScript::-1::1701400347::0::1::::<>Node2D<>::
-player.gd::GDScript::-1::1701396619::0::1::::<>CharacterBody2D<>::
+interactive_object.gd::GDScript::-1::1701431543::0::1::::<>Node2D<>::
+player.gd::GDScript::-1::1701432101::0::1::::<>CharacterBody2D<>::
 soundtrackplayer.gd::GDScript::-1::1701216677::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
-world.gd::GDScript::-1::1701216696::0::1::::<>Node2D<>::
+world.gd::GDScript::-1::1701432139::0::1::::<>Node2D<>::
 ::res://soundtracks/::1701215243
 01-Intro.mp3::AudioStreamMP3::5201758724910844183::1701215166::1701215243::1::::<><>::
 02-Repollo_Morado.mp3::AudioStreamMP3::3633479129432591423::1701215167::1701215243::1::::<><>::

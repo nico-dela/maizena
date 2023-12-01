@@ -13,7 +13,9 @@ config_version=5
 config/name="Maizena Web Game"
 run/main_scene="res://scenes/world.tscn"
 config/features=PackedStringArray("4.1", "GL Compatibility")
-config/icon="res://art/icon.svg"
+boot_splash/bg_color=Color(1, 1, 1, 1)
+boot_splash/image="res://art/Kumo_estudio_1.png"
+config/icon="res://art/Maizen-icon-2.svg"
 
 [autoload]
 
@@ -27,6 +29,7 @@ general/balloon_path="res://addons/dialogue_manager/example_balloon/small_exampl
 
 [display]
 
+window/size/initial_position_type=2
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/stretch/scale=4.0
@@ -34,10 +37,6 @@ window/stretch/scale=4.0
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
-
-[input_devices]
-
-pointing/emulate_touch_from_mouse=true
 
 [internationalization]
 

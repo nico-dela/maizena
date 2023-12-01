@@ -2,77 +2,54 @@ extends CharacterBody2D
 
 const SPEED = 100.0
 var current_dir = "none"
+var anim_dict = {
+	"right": {"flip_h": false, "walk": "side_walk", "idle": "side_idle"},
+	"left": {"flip_h": true, "walk": "side_walk", "idle": "side_idle"},
+	"down": {"flip_h": true, "walk": "front_walk", "idle": "front_idle"},
+	"up": {"flip_h": true, "walk": "back_walk", "idle": "back_idle"}
+}
 
 func _ready():
 	$AnimatedSprite2D.play("front_idle")
-	
 
 func _physics_process(delta):
 	player_movement(delta)
-	
 
 func player_movement(_delta):
 	if !global.shown_dialogue:
+		velocity = Vector2.ZERO
 		if Input.is_action_pressed("ui_right"):
 			current_dir = "right"
-			play_anim(1)
 			velocity.x = SPEED
-			velocity.y = 0
 		elif Input.is_action_pressed("ui_left"):
 			current_dir = "left"
-			play_anim(1)
 			velocity.x = -SPEED
-			velocity.y = 0
 		elif Input.is_action_pressed("ui_down"):
 			current_dir = "down"
-			play_anim(1)
-			velocity.x = 0
 			velocity.y = SPEED
 		elif Input.is_action_pressed("ui_up"):
 			current_dir = "up"
-			play_anim(1)
-			velocity.x = 0
 			velocity.y = -SPEED
+
+		if velocity != Vector2.ZERO:
+			play_anim(1)
 		else:
 			play_anim(0)
-			velocity.x = 0
-			velocity.y = 0
 	else:
+		velocity = Vector2.ZERO
 		play_anim(0)
-		velocity.x = 0
-		velocity.y = 0
-	
+
 	move_and_slide()
 
 func play_anim(movement):
-	var dir = current_dir
-	var anim = $AnimatedSprite2D
-	
-	if dir == "right":
-		anim.flip_h = false
+	if current_dir in anim_dict:
+		var dir_info = anim_dict[current_dir]
+		$AnimatedSprite2D.flip_h = dir_info["flip_h"]
+		
 		if movement == 1:
-			anim.play("side_walk")
+			$AnimatedSprite2D.play(dir_info["walk"])
 		elif movement == 0:
-			anim.play("side_idle")
-	elif dir == "left":
-		anim.flip_h = true
-		if movement == 1:
-			anim.play("side_walk")
-		elif movement == 0:
-			anim.play("side_idle")
-	elif dir == "down":
-		anim.flip_h = true
-		if movement == 1:
-			anim.play("front_walk")
-		elif movement == 0:
-			anim.play("front_idle")
-	elif dir == "up":
-		anim.flip_h = true
-		if movement == 1:
-			anim.play("back_walk")
-		elif movement == 0:
-			anim.play("back_idle")
-
+			$AnimatedSprite2D.play(dir_info["idle"])
 
 func _on_detection_area_body_entered(body):
 	if body.is_in_group("dialogue"):
