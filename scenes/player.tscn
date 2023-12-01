@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://cvsnc1d0y0q4g"]
+[gd_scene load_steps=42 format=3 uid="uid://cvsnc1d0y0q4g"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_lwbni"]
 [ext_resource type="Texture2D" uid="uid://cr07se5dfwlsg" path="res://art/character/sanjin.png" id="2_5fdww"]
@@ -289,7 +289,10 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vv5xt"]
-radius = 5.0
+radius = 6.08276
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x6vw2"]
+radius = 14.0357
 
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_lwbni")
@@ -305,3 +308,11 @@ shape = SubResource("CircleShape2D_vv5xt")
 [node name="Camera2D" type="Camera2D" parent="."]
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
+
+[node name="detection_area" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="detection_area"]
+position = Vector2(1, -4)
+shape = SubResource("CircleShape2D_x6vw2")
+
+[connection signal="body_entered" from="detection_area" to="." method="_on_detection_area_body_entered"]

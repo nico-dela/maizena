@@ -1,6 +1,12 @@
 res://scenes/world.tscn
+res://scenes/dialogue.tscn
 res://scenes/player.tscn
+res://scenes/interactuable_object.tscn
 res://scripts/player.gd
-res://scripts/soundtrackplayer.gd
-res://scripts/world.gd
+res://scenes/interactive_object.tscn
+res://addons/dialogue_manager/dialogue_manager.gd
+res://addons/dialogue_manager/test_scene.gd
+res://scenes/interactive_object.gd
+res://scripts/interactive_object.gd
 res://addons/dialogue_manager/test_scene.tscn
+res://scripts/global.gd

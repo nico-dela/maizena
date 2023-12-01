@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://bghrotqrmyxeb"
+path="res://.godot/imported/bicicleta.dialogue-e8373bec26853e22eb213841a8f92246.tres"
+
+[deps]
+
+source_file="res://dialogues/bicicleta.dialogue"
+dest_files=["res://.godot/imported/bicicleta.dialogue-e8373bec26853e22eb213841a8f92246.tres"]
+
+[params]
+
+defaults=true

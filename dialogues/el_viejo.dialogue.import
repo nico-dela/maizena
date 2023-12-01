@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://cxsb6sns4b02l"
+path="res://.godot/imported/el_viejo.dialogue-be7d8c2a1ca166922bcd9b51f146a3e6.tres"
+
+[deps]
+
+source_file="res://dialogues/el_viejo.dialogue"
+dest_files=["res://.godot/imported/el_viejo.dialogue-be7d8c2a1ca166922bcd9b51f146a3e6.tres"]
+
+[params]
+
+defaults=true

@@ -1,41 +1,47 @@
 extends CharacterBody2D
 
-
 const SPEED = 100.0
 var current_dir = "none"
 
 func _ready():
 	$AnimatedSprite2D.play("front_idle")
+	
 
 func _physics_process(delta):
 	player_movement(delta)
+	
 
 func player_movement(_delta):
-	if Input.is_action_pressed("ui_right"):
-		current_dir = "right"
-		play_anim(1)
-		velocity.x = SPEED
-		velocity.y = 0
-	elif Input.is_action_pressed("ui_left"):
-		current_dir = "left"
-		play_anim(1)
-		velocity.x = -SPEED
-		velocity.y = 0
-	elif Input.is_action_pressed("ui_down"):
-		current_dir = "down"
-		play_anim(1)
-		velocity.x = 0
-		velocity.y = SPEED
-	elif Input.is_action_pressed("ui_up"):
-		current_dir = "up"
-		play_anim(1)
-		velocity.x = 0
-		velocity.y = -SPEED
+	if !global.shown_dialogue:
+		if Input.is_action_pressed("ui_right"):
+			current_dir = "right"
+			play_anim(1)
+			velocity.x = SPEED
+			velocity.y = 0
+		elif Input.is_action_pressed("ui_left"):
+			current_dir = "left"
+			play_anim(1)
+			velocity.x = -SPEED
+			velocity.y = 0
+		elif Input.is_action_pressed("ui_down"):
+			current_dir = "down"
+			play_anim(1)
+			velocity.x = 0
+			velocity.y = SPEED
+		elif Input.is_action_pressed("ui_up"):
+			current_dir = "up"
+			play_anim(1)
+			velocity.x = 0
+			velocity.y = -SPEED
+		else:
+			play_anim(0)
+			velocity.x = 0
+			velocity.y = 0
 	else:
 		play_anim(0)
 		velocity.x = 0
 		velocity.y = 0
-		
+	
 	move_and_slide()
 
 func play_anim(movement):
@@ -47,22 +53,27 @@ func play_anim(movement):
 		if movement == 1:
 			anim.play("side_walk")
 		elif movement == 0:
-			anim.play("side_idle") 
-	if dir == "left":
+			anim.play("side_idle")
+	elif dir == "left":
 		anim.flip_h = true
 		if movement == 1:
 			anim.play("side_walk")
 		elif movement == 0:
 			anim.play("side_idle")
-	if dir == "down":
+	elif dir == "down":
 		anim.flip_h = true
 		if movement == 1:
 			anim.play("front_walk")
 		elif movement == 0:
 			anim.play("front_idle")
-	if dir == "up":
+	elif dir == "up":
 		anim.flip_h = true
 		if movement == 1:
 			anim.play("back_walk")
 		elif movement == 0:
 			anim.play("back_idle")
+
+
+func _on_detection_area_body_entered(body):
+	if body.is_in_group("dialogue"):
+		body.show_dialogue()

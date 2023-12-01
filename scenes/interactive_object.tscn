@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dd260wyj55xsf"]
+
+[ext_resource type="Script" path="res://scripts/interactive_object.gd" id="1_kfdxy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
+
+[node name="StaticBody2D" type="StaticBody2D" groups=["dialogue"]]
+script = ExtResource("1_kfdxy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_jxmtf")

@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://rys03osntnf6"
+path="res://.godot/imported/cartel_laboratorio.dialogue-983b0b6c9a79d22a4e716278cac22c44.tres"
+
+[deps]
+
+source_file="res://dialogues/cartel_laboratorio.dialogue"
+dest_files=["res://.godot/imported/cartel_laboratorio.dialogue-983b0b6c9a79d22a4e716278cac22c44.tres"]
+
+[params]
+
+defaults=true

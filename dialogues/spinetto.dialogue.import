@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://bcwpac5ftq6lo"
+path="res://.godot/imported/spinetto.dialogue-8fbfdc87c00c000de29e0c9a4006a9ce.tres"
+
+[deps]
+
+source_file="res://dialogues/spinetto.dialogue"
+dest_files=["res://.godot/imported/spinetto.dialogue-8fbfdc87c00c000de29e0c9a4006a9ce.tres"]
+
+[params]
+
+defaults=true

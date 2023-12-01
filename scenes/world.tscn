@@ -17,10 +17,10 @@
 [ext_resource type="PackedScene" uid="uid://cvsnc1d0y0q4g" path="res://scenes/player.tscn" id="9_4xl32"]
 [ext_resource type="Texture2D" uid="uid://dscj1x67pe7ul" path="res://art/tilesets/Montaña.png" id="10_deyod"]
 [ext_resource type="Texture2D" uid="uid://bo82ry606ks2q" path="res://art/tilesets/Wood Bridge.png" id="12_khak5"]
-[ext_resource type="Texture2D" uid="uid://b1adj4bx5favy" path="res://art/Text box/text 1.png" id="18_20s8w"]
 [ext_resource type="Script" path="res://joystick/virtual_joystick.gd" id="19_yxuu0"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
+[ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u6vws"]
 texture = ExtResource("1_5id3o")
@@ -2484,11 +2484,6 @@ layer_4/tile_data = PackedInt32Array(-2359292, 393217, 1, -2293756, 393217, 2, -
 [node name="player" parent="." instance=ExtResource("9_4xl32")]
 position = Vector2(-219, -266)
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-241, -320)
-scale = Vector2(0.166667, 0.166667)
-texture = ExtResource("18_20s8w")
-
 [node name="mobile_joystick" type="Node2D" parent="."]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="mobile_joystick"]
@@ -2544,3 +2539,71 @@ grow_vertical = 2
 pivot_offset = Vector2(50, 50)
 texture = ExtResource("21_lv1v6")
 stretch_mode = 5
+
+[node name="interactive_objects" type="Node" parent="."]
+
+[node name="cartel_sanjin" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-232, -311)
+
+[node name="boji" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-345, -308)
+
+[node name="hi" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-328, -328)
+
+[node name="bollo" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-600, -328)
+
+[node name="spinetto" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-312, -998)
+
+[node name="silueto_1" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-440, -1125)
+
+[node name="silueto_2" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(9, -1109)
+
+[node name="michis" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-632, -805)
+
+[node name="kaeru" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-105, -472)
+
+[node name="ranancio" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(168, -486)
+
+[node name="el_viejo" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-599, -519)
+
+[node name="bicicleta" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-561, -966)
+
+[node name="cartel_bollo" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-457, -465)
+scale = Vector2(5, 5)
+
+[node name="cartel_laboratorio" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-184, -1096)
+
+[node name="laboratorio" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-342, -1014)
+scale = Vector2(2, 2)
+
+[node name="cartel_arboles" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-232, -724)
+
+[node name="cartel_pantano" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(8, -455)
+
+[node name="piedra_grieta" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-40, -168)
+
+[node name="templo_sapos" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(49, -569)
+scale = Vector2(3, 3)
+
+[node name="orbe_electrico" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-600, -823)
+
+[node name="cartel_aldea" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
+position = Vector2(-552, -726)

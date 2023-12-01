@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://n1iae167vlu1"
+path="res://.godot/imported/bollo.dialogue-6da68cc37f0c577a2f3f9902c03caa20.tres"
+
+[deps]
+
+source_file="res://dialogues/bollo.dialogue"
+dest_files=["res://.godot/imported/bollo.dialogue-6da68cc37f0c577a2f3f9902c03caa20.tres"]
+
+[params]
+
+defaults=true

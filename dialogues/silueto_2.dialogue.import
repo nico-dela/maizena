@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://bnyxsvtqotlf2"
+path="res://.godot/imported/silueto_2.dialogue-317a2e09411057c846233d4b43fa685a.tres"
+
+[deps]
+
+source_file="res://dialogues/silueto_2.dialogue"
+dest_files=["res://.godot/imported/silueto_2.dialogue-317a2e09411057c846233d4b43fa685a.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://df3qxy1b8rrsc"
+path="res://.godot/imported/cartel_sanjin.dialogue-49b233174541cdafffa6921150fe13e2.tres"
+
+[deps]
+
+source_file="res://dialogues/cartel_sanjin.dialogue"
+dest_files=["res://.godot/imported/cartel_sanjin.dialogue-49b233174541cdafffa6921150fe13e2.tres"]
+
+[params]
+
+defaults=true
