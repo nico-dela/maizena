@@ -15,13 +15,6 @@ enum THEMES {
 }
 
 var TRACKS = {
-#	THEMES.REPOLLO: [preload("res://soundtracks/Repollo Morado b 8 bits.ogg")],
-#	THEMES.TODO: [preload("res://soundtracks/Todo lo que necesito 8 bit.ogg")],
-#	THEMES.MEDIAS: [preload("res://soundtracks/tus medias 8bit.ogg")],
-#	THEMES.LEVANTO: [preload("res://soundtracks/Recien me levanto 8 bit.ogg")],
-#	THEMES.CUMBIA: [preload("res://soundtracks/Cumbia naruto 8bit.ogg")],
-#	THEMES.GRUA: [preload("res://soundtracks/Grua 8 bit.ogg")],
-#	THEMES.RESACA: [preload("res://soundtracks/Resaka 8 bits.ogg")],
 	THEMES.INTRO: [preload("res://soundtracks/01 - Intro.ogg")],
 	THEMES.REPOLLO: [preload("res://soundtracks/02 - Repollo Morado.ogg")],
 	THEMES.SAL: [preload("res://soundtracks/03 - Sal.ogg")],
@@ -63,10 +56,6 @@ func play_all_soundtracks():
 	for theme in THEMES.values():
 		play_soundtrack(theme)
 		await streamPlayer.finished
-		
-func play_soundtracks_randomly():
-	var random_theme: int = THEMES.values()[randi() % THEMES.size()]
-	play_soundtrack(random_theme)
 
 func _on_AudioStreamPlayer_finished():
 	if is_repeating:

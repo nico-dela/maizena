@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=45 format=3 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
 [ext_resource type="Shader" path="res://art/shaders/camera.gdshader" id="1_m22hy"]
@@ -23,7 +23,7 @@
 [ext_resource type="Script" path="res://joystick/virtual_joystick.gd" id="19_yxuu0"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
-[ext_resource type="PackedScene" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
+[ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xqa6f"]
 

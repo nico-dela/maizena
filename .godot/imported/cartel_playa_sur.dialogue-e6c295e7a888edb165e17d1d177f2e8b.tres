@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_pfrym"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_q4361"]
 
 [resource]
-script = ExtResource("1_pfrym")
+script = ExtResource("1_q4361")
 using_states = PackedStringArray()
 titles = {
-"this_is_a_node_title": "3"
+"start": "3"
 }
 character_names = PackedStringArray()
 first_title = "3"
@@ -14,7 +14,7 @@ lines = {
 "1": {
 "id": "1",
 "next_id": "3",
-"text": "this_is_a_node_title",
+"text": "start",
 "type": "title"
 },
 "3": {

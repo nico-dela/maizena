@@ -21,7 +21,8 @@ var dialoguePaths : Dictionary = {
 	"piedra_grieta": "res://dialogues/piedra_grieta.dialogue",
 	"templo_sapos": "res://dialogues/templo_sapos.dialogue",
 	"orbe_electrico": "res://dialogues/orbe_electrico.dialogue",
-	"cartel_aldea": "res://dialogues/cartel_aldea.dialogue"
+	"cartel_aldea": "res://dialogues/cartel_aldea.dialogue",
+	"cartel_playa_sur": "res://dialogues/cartel_playa_sur.dialogue"
 }
 
 func _ready() -> void:
