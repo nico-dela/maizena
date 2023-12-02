@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_n5jn6"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_kgm6c"]
 
 [resource]
-script = ExtResource("1_n5jn6")
+script = ExtResource("1_kgm6c")
 using_states = PackedStringArray()
 titles = {
 "start": "3"
@@ -43,15 +43,15 @@ lines = {
 "character": "",
 "character_replacements": Array[Dictionary]([]),
 "id": "5",
-"next_id": "6",
+"next_id": "7",
 "tags": PackedStringArray(),
 "text": "Resistir a la desidia",
 "text_replacements": Array[Dictionary]([]),
 "translation_key": "Resistir a la desidia",
 "type": "dialogue"
 },
-"6": {
-"id": "6",
+"7": {
+"id": "7",
 "is_snippet": false,
 "next_id": "end",
 "type": "goto"

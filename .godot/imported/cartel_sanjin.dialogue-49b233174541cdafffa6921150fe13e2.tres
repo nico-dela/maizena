@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_bepsd"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_l4gpi"]
 
 [resource]
-script = ExtResource("1_bepsd")
+script = ExtResource("1_l4gpi")
 using_states = PackedStringArray()
 titles = {
 "start": "3"
 }
-character_names = PackedStringArray("Cartel")
+character_names = PackedStringArray()
 first_title = "3"
 lines = {
 "1": {
@@ -18,7 +18,7 @@ lines = {
 "type": "title"
 },
 "3": {
-"character": "Cartel",
+"character": "",
 "character_replacements": Array[Dictionary]([]),
 "id": "3",
 "next_id": "5",

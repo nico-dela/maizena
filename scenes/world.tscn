@@ -1,6 +1,7 @@
-[gd_scene load_steps=40 format=3 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=42 format=3 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
+[ext_resource type="Shader" path="res://art/shaders/camera.gdshader" id="1_m22hy"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_wjpli"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://art/tilesets/templo de los anfibios.png" id="2_osqrk"]
 [ext_resource type="Texture2D" uid="uid://dxs1vsn7urcf5" path="res://art/tilesets/Grass.png" id="3_hk72v"]
@@ -21,7 +22,11 @@
 [ext_resource type="Script" path="res://joystick/virtual_joystick.gd" id="19_yxuu0"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
-[ext_resource type="PackedScene" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
+[ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_axl7s"]
+shader = ExtResource("1_m22hy")
+shader_parameter/u_amount = 0.1
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u6vws"]
 texture = ExtResource("1_5id3o")
@@ -4825,6 +4830,7 @@ script = ExtResource("1_wjpli")
 
 [node name="TileMap" type="TileMap" parent="."]
 y_sort_enabled = true
+material = SubResource("ShaderMaterial_axl7s")
 tile_set = SubResource("TileSet_11gys")
 format = 2
 layer_0/name = "c0"
@@ -4862,6 +4868,60 @@ layer_4/tile_data = PackedInt32Array(-2359292, 393217, 1, -2293756, 393217, 2, -
 [node name="player" parent="." instance=ExtResource("9_4xl32")]
 y_sort_enabled = true
 position = Vector2(-218, -264)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Virtual Joystick" type="Control" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0.470588)
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -101.0
+offset_right = 200.0
+offset_bottom = 99.0
+grow_vertical = 0
+scale = Vector2(0.5, 0.5)
+script = ExtResource("19_yxuu0")
+deadzone_size = 5.0
+clampzone_size = 37.0
+joystick_mode = 1
+visibility_mode = 1
+
+[node name="Base" type="TextureRect" parent="CanvasLayer/Virtual Joystick"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(100, 100)
+mouse_force_pass_scroll_events = false
+texture = ExtResource("20_hhpxm")
+stretch_mode = 5
+
+[node name="Tip" type="TextureRect" parent="CanvasLayer/Virtual Joystick/Base"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(50, 50)
+texture = ExtResource("21_lv1v6")
+stretch_mode = 5
 
 [node name="interactive_objects" type="Node" parent="."]
 
@@ -4923,9 +4983,10 @@ scale = Vector2(0.45, 0.45)
 
 [node name="piedra_grieta" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
 position = Vector2(-40, -168)
+scale = Vector2(0.5, 0.5)
 
 [node name="templo_sapos" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
-position = Vector2(48, -535)
+position = Vector2(48, -552)
 
 [node name="orbe_electrico" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
 position = Vector2(-600, -823)
@@ -4938,56 +4999,3 @@ scale = Vector2(0.725, 0.725)
 [node name="cartel_playa_sur" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
 position = Vector2(-232, 25)
 scale = Vector2(0.525625, 0.525625)
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="Virtual Joystick" type="Control" parent="CanvasLayer"]
-modulate = Color(1, 1, 1, 0.470588)
-layout_mode = 3
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -101.0
-offset_right = 200.0
-offset_bottom = 99.0
-grow_vertical = 0
-scale = Vector2(0.5, 0.5)
-script = ExtResource("19_yxuu0")
-deadzone_size = 5.0
-clampzone_size = 37.0
-visibility_mode = 1
-
-[node name="Base" type="TextureRect" parent="CanvasLayer/Virtual Joystick"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(100, 100)
-mouse_force_pass_scroll_events = false
-texture = ExtResource("20_hhpxm")
-stretch_mode = 5
-
-[node name="Tip" type="TextureRect" parent="CanvasLayer/Virtual Joystick/Base"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(50, 50)
-texture = ExtResource("21_lv1v6")
-stretch_mode = 5

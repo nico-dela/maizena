@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_w5k03"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_rwjlx"]
 
 [resource]
-script = ExtResource("1_w5k03")
+script = ExtResource("1_rwjlx")
 using_states = PackedStringArray()
 titles = {
 "start": "3"
@@ -23,9 +23,9 @@ lines = {
 "id": "3",
 "next_id": "5",
 "tags": PackedStringArray(),
-"text": "JA JA ! y Ahora dónde está el repollo morado JA JA !",
+"text": "JA JA ! y ahora dónde está el repollo morado JA JA !",
 "text_replacements": Array[Dictionary]([]),
-"translation_key": "JA JA ! y Ahora dónde está el repollo morado JA JA !",
+"translation_key": "JA JA ! y ahora dónde está el repollo morado JA JA !",
 "type": "dialogue"
 },
 "5": {

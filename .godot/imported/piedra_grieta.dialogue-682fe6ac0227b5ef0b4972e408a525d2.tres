@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_ni62u"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_kbggf"]
 
 [resource]
-script = ExtResource("1_ni62u")
+script = ExtResource("1_kbggf")
 using_states = PackedStringArray()
 titles = {
 "start": "3"
 }
-character_names = PackedStringArray("Piedra con grieta")
+character_names = PackedStringArray()
 first_title = "3"
 lines = {
 "1": {
@@ -18,7 +18,7 @@ lines = {
 "type": "title"
 },
 "3": {
-"character": "Piedra con grieta",
+"character": "",
 "character_replacements": Array[Dictionary]([]),
 "id": "3",
 "next_id": "4",

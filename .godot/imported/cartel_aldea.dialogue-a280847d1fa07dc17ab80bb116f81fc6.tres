@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_hyioi"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_a15sa"]
 
 [resource]
-script = ExtResource("1_hyioi")
+script = ExtResource("1_a15sa")
 using_states = PackedStringArray()
 titles = {
 "start": "3"
@@ -23,9 +23,9 @@ lines = {
 "id": "3",
 "next_id": "4",
 "tags": PackedStringArray(),
-"text": "Aca habitan los siluetos.",
+"text": "Acá viven los siluetos",
 "text_replacements": Array[Dictionary]([]),
-"translation_key": "Aca habitan los siluetos.",
+"translation_key": "Acá viven los siluetos",
 "type": "dialogue"
 },
 "4": {
@@ -34,9 +34,9 @@ lines = {
 "id": "4",
 "next_id": "6",
 "tags": PackedStringArray(),
-"text": "No tienen alma...⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+"text": "El enojo les borro la forma",
 "text_replacements": Array[Dictionary]([]),
-"translation_key": "No tienen alma...⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+"translation_key": "El enojo les borro la forma",
 "type": "dialogue"
 },
 "6": {

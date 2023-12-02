@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_0baxm"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_7pcch"]
 
 [resource]
-script = ExtResource("1_0baxm")
+script = ExtResource("1_7pcch")
 using_states = PackedStringArray()
 titles = {
 "start": "3"
 }
-character_names = PackedStringArray("Templo de los sapos")
+character_names = PackedStringArray()
 first_title = "3"
 lines = {
 "1": {
@@ -18,14 +18,14 @@ lines = {
 "type": "title"
 },
 "3": {
-"character": "Templo de los sapos",
+"character": "",
 "character_replacements": Array[Dictionary]([]),
 "id": "3",
 "next_id": "5",
 "tags": PackedStringArray(),
-"text": "acá se resguarda el repollo sagrado.",
+"text": "Este es el Templo de los Sapos, Acá se resguarda el repollo morado.",
 "text_replacements": Array[Dictionary]([]),
-"translation_key": "acá se resguarda el repollo sagrado.",
+"translation_key": "Este es el Templo de los Sapos, Acá se resguarda el repollo morado.",
 "type": "dialogue"
 },
 "5": {

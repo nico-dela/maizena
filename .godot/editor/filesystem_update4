@@ -1,6 +1,4 @@
 res://scenes/world.tscn
-res://addons/dialogue_manager/test_scene.gd
+res://art/shaders/camera.gdshader
 res://scenes/player.tscn
-res://scripts/soundtrackplayer.gd
 res://scenes/soundtrack.tscn
-res://scripts/world.gd
