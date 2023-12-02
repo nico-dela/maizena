@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cpe6pq6d0s100"
+path="res://.godot/imported/Todo lo que necesito 8 bit.ogg-99b2627d1b2397e8534e2a75ce92ce64.oggvorbisstr"
+
+[deps]
+
+source_file="res://soundtracks/Todo lo que necesito 8 bit.ogg"
+dest_files=["res://.godot/imported/Todo lo que necesito 8 bit.ogg-99b2627d1b2397e8534e2a75ce92ce64.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

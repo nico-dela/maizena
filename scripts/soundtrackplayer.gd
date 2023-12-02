@@ -2,32 +2,44 @@ extends Node
 class_name SOUNDTRACKPLAYER_CLASS
 
 enum THEMES {
-	INTRO,
 	REPOLLO,
-	SAL,
-	NADIE,
-	PORORO,
 	TODO,
 	MEDIAS,
-	ARROZ,
 	LEVANTO,
-	CUMBIA
+	CUMBIA,
+	GRUA,
+	RESACA,
+	INTRO,
+	SAL,
+	REPOLLO_1,
+	NADIE,
+	PORORO,
+	TODO_1,
+	PORORO_1,
+	ARROZ,
 }
 
 var TRACKS = {
-	THEMES.INTRO: [preload("res://soundtracks/01-Intro.mp3")],
-	THEMES.REPOLLO: [preload("res://soundtracks/02-Repollo_Morado.mp3")],
-	THEMES.SAL: [preload("res://soundtracks/03-Sal.mp3")],
-	THEMES.NADIE: [preload("res://soundtracks/04-Nadie_Me_Enseñó_a_Vivir.mp3")],
-	THEMES.PORORO: [preload("res://soundtracks/05-Pororo.mp3")],
-	THEMES.TODO: [preload("res://soundtracks/06-Todo_lo_Que_Necesito.mp3")],
-	THEMES.MEDIAS: [preload("res://soundtracks/07-Tus_Medias.mp3")],
-	THEMES.ARROZ: [preload("res://soundtracks/08-Arroz.mp3")],
-	THEMES.LEVANTO: [preload("res://soundtracks/09-Recién_Me_Levanto.mp3")],
-	THEMES.CUMBIA: [preload("res://soundtracks/10-Cumbia_Naruto.mp3")]
+#	THEMES.REPOLLO: [preload("res://soundtracks/Repollo Morado b 8 bits.ogg")],
+#	THEMES.TODO: [preload("res://soundtracks/Todo lo que necesito 8 bit.ogg")],
+#	THEMES.MEDIAS: [preload("res://soundtracks/tus medias 8bit.ogg")],
+#	THEMES.LEVANTO: [preload("res://soundtracks/Recien me levanto 8 bit.ogg")],
+#	THEMES.CUMBIA: [preload("res://soundtracks/Cumbia naruto 8bit.ogg")],
+#	THEMES.GRUA: [preload("res://soundtracks/Grua 8 bit.ogg")],
+#	THEMES.RESACA: [preload("res://soundtracks/Resaka 8 bits.ogg")],
+	THEMES.INTRO: [preload("res://soundtracks/01 - Intro.ogg")],
+	THEMES.REPOLLO: [preload("res://soundtracks/02 - Repollo Morado.ogg")],
+	THEMES.SAL: [preload("res://soundtracks/03 - Sal.ogg")],
+	THEMES.NADIE: [preload("res://soundtracks/04 - Nadie Me Enseñó a Vivir.ogg")],
+	THEMES.PORORO: [preload("res://soundtracks/05 - Pororo.ogg")],
+	THEMES.TODO: [preload("res://soundtracks/06 - Todo lo Que Necesito.ogg")],
+	THEMES.MEDIAS: [preload("res://soundtracks/07 - Tus Medias.ogg")],
+	THEMES.ARROZ: [preload("res://soundtracks/08 - Arroz.ogg")],
+	THEMES.LEVANTO: [preload("res://soundtracks/09 - Recién Me Levanto feat. Ema Oliva.ogg")],
+	THEMES.CUMBIA: [preload("res://soundtracks/10 - Cumbia Naruto.ogg")]
 }
 
-var current_theme: int = THEMES.INTRO
+var current_theme: int = THEMES.REPOLLO
 var is_repeating: bool = true
 
 @onready var streamPlayer: AudioStreamPlayer = $AudioStreamPlayer
@@ -56,6 +68,10 @@ func play_all_soundtracks():
 	for theme in THEMES.values():
 		play_soundtrack(theme)
 		await streamPlayer.finished
+		
+func play_soundtracks_randomly():
+	var random_theme: int = THEMES.values()[randi() % THEMES.size()]
+	play_soundtrack(random_theme)
 
 func _on_AudioStreamPlayer_finished():
 	if is_repeating:

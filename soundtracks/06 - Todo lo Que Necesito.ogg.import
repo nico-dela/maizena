@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dhxgju0v0see2"
+path="res://.godot/imported/06 - Todo lo Que Necesito.ogg-9f4127d4fdd7698a138c41290a81b68a.oggvorbisstr"
+
+[deps]
+
+source_file="res://soundtracks/06 - Todo lo Que Necesito.ogg"
+dest_files=["res://.godot/imported/06 - Todo lo Que Necesito.ogg-9f4127d4fdd7698a138c41290a81b68a.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -3,4 +3,4 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	Soundtrackplayer.play_all_soundtracks()
+	Soundtrackplayer.play_soundtracks_randomly()

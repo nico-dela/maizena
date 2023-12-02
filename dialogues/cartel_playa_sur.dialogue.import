@@ -1,0 +1,15 @@
+[remap]
+
+importer="dialogue_manager_compiler_11"
+type="Resource"
+uid="uid://fxwwifkkxtum"
+path="res://.godot/imported/cartel_playa_sur.dialogue-e6c295e7a888edb165e17d1d177f2e8b.tres"
+
+[deps]
+
+source_file="res://dialogues/cartel_playa_sur.dialogue"
+dest_files=["res://.godot/imported/cartel_playa_sur.dialogue-e6c295e7a888edb165e17d1d177f2e8b.tres"]
+
+[params]
+
+defaults=true

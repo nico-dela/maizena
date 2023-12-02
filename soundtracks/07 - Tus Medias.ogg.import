@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dgj1gn7irqry4"
+path="res://.godot/imported/07 - Tus Medias.ogg-8504d49ea0bf6ab0f0ee44875c649918.oggvorbisstr"
+
+[deps]
+
+source_file="res://soundtracks/07 - Tus Medias.ogg"
+dest_files=["res://.godot/imported/07 - Tus Medias.ogg-8504d49ea0bf6ab0f0ee44875c649918.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

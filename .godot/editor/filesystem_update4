@@ -1,7 +1,6 @@
 res://scenes/world.tscn
+res://addons/dialogue_manager/test_scene.gd
 res://scenes/player.tscn
-res://scenes/interactive_object.tscn
-res://scripts/interactive_object.gd
-res://scripts/player.gd
+res://scripts/soundtrackplayer.gd
+res://scenes/soundtrack.tscn
 res://scripts/world.gd
-res://scenes/text_box.tscn

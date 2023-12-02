@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dkxbnrt7evbf8"
+path="res://.godot/imported/Colores 8 bit.ogg-41e4a30ad7b3137495fb8dc8d7efcb16.oggvorbisstr"
+
+[deps]
+
+source_file="res://soundtracks/Colores 8 bit.ogg"
+dest_files=["res://.godot/imported/Colores 8 bit.ogg-41e4a30ad7b3137495fb8dc8d7efcb16.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
