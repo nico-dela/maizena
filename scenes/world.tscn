@@ -25,6 +25,8 @@
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
 [ext_resource type="PackedScene" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xqa6f"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_axl7s"]
 shader = ExtResource("1_m22hy")
 shader_parameter/u_amount = 0.04
@@ -4849,6 +4851,7 @@ sources/16 = SubResource("TileSetAtlasSource_m2meh")
 
 [node name="world" type="Node2D"]
 y_sort_enabled = true
+material = SubResource("CanvasItemMaterial_xqa6f")
 script = ExtResource("1_wjpli")
 
 [node name="TileMap" type="TileMap" parent="."]
