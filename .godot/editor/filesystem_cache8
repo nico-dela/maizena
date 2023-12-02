@@ -1,148 +1,150 @@
 8d8ed3fefe296d4ac7ac1dbb387c9c35
-::res://::1701530902
-export_presets.cfg::TextFile::-1::1701529802::0::1::::<><>::
-README.md::TextFile::-1::1701525071::0::1::::<><>::
-::res://addons/::1701525071
-::res://addons/dialogue_manager/::1701525071
-constants.gd::GDScript::-1::1701525071::0::1::::<>Node<>::
-dialogue_label.gd::GDScript::-1::1701525071::0::1::::DialogueLabel<>RichTextLabel<>res://addons/dialogue_manager/assets/icon.svg::
-dialogue_label.tscn::PackedScene::5518490004210093266::1701525071::0::1::::<><>::res://addons/dialogue_manager/dialogue_label.gd
-dialogue_line.gd::GDScript::-1::1701525071::0::1::::DialogueLine<>RefCounted<>::
-dialogue_manager.gd::GDScript::-1::1701525071::0::1::::<>Node<>::
-dialogue_reponses_menu.gd::GDScript::-1::1701525071::0::1::::DialogueResponsesMenu<>VBoxContainer<>res://addons/dialogue_manager/assets/responses_menu.svg::
-dialogue_resource.gd::GDScript::-1::1701525071::0::1::::DialogueResource<>Resource<>res://addons/dialogue_manager/assets/icon.svg::
-dialogue_response.gd::GDScript::-1::1701525071::0::1::::DialogueResponse<>RefCounted<>::
-editor_translation_parser_plugin.gd::GDScript::-1::1701525071::0::1::::<>EditorTranslationParserPlugin<>::
-import_plugin.gd::GDScript::-1::1701525071::0::1::::<>EditorImportPlugin<>::
-plugin.cfg::TextFile::-1::1701525071::0::1::::<><>::
-plugin.gd::GDScript::-1::1701525071::0::1::::<>EditorPlugin<>::
-test_scene.gd::GDScript::-1::1701525071::0::1::::BaseDialogueTestScene<>Node2D<>::
-test_scene.tscn::PackedScene::1660515690447839660::1701525071::0::1::::<><>::res://addons/dialogue_manager/test_scene.gd
-::res://addons/dialogue_manager/assets/::1701526127
-icon.svg::CompressedTexture2D::9148339284877624195::1701525071::1701526127::1::::<><>::
-responses_menu.svg::CompressedTexture2D::8371359403825774630::1701525071::1701526127::1::::<><>::
-update.svg::CompressedTexture2D::9126631778427806641::1701525071::1701526127::1::::<><>::
-::res://addons/dialogue_manager/components/::1701525071
-code_edit.gd::GDScript::-1::1701525071::0::1::::<>CodeEdit<>::
-code_edit.tscn::PackedScene::5379618807048408118::1701525071::0::1::::<><>::res://addons/dialogue_manager/components/code_edit_syntax_highlighter.gd<>res://addons/dialogue_manager/components/code_edit.gd
-code_edit_syntax_highlighter.gd::GDScript::-1::1701525071::0::1::::<>SyntaxHighlighter<>::
-dialogue_cache.gd::GDScript::-1::1701525071::0::1::::<>Node<>::
-download_update_panel.gd::GDScript::-1::1701525071::0::1::::<>Control<>::
-download_update_panel.tscn::PackedScene::1130642722554629364::1701525071::0::1::::<><>::res://addons/dialogue_manager/components/download_update_panel.gd<>uid://d3baj6rygkb3f
-errors_panel.gd::GDScript::-1::1701525071::0::1::::<>HBoxContainer<>::
-errors_panel.tscn::PackedScene::6105315990352960875::1701525071::0::1::::<><>::res://addons/dialogue_manager/components/errors_panel.gd
-files_list.gd::GDScript::-1::1701525071::0::1::::<>VBoxContainer<>::
-files_list.tscn::PackedScene::8113335055803740416::1701525071::0::1::::<><>::res://addons/dialogue_manager/components/files_list.gd<>uid://d3lr2uas6ax8v
-parser.gd::GDScript::-1::1701525071::0::1::::DialogueManagerParser<>Object<>::
-parse_result.gd::GDScript::-1::1701525071::0::1::::DialogueManagerParseResult<>RefCounted<>::
-resolved_line_data.gd::GDScript::-1::1701525071::0::1::::<>RefCounted<>::
-resolved_tag_data.gd::GDScript::-1::1701525071::0::1::::<>RefCounted<>::
-search_and_replace.gd::GDScript::-1::1701525071::0::1::::<>VBoxContainer<>::
-search_and_replace.tscn::PackedScene::458254375860855630::1701525071::0::1::::<><>::res://addons/dialogue_manager/components/search_and_replace.gd
-settings.gd::GDScript::-1::1701525071::0::1::::<>Node<>::
-title_list.gd::GDScript::-1::1701525071::0::1::::<>VBoxContainer<>::
-title_list.tscn::PackedScene::6134415340044566558::1701525071::0::1::::<><>::res://addons/dialogue_manager/components/title_list.gd
-update_button.gd::GDScript::-1::1701525071::0::1::::<>Button<>::
-update_button.tscn::PackedScene::5825087957514786930::1701525071::0::1::::<><>::res://addons/dialogue_manager/components/update_button.gd<>uid://qdxrxv3c3hxk
-::res://addons/dialogue_manager/example_balloon/::1701525071
-example_balloon.gd::GDScript::-1::1701525071::0::1::::<>CanvasLayer<>::
-example_balloon.tscn::PackedScene::2304415056852043862::1701525071::0::1::::<><>::res://addons/dialogue_manager/example_balloon/example_balloon.gd<>uid://ckvgyvclnwggo
-small_example_balloon.tscn::PackedScene::1883859960814163368::1701525071::0::1::::<><>::res://addons/dialogue_manager/example_balloon/example_balloon.gd<>uid://ckvgyvclnwggo
-::res://addons/dialogue_manager/l10n/::1701525071
-en.mo::Translation::-1::1701525071::0::1::::<><>::
-en.po::Translation::-1::1701525071::0::1::::<><>::
-zh.po::Translation::-1::1701525071::0::1::::<><>::
-zh_TW.po::Translation::-1::1701525071::0::1::::<><>::
-::res://addons/dialogue_manager/views/::1701525071
-main_view.gd::GDScript::-1::1701525071::0::1::::<>Control<>::
-main_view.tscn::PackedScene::4884668666408697448::1701525071::0::1::::<><>::res://addons/dialogue_manager/views/main_view.gd<>uid://civ6shmka5e8u
-settings_view.gd::GDScript::-1::1701525071::0::1::::<>TabContainer<>::
-settings_view.tscn::PackedScene::5839841081119266502::1701525071::0::1::::<><>::res://addons/dialogue_manager/views/settings_view.gd
-::res://art/::1701529670
-Kumo_estudio_1.png::CompressedTexture2D::5540207675534888242::1701525071::1701525071::1::::<><>::
-Mascara.svg::CompressedTexture2D::5441426161266361531::1701525071::1701525071::1::::<><>::
-::res://art/character/::1701525071
-personajes extras.png::CompressedTexture2D::376197541053718705::1701525071::1701525071::1::::<><>::
-sanjin.png::CompressedTexture2D::6019636497724461046::1701525071::1701525071::1::::<><>::
-::res://art/shaders/::1701530893
-camera.gdshader::Shader::-1::1701530893::0::1::::<><>::
-::res://art/tilesets/::1701525071
-aldea de las sombras.png::CompressedTexture2D::5798921812511228545::1701525071::1701525071::1::::<><>::
-Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1701525071::1701525071::1::::<><>::
-Basic Plants.png::CompressedTexture2D::8034803057783785342::1701525071::1701525071::1::::<><>::
-beach-desert.png::CompressedTexture2D::2234542938288929223::1701525071::1701525071::1::::<><>::
-Bollos house.png::CompressedTexture2D::465132632737788155::1701525071::1701525071::1::::<><>::
-Egg item.png::CompressedTexture2D::5400766172289404349::1701525071::1701525071::1::::<><>::
-Fences.png::CompressedTexture2D::5643065774867059841::1701525071::1701525071::1::::<><>::
-Free_Chicken_House.png::CompressedTexture2D::4954365677262574754::1701525071::1701525071::1::::<><>::
-Grass.png::CompressedTexture2D::8812381364795145816::1701525071::1701525071::1::::<><>::
-Hills.png::CompressedTexture2D::2878078752250892058::1701525071::1701525071::1::::<><>::
-laboratorio.png::CompressedTexture2D::8074310488038678351::1701525071::1701525071::1::::<><>::
-Montaña.png::CompressedTexture2D::8427384133048594819::1701525071::1701525071::1::::<><>::
-OutdoorsTileset.png::CompressedTexture2D::3378091269356929415::1701525071::1701525071::1::::<><>::
-templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1701525071::1701525071::1::::<><>::
-Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1701525071::1701525071::1::::<><>::
-Water.png::CompressedTexture2D::4159706795001771249::1701525071::1701525071::1::::<><>::
-Wood Bridge.png::CompressedTexture2D::3438859987437671950::1701525071::1701525071::1::::<><>::
-Wooden House.png::CompressedTexture2D::2954160572471588883::1701525071::1701525071::1::::<><>::
-::res://build/::1701530787
-::res://dialogues/::1701529520
-bicicleta.dialogue::Resource::2823062603241343877::1701526971::1701526971::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-boji.dialogue::Resource::9047928892181090837::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-bollo.dialogue::Resource::966614776552521974::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-cartel_aldea.dialogue::Resource::6982127949087064014::1701526763::1701526764::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-cartel_arboles.dialogue::Resource::6484890452330677704::1701529487::1701529487::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-cartel_bollo.dialogue::Resource::5422647287274374513::1701526960::1701526960::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-cartel_laboratorio.dialogue::Resource::1243894451778441765::1701526941::1701526941::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-cartel_pantano.dialogue::Resource::4732636029311208882::1701525071::1701525071::1::::<><>::
-cartel_playa_sur.dialogue::Resource::399800396219774168::1701525071::1701525071::1::::<><>::
-cartel_sanjin.dialogue::Resource::7569022692342756066::1701526431::1701526431::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-el_viejo.dialogue::Resource::6424460613597261661::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-hi.dialogue::Resource::5987608695978817420::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-kaeru.dialogue::Resource::869208265641221921::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-laboratorio.dialogue::Resource::2861256220591533109::1701527212::1701527212::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-michis.dialogue::Resource::8801197046450375107::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-orbe_electrico.dialogue::Resource::7192707452088466845::1701525071::1701525071::1::::<><>::
-piedra_grieta.dialogue::Resource::4250267943405242463::1701526407::1701526407::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-ranancio.dialogue::Resource::1054758610061757074::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-silueto_1.dialogue::Resource::2928147039679875062::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-silueto_2.dialogue::Resource::3349850485296945577::1701529279::1701529279::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-spinetto.dialogue::Resource::2573125588094043216::1701525071::1701526127::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-templo_sapos.dialogue::Resource::3626779408213654015::1701529520::1701529520::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-::res://joystick/::1701525071
-virtual_joystick.gd::GDScript::-1::1701525071::0::1::::VirtualJoystick<>Control<>::
-virtual_joystick.tscn::PackedScene::8038149555967335895::1701525071::0::1::::<><>::res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f
-::res://joystick/textures/::1701525071
-joystick_base_outline.png::CompressedTexture2D::3288008411285325467::1701525071::1701525071::1::::<><>::
-joystick_tip.png::CompressedTexture2D::3132432681801126628::1701525071::1701525071::1::::<><>::
-joystick_tip_arrows.png::CompressedTexture2D::8548255698028078709::1701525071::1701525071::1::::<><>::
-::res://scenes/::1701530888
-interactive_object.tscn::PackedScene::7427494846015621429::1701525071::0::1::::<><>::res://scripts/interactive_object.gd
-player.tscn::PackedScene::6284760147262208712::1701529749::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
-soundtrack.tscn::PackedScene::8214520296324127879::1701529749::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1701530888::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://art/shaders/camera.gdshader<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
-::res://scripts/::1701526248
-global.gd::GDScript::-1::1701525071::0::1::::<>Node<>::
-interactive_object.gd::GDScript::-1::1701525071::0::1::::<>Node2D<>::
-player.gd::GDScript::-1::1701525071::0::1::::<>CharacterBody2D<>::
-soundtrackplayer.gd::GDScript::-1::1701526248::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
-world.gd::GDScript::-1::1701525071::0::1::::<>Node2D<>::
-::res://soundtracks/::1701525072
-01 - Intro.ogg::AudioStreamOggVorbis::6855383871170785927::1701525071::1701525071::1::::<><>::
-02 - Repollo Morado.ogg::AudioStreamOggVorbis::5632816201020637859::1701525071::1701525071::1::::<><>::
-03 - Sal.ogg::AudioStreamOggVorbis::4509159072100010272::1701525071::1701525071::1::::<><>::
-04 - Nadie Me Enseñó a Vivir.ogg::AudioStreamOggVorbis::8621631067379283849::1701525071::1701525071::1::::<><>::
-05 - Pororo.ogg::AudioStreamOggVorbis::8731248507736892337::1701525071::1701525071::1::::<><>::
-06 - Todo lo Que Necesito.ogg::AudioStreamOggVorbis::7698446109066025395::1701525071::1701525071::1::::<><>::
-07 - Tus Medias.ogg::AudioStreamOggVorbis::7600564601893536545::1701525071::1701525071::1::::<><>::
-08 - Arroz.ogg::AudioStreamOggVorbis::6773218095838149977::1701525071::1701525071::1::::<><>::
-09 - Recién Me Levanto feat. Ema Oliva.ogg::AudioStreamOggVorbis::5008240254713428169::1701525071::1701525071::1::::<><>::
-10 - Cumbia Naruto.ogg::AudioStreamOggVorbis::5502225467743131775::1701525071::1701525071::1::::<><>::
-Colores 8 bit.ogg::AudioStreamOggVorbis::7908716031824873975::1701525071::1701525071::1::::<><>::
-Cumbia naruto 8bit.ogg::AudioStreamOggVorbis::2836192323968319630::1701525071::1701525071::1::::<><>::
-Grua 8 bit.ogg::AudioStreamOggVorbis::840776074654087844::1701525071::1701525071::1::::<><>::
-Recien me levanto 8 bit.ogg::AudioStreamOggVorbis::6502240065969519572::1701525071::1701525071::1::::<><>::
-Repollo Morado b 8 bits.ogg::AudioStreamOggVorbis::410278559891415641::1701525071::1701525071::1::::<><>::
-Resaka 8 bits.ogg::AudioStreamOggVorbis::8916569399816020069::1701525072::1701525071::1::::<><>::
-Todo lo que necesito 8 bit.ogg::AudioStreamOggVorbis::5835841435090253075::1701525072::1701525071::1::::<><>::
-tus medias 8bit.ogg::AudioStreamOggVorbis::2403168987912128927::1701525072::1701525071::1::::<><>::
+::res://::1701536573
+export_presets.cfg::TextFile::-1::1701485081::0::1::::<><>::
+README.md::TextFile::-1::1701218474::0::1::::<><>::
+::res://addons/::1701485081
+::res://addons/dialogue_manager/::1701485217
+constants.gd::GDScript::-1::1701485081::0::1::::<>Node<>::
+dialogue_label.gd::GDScript::-1::1701485081::0::1::::DialogueLabel<>RichTextLabel<>res://addons/dialogue_manager/assets/icon.svg::
+dialogue_label.tscn::PackedScene::5518490004210093266::1701485081::0::1::::<><>::res://addons/dialogue_manager/dialogue_label.gd
+dialogue_line.gd::GDScript::-1::1701485081::0::1::::DialogueLine<>RefCounted<>::
+dialogue_manager.gd::GDScript::-1::1701485081::0::1::::<>Node<>::
+dialogue_reponses_menu.gd::GDScript::-1::1701485081::0::1::::DialogueResponsesMenu<>VBoxContainer<>res://addons/dialogue_manager/assets/responses_menu.svg::
+dialogue_resource.gd::GDScript::-1::1701485081::0::1::::DialogueResource<>Resource<>res://addons/dialogue_manager/assets/icon.svg::
+dialogue_response.gd::GDScript::-1::1701485081::0::1::::DialogueResponse<>RefCounted<>::
+editor_translation_parser_plugin.gd::GDScript::-1::1701485081::0::1::::<>EditorTranslationParserPlugin<>::
+import_plugin.gd::GDScript::-1::1701485081::0::1::::<>EditorImportPlugin<>::
+plugin.cfg::TextFile::-1::1701485081::0::1::::<><>::
+plugin.gd::GDScript::-1::1701485081::0::1::::<>EditorPlugin<>::
+test_scene.gd::GDScript::-1::1701485217::0::1::::BaseDialogueTestScene<>Node2D<>::
+test_scene.tscn::PackedScene::1660515690447839660::1701485081::0::1::::<><>::res://addons/dialogue_manager/test_scene.gd
+::res://addons/dialogue_manager/assets/::1701485205
+icon.svg::CompressedTexture2D::9148339284877624195::1701485081::1701485205::1::::<><>::
+responses_menu.svg::CompressedTexture2D::8371359403825774630::1701485081::1701485205::1::::<><>::
+update.svg::CompressedTexture2D::9126631778427806641::1701485081::1701485205::1::::<><>::
+::res://addons/dialogue_manager/components/::1701485081
+code_edit.gd::GDScript::-1::1701485081::0::1::::<>CodeEdit<>::
+code_edit.tscn::PackedScene::5379618807048408118::1701485081::0::1::::<><>::res://addons/dialogue_manager/components/code_edit_syntax_highlighter.gd<>res://addons/dialogue_manager/components/code_edit.gd
+code_edit_syntax_highlighter.gd::GDScript::-1::1701485081::0::1::::<>SyntaxHighlighter<>::
+dialogue_cache.gd::GDScript::-1::1701485081::0::1::::<>Node<>::
+download_update_panel.gd::GDScript::-1::1701485081::0::1::::<>Control<>::
+download_update_panel.tscn::PackedScene::1130642722554629364::1701485081::0::1::::<><>::res://addons/dialogue_manager/components/download_update_panel.gd<>uid://d3baj6rygkb3f
+errors_panel.gd::GDScript::-1::1701485081::0::1::::<>HBoxContainer<>::
+errors_panel.tscn::PackedScene::6105315990352960875::1701485081::0::1::::<><>::res://addons/dialogue_manager/components/errors_panel.gd
+files_list.gd::GDScript::-1::1701485081::0::1::::<>VBoxContainer<>::
+files_list.tscn::PackedScene::8113335055803740416::1701485081::0::1::::<><>::res://addons/dialogue_manager/components/files_list.gd<>uid://d3lr2uas6ax8v
+parser.gd::GDScript::-1::1701485081::0::1::::DialogueManagerParser<>Object<>::
+parse_result.gd::GDScript::-1::1701485081::0::1::::DialogueManagerParseResult<>RefCounted<>::
+resolved_line_data.gd::GDScript::-1::1701485081::0::1::::<>RefCounted<>::
+resolved_tag_data.gd::GDScript::-1::1701485081::0::1::::<>RefCounted<>::
+search_and_replace.gd::GDScript::-1::1701485081::0::1::::<>VBoxContainer<>::
+search_and_replace.tscn::PackedScene::458254375860855630::1701485081::0::1::::<><>::res://addons/dialogue_manager/components/search_and_replace.gd
+settings.gd::GDScript::-1::1701485081::0::1::::<>Node<>::
+title_list.gd::GDScript::-1::1701485081::0::1::::<>VBoxContainer<>::
+title_list.tscn::PackedScene::6134415340044566558::1701485081::0::1::::<><>::res://addons/dialogue_manager/components/title_list.gd
+update_button.gd::GDScript::-1::1701485081::0::1::::<>Button<>::
+update_button.tscn::PackedScene::5825087957514786930::1701485081::0::1::::<><>::res://addons/dialogue_manager/components/update_button.gd<>uid://qdxrxv3c3hxk
+::res://addons/dialogue_manager/example_balloon/::1701485081
+example_balloon.gd::GDScript::-1::1701485081::0::1::::<>CanvasLayer<>::
+example_balloon.tscn::PackedScene::2304415056852043862::1701485081::0::1::::<><>::res://addons/dialogue_manager/example_balloon/example_balloon.gd<>uid://ckvgyvclnwggo
+small_example_balloon.tscn::PackedScene::1883859960814163368::1701485081::0::1::::<><>::res://addons/dialogue_manager/example_balloon/example_balloon.gd<>uid://ckvgyvclnwggo
+::res://addons/dialogue_manager/l10n/::1701485081
+en.mo::Translation::-1::1701485081::0::1::::<><>::
+en.po::Translation::-1::1701485081::0::1::::<><>::
+zh.po::Translation::-1::1701485081::0::1::::<><>::
+zh_TW.po::Translation::-1::1701485081::0::1::::<><>::
+::res://addons/dialogue_manager/views/::1701485081
+main_view.gd::GDScript::-1::1701485081::0::1::::<>Control<>::
+main_view.tscn::PackedScene::4884668666408697448::1701485081::0::1::::<><>::res://addons/dialogue_manager/views/main_view.gd<>uid://civ6shmka5e8u
+settings_view.gd::GDScript::-1::1701485081::0::1::::<>TabContainer<>::
+settings_view.tscn::PackedScene::5839841081119266502::1701485081::0::1::::<><>::res://addons/dialogue_manager/views/settings_view.gd
+::res://art/::1701536573
+Kumo_estudio_1.png::CompressedTexture2D::5540207675534888242::1701485081::1701485081::1::::<><>::
+Mascara.svg::CompressedTexture2D::5441426161266361531::1701484175::1701524647::1::::<><>::
+::res://art/character/::1701536947
+anim personajes 1.png::CompressedTexture2D::6094124200954587749::1701536947::1701536947::1::::<><>::
+personajes extras.png::CompressedTexture2D::376197541053718705::1701218474::1701218474::1::::<><>::
+sanjin.png::CompressedTexture2D::6019636497724461046::1701218474::1701218474::1::::<><>::
+::res://art/objects/::1700443828
+::res://art/shaders/::1701536848
+camera.gdshader::Shader::-1::1701536848::0::1::::<><>::
+::res://art/tilesets/::1701485082
+aldea de las sombras.png::CompressedTexture2D::5798921812511228545::1701218475::1701218475::1::::<><>::
+Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1701218474::1701218474::1::::<><>::
+Basic Plants.png::CompressedTexture2D::8034803057783785342::1701218474::1701218474::1::::<><>::
+beach-desert.png::CompressedTexture2D::2234542938288929223::1701485082::1701485082::1::::<><>::
+Bollos house.png::CompressedTexture2D::465132632737788155::1701218475::1701218475::1::::<><>::
+Egg item.png::CompressedTexture2D::5400766172289404349::1701218475::1701218475::1::::<><>::
+Fences.png::CompressedTexture2D::5643065774867059841::1701218475::1701218475::1::::<><>::
+Free_Chicken_House.png::CompressedTexture2D::4954365677262574754::1701218475::1701218475::1::::<><>::
+Grass.png::CompressedTexture2D::8812381364795145816::1701218475::1701218475::1::::<><>::
+Hills.png::CompressedTexture2D::2878078752250892058::1701218475::1701218475::1::::<><>::
+laboratorio.png::CompressedTexture2D::8074310488038678351::1701218475::1701218475::1::::<><>::
+Montaña.png::CompressedTexture2D::8427384133048594819::1701218475::1701218475::1::::<><>::
+OutdoorsTileset.png::CompressedTexture2D::3378091269356929415::1701218475::1701218475::1::::<><>::
+templo de los anfibios.png::CompressedTexture2D::1074483716761867252::1701218475::1701218475::1::::<><>::
+Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1701218475::1701218475::1::::<><>::
+Water.png::CompressedTexture2D::4159706795001771249::1701218475::1701218475::1::::<><>::
+Wood Bridge.png::CompressedTexture2D::3438859987437671950::1701218475::1701218475::1::::<><>::
+Wooden House.png::CompressedTexture2D::2954160572471588883::1701218475::1701218475::1::::<><>::
+::res://dialogues/::1701534891
+bicicleta.dialogue::Resource::2823062603241343877::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+boji.dialogue::Resource::9047928892181090837::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+bollo.dialogue::Resource::966614776552521974::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+cartel_aldea.dialogue::Resource::6982127949087064014::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+cartel_arboles.dialogue::Resource::6484890452330677704::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+cartel_bollo.dialogue::Resource::5422647287274374513::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+cartel_laboratorio.dialogue::Resource::1243894451778441765::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+cartel_pantano.dialogue::Resource::4732636029311208882::1701486077::1701486077::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+cartel_playa_sur.dialogue::Resource::399800396219774168::1701487853::1701487853::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+cartel_sanjin.dialogue::Resource::7569022692342756066::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+el_viejo.dialogue::Resource::6424460613597261661::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+hi.dialogue::Resource::5987608695978817420::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+kaeru.dialogue::Resource::869208265641221921::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+laboratorio.dialogue::Resource::2861256220591533109::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+michis.dialogue::Resource::8801197046450375107::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+orbe_electrico.dialogue::Resource::7192707452088466845::1701486934::1701486934::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+piedra_grieta.dialogue::Resource::4250267943405242463::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+ranancio.dialogue::Resource::1054758610061757074::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+silueto_1.dialogue::Resource::2928147039679875062::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+silueto_2.dialogue::Resource::3349850485296945577::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+spinetto.dialogue::Resource::2573125588094043216::1701485081::1701485898::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+templo_sapos.dialogue::Resource::3626779408213654015::1701534824::1701534891::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+::res://joystick/::1701218475
+virtual_joystick.gd::GDScript::-1::1701218475::0::1::::VirtualJoystick<>Control<>::
+virtual_joystick.tscn::PackedScene::8038149555967335895::1701218475::0::1::::<><>::res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f
+::res://joystick/textures/::1701218475
+joystick_base_outline.png::CompressedTexture2D::3288008411285325467::1701218475::1701218475::1::::<><>::
+joystick_tip.png::CompressedTexture2D::3132432681801126628::1701218475::1701218475::1::::<><>::
+joystick_tip_arrows.png::CompressedTexture2D::8548255698028078709::1701218475::1701218475::1::::<><>::
+::res://juego/::1701218473
+::res://scenes/::1701536848
+interactive_object.tscn::PackedScene::-1::1701485081::0::1::::<><>::
+player.tscn::PackedScene::6284760147262208712::1701536848::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
+soundtrack.tscn::PackedScene::8214520296324127879::1701536848::0::1::::<><>::res://scripts/soundtrackplayer.gd
+world.tscn::PackedScene::8499304833516323026::1701536848::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://art/shaders/camera.gdshader<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/character/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>res://scenes/interactive_object.tscn
+::res://scripts/::1701534824
+global.gd::GDScript::-1::1701485081::0::1::::<>Node<>::
+interactive_object.gd::GDScript::-1::1701485081::0::1::::<>Node2D<>::
+player.gd::GDScript::-1::1701485081::0::1::::<>CharacterBody2D<>::
+soundtrackplayer.gd::GDScript::-1::1701534824::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
+world.gd::GDScript::-1::1701489558::0::1::::<>Node2D<>::
+::res://soundtracks/::1701524647
+01 - Intro.ogg::AudioStreamOggVorbis::6855383871170785927::1701488221::1701488642::1::::<><>::
+02 - Repollo Morado.ogg::AudioStreamOggVorbis::5632816201020637859::1701488241::1701488642::1::::<><>::
+03 - Sal.ogg::AudioStreamOggVorbis::4509159072100010272::1701488257::1701488642::1::::<><>::
+04 - Nadie Me Enseñó a Vivir.ogg::AudioStreamOggVorbis::8621631067379283849::1701488281::1701488642::1::::<><>::
+05 - Pororo.ogg::AudioStreamOggVorbis::8731248507736892337::1701488307::1701488642::1::::<><>::
+06 - Todo lo Que Necesito.ogg::AudioStreamOggVorbis::7698446109066025395::1701488328::1701488642::1::::<><>::
+07 - Tus Medias.ogg::AudioStreamOggVorbis::7600564601893536545::1701488351::1701488642::1::::<><>::
+08 - Arroz.ogg::AudioStreamOggVorbis::6773218095838149977::1701488373::1701488642::1::::<><>::
+09 - Recién Me Levanto feat. Ema Oliva.ogg::AudioStreamOggVorbis::5008240254713428169::1701488414::1701489410::1::::<><>::
+10 - Cumbia Naruto.ogg::AudioStreamOggVorbis::5502225467743131775::1701488394::1701488642::1::::<><>::
+Colores 8 bit.ogg::AudioStreamOggVorbis::7908716031824873975::1701483036::1701524647::1::::<><>::
+Cumbia naruto 8bit.ogg::AudioStreamOggVorbis::2836192323968319630::1701483060::1701524647::1::::<><>::
+Grua 8 bit.ogg::AudioStreamOggVorbis::840776074654087844::1701483080::1701524647::1::::<><>::
+Recien me levanto 8 bit.ogg::AudioStreamOggVorbis::6502240065969519572::1701483097::1701524647::1::::<><>::
+Repollo Morado b 8 bits.ogg::AudioStreamOggVorbis::410278559891415641::1701483113::1701524647::1::::<><>::
+Resaka 8 bits.ogg::AudioStreamOggVorbis::8916569399816020069::1701483129::1701524647::1::::<><>::
+Todo lo que necesito 8 bit.ogg::AudioStreamOggVorbis::5835841435090253075::1701483151::1701524647::1::::<><>::
+tus medias 8bit.ogg::AudioStreamOggVorbis::2403168987912128927::1701483170::1701524647::1::::<><>::
