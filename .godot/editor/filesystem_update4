@@ -1,7 +1,6 @@
-res://scenes/world.tscn
-res://art/shaders/camera.gdshader
-res://scenes/player.tscn
 res://scenes/soundtrack.tscn
+res://art/shaders/camera.gdshader
+res://scenes/world.tscn
 res://scripts/soundtrackplayer.gd
-res://scripts/interactive_object.gd
+res://scenes/player.tscn
 res://scripts/world.gd

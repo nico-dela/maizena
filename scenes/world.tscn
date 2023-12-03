@@ -1,7 +1,6 @@
-[gd_scene load_steps=45 format=3 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=42 format=3 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
-[ext_resource type="Shader" path="res://art/shaders/camera.gdshader" id="1_m22hy"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_wjpli"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://art/tilesets/templo de los anfibios.png" id="2_osqrk"]
 [ext_resource type="Texture2D" uid="uid://dxs1vsn7urcf5" path="res://art/tilesets/Grass.png" id="3_hk72v"]
@@ -24,12 +23,6 @@
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
 [ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_xqa6f"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_axl7s"]
-shader = ExtResource("1_m22hy")
-shader_parameter/u_amount = 0.04
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u6vws"]
 texture = ExtResource("1_5id3o")
@@ -4851,12 +4844,10 @@ sources/16 = SubResource("TileSetAtlasSource_m2meh")
 
 [node name="world" type="Node2D"]
 y_sort_enabled = true
-material = SubResource("CanvasItemMaterial_xqa6f")
 script = ExtResource("1_wjpli")
 
 [node name="TileMap" type="TileMap" parent="."]
 y_sort_enabled = true
-material = SubResource("ShaderMaterial_axl7s")
 tile_set = SubResource("TileSet_11gys")
 format = 2
 layer_0/name = "c0"
