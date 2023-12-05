@@ -1,6 +1,3 @@
-res://scenes/soundtrack.tscn
-res://art/shaders/camera.gdshader
 res://scenes/world.tscn
+res://art/shaders/camera.gdshader
 res://scripts/soundtrackplayer.gd
-res://scenes/player.tscn
-res://scripts/world.gd

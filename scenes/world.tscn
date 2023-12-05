@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=44 format=3 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_wjpli"]
@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://bo82ry606ks2q" path="res://art/tilesets/Wood Bridge.png" id="12_khak5"]
 [ext_resource type="Script" path="res://joystick/virtual_joystick.gd" id="19_yxuu0"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
+[ext_resource type="Shader" path="res://art/shaders/camera.gdshader" id="20_rxnmr"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
 [ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
 
@@ -4842,6 +4843,10 @@ sources/14 = SubResource("TileSetAtlasSource_l0gbv")
 sources/15 = SubResource("TileSetAtlasSource_q4kl7")
 sources/16 = SubResource("TileSetAtlasSource_m2meh")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2o2jp"]
+shader = ExtResource("20_rxnmr")
+shader_parameter/u_amount = 5.0
+
 [node name="world" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_wjpli")
@@ -4888,9 +4893,9 @@ z_index = 1
 y_sort_enabled = true
 position = Vector2(-218, -264)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="mobile_joystick" type="CanvasLayer" parent="."]
 
-[node name="Virtual Joystick" type="Control" parent="CanvasLayer"]
+[node name="Virtual Joystick" type="Control" parent="mobile_joystick"]
 modulate = Color(1, 1, 1, 0.470588)
 layout_mode = 3
 anchors_preset = 2
@@ -4907,7 +4912,7 @@ clampzone_size = 37.0
 joystick_mode = 1
 visibility_mode = 1
 
-[node name="Base" type="TextureRect" parent="CanvasLayer/Virtual Joystick"]
+[node name="Base" type="TextureRect" parent="mobile_joystick/Virtual Joystick"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -4925,7 +4930,7 @@ mouse_force_pass_scroll_events = false
 texture = ExtResource("20_hhpxm")
 stretch_mode = 5
 
-[node name="Tip" type="TextureRect" parent="CanvasLayer/Virtual Joystick/Base"]
+[node name="Tip" type="TextureRect" parent="mobile_joystick/Virtual Joystick/Base"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -5018,3 +5023,13 @@ scale = Vector2(0.725, 0.725)
 [node name="cartel_playa_sur" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
 position = Vector2(-232, 25)
 scale = Vector2(0.525625, 0.525625)
+
+[node name="noise_layer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="noise_layer"]
+material = SubResource("ShaderMaterial_2o2jp")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -1,6 +1,6 @@
 8d8ed3fefe296d4ac7ac1dbb387c9c35
-::res://::1701632931
-export_presets.cfg::TextFile::-1::1701561387::0::1::::<><>::
+::res://::1701816106
+export_presets.cfg::TextFile::-1::1701633034::0::1::::<><>::
 README.md::TextFile::-1::1701525071::0::1::::<><>::
 ::res://addons/::1701525071
 ::res://addons/dialogue_manager/::1701525071
@@ -65,8 +65,8 @@ Mascara.svg::CompressedTexture2D::5441426161266361531::1701525071::1701525071::1
 anim personajes 1.png::CompressedTexture2D::6094124200954587749::1701553880::1701553880::1::::<><>::
 personajes extras.png::CompressedTexture2D::376197541053718705::1701525071::1701525071::1::::<><>::
 sanjin.png::CompressedTexture2D::6019636497724461046::1701525071::1701525071::1::::<><>::
-::res://art/shaders/::1701632984
-camera.gdshader::Shader::-1::1701632984::0::1::::<><>::
+::res://art/shaders/::1701815580
+camera.gdshader::Shader::-1::1701815580::0::1::::<><>::
 ::res://art/tilesets/::1701525071
 aldea de las sombras.png::CompressedTexture2D::5798921812511228545::1701525071::1701525071::1::::<><>::
 Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1701525071::1701525071::1::::<><>::
@@ -86,14 +86,7 @@ Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1701525071::170152507
 Water.png::CompressedTexture2D::4159706795001771249::1701525071::1701525071::1::::<><>::
 Wood Bridge.png::CompressedTexture2D::3438859987437671950::1701525071::1701525071::1::::<><>::
 Wooden House.png::CompressedTexture2D::2954160572471588883::1701525071::1701525071::1::::<><>::
-::res://build/::1701633034
-index.144x144.png::CompressedTexture2D::5860916044474538151::1701633033::1701633034::1::::<><>::
-index.180x180.png::CompressedTexture2D::7643594697410918196::1701633033::1701633034::1::::<><>::
-index.512x512.png::CompressedTexture2D::6314432301033308202::1701633034::1701633034::1::::<><>::
-index.apple-touch-icon.png::CompressedTexture2D::1196624966642233501::1701633033::1701633034::1::::<><>::
-index.icon.png::CompressedTexture2D::169117771122554036::1701633033::1701633034::1::::<><>::
-index.manifest.json::JSON::-1::1701633034::0::1::::<><>::
-index.png::CompressedTexture2D::7407001362509728913::1701633033::1701633034::1::::<><>::
+::res://build/::1701633880
 ::res://dialogues/::1701555796
 bicicleta.dialogue::Resource::2823062603241343877::1701526971::1701554601::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 boji.dialogue::Resource::9047928892181090837::1701525071::1701526127::1::::<><>::
@@ -124,25 +117,25 @@ virtual_joystick.tscn::PackedScene::8038149555967335895::1701525071::0::1::::<><
 joystick_base_outline.png::CompressedTexture2D::3288008411285325467::1701525071::1701525071::1::::<><>::
 joystick_tip.png::CompressedTexture2D::3132432681801126628::1701525071::1701525071::1::::<><>::
 joystick_tip_arrows.png::CompressedTexture2D::8548255698028078709::1701525071::1701525071::1::::<><>::
-::res://scenes/::1701632984
+::res://scenes/::1701815580
 interactive_object.tscn::PackedScene::7427494846015621429::1701525071::0::1::::<><>::res://scripts/interactive_object.gd
-player.tscn::PackedScene::6284760147262208712::1701632984::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png
-soundtrack.tscn::PackedScene::8214520296324127879::1701632984::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1701632984::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/character/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
-::res://scripts/::1701632781
+player.tscn::PackedScene::6284760147262208712::1701813791::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg
+soundtrack.tscn::PackedScene::8214520296324127879::1701813791::0::1::::<><>::res://scripts/soundtrackplayer.gd
+world.tscn::PackedScene::8499304833516323026::1701815580::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/character/sanjin.png<>uid://fmh6h3hn1e2l::::res://art/character/personajes extras.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/character/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>res://art/shaders/camera.gdshader<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
+::res://scripts/::1701815148
 global.gd::GDScript::-1::1701525071::0::1::::<>Node<>::
 interactive_object.gd::GDScript::-1::1701555768::0::1::::<>Node2D<>::
 player.gd::GDScript::-1::1701525071::0::1::::<>CharacterBody2D<>::
-soundtrackplayer.gd::GDScript::-1::1701632781::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
-world.gd::GDScript::-1::1701632755::0::1::::<>Node2D<>::
-::res://soundtracks/::1701555214
-01 - Intro.ogg::AudioStreamOggVorbis::6855383871170785927::1701525071::1701525071::1::::<><>::
-02 - Repollo Morado.ogg::AudioStreamOggVorbis::5632816201020637859::1701525071::1701525071::1::::<><>::
-03 - Sal.ogg::AudioStreamOggVorbis::4509159072100010272::1701525071::1701525071::1::::<><>::
-04 - Nadie Me Enseñó a Vivir.ogg::AudioStreamOggVorbis::8621631067379283849::1701525071::1701525071::1::::<><>::
-05 - Pororo.ogg::AudioStreamOggVorbis::8731248507736892337::1701525071::1701525071::1::::<><>::
-06 - Todo lo Que Necesito.ogg::AudioStreamOggVorbis::7698446109066025395::1701525071::1701525071::1::::<><>::
-07 - Tus Medias.ogg::AudioStreamOggVorbis::7600564601893536545::1701525071::1701525071::1::::<><>::
-08 - Arroz.ogg::AudioStreamOggVorbis::6773218095838149977::1701525071::1701525071::1::::<><>::
-09 - Recién Me Levanto feat. Ema Oliva.ogg::AudioStreamOggVorbis::5008240254713428169::1701525071::1701525071::1::::<><>::
-10 - Cumbia Naruto.ogg::AudioStreamOggVorbis::5502225467743131775::1701525071::1701525071::1::::<><>::
+soundtrackplayer.gd::GDScript::-1::1701815148::0::1::::SOUNDTRACKPLAYER_CLASS<>Node<>::
+world.gd::GDScript::-1::1701813208::0::1::::<>Node2D<>::
+::res://soundtracks/::1701815877
+01-Intro.ogg::AudioStreamOggVorbis::1836159424460917341::1701525071::1701816106::1::::<><>::
+02-Repollo_Morado.ogg::AudioStreamOggVorbis::85463439412448524::1701525071::1701816107::1::::<><>::
+03-Sal.ogg::AudioStreamOggVorbis::360543418638833249::1701525071::1701816107::1::::<><>::
+04-Nadie_Me_Enseño_a_Vivir.ogg::AudioStreamOggVorbis::5074413494143002342::1701525071::1701816107::1::::<><>::
+05-Pororo.ogg::AudioStreamOggVorbis::1105309378882924791::1701525071::1701816107::1::::<><>::
+06-Todo_lo_Que_Necesito.ogg::AudioStreamOggVorbis::5596417174120563466::1701525071::1701816107::1::::<><>::
+07-Tus_Medias.ogg::AudioStreamOggVorbis::633738531880127021::1701525071::1701816107::1::::<><>::
+08-Arroz.ogg::AudioStreamOggVorbis::2744863474456109248::1701525071::1701816107::1::::<><>::
+09-Recién_Me_Levanto.ogg::AudioStreamOggVorbis::5145161880688644044::1701525071::1701816107::1::::<><>::
+10-Cumbia_Naruto.ogg::AudioStreamOggVorbis::7849338800676085227::1701525071::1701816107::1::::<><>::
