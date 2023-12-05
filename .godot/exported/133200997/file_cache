@@ -13,6 +13,6 @@ res://addons/dialogue_manager/dialogue_label.tscn::0250fa841c8b4e5ce21dc4be5987f
 res://addons/dialogue_manager/test_scene.tscn::ecc78dd42e86c64dfda2225df9ab4525::1701525071::res://.godot/exported/133200997/export-74a175fe1e216df3bdf79c5c27a2ac2c-test_scene.scn
 res://joystick/virtual_joystick.tscn::071a11f1996cf975b0d18e53adc37558::1701525071::res://.godot/exported/133200997/export-7c8949f8c4aebccbc8952e89cc58d938-virtual_joystick.scn
 res://scenes/interactive_object.tscn::2c1bdda510c35d4a41ece844ff6dc963::1701525071::res://.godot/exported/133200997/export-6b9446230947edcb40918fa1c16721eb-interactive_object.scn
-res://scenes/player.tscn::3327625f965cc1259a2ae23e3e458f4b::1701632984::res://.godot/exported/133200997/export-234fb6894ec6226e856ab7f825500d3d-player.scn
-res://scenes/soundtrack.tscn::db00b404b4d5dd017a3d58e2e671dc77::1701632984::res://.godot/exported/133200997/export-2636e4dd7c390edaa284980eab5f0075-soundtrack.scn
-res://scenes/world.tscn::e128647b7bc1dec7adfd51e3c940a9d3::1701632984::res://.godot/exported/133200997/export-6b9c1b1fd6ae6f795188dfdc89e222b0-world.scn
+res://scenes/player.tscn::3327625f965cc1259a2ae23e3e458f4b::1701813791::res://.godot/exported/133200997/export-234fb6894ec6226e856ab7f825500d3d-player.scn
+res://scenes/soundtrack.tscn::db00b404b4d5dd017a3d58e2e671dc77::1701813791::res://.godot/exported/133200997/export-2636e4dd7c390edaa284980eab5f0075-soundtrack.scn
+res://scenes/world.tscn::6195d9bf482e65550c93b201d2d85a94::1701818341::res://.godot/exported/133200997/export-6b9c1b1fd6ae6f795188dfdc89e222b0-world.scn

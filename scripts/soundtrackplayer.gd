@@ -2,32 +2,28 @@ extends Node
 class_name SOUNDTRACKPLAYER_CLASS
 
 enum THEMES {
-	INTRO,
+	COLORES,
+	CUMBIA,
+	GRUA,
+	RECIEN,
 	REPOLLO,
-	SAL,
-	NADIE,
-	PORORO,
+	RESAKA,
 	TODO,
-	MEDIAS,
-	ARROZ,
-	LEVANTO,
-	CUMBIA
+	MEDIAS
 }
 
 var TRACKS = {
-	THEMES.INTRO: [preload("res://soundtracks/01-Intro.ogg")],
-	THEMES.REPOLLO: [preload("res://soundtracks/02-Repollo_Morado.ogg")],
-	THEMES.SAL: [preload("res://soundtracks/03-Sal.ogg")],
-	THEMES.NADIE: [preload("res://soundtracks/04-Nadie_Me_Enseño_a_Vivir.ogg")],
-	THEMES.PORORO: [preload("res://soundtracks/05-Pororo.ogg")],
-	THEMES.TODO: [preload("res://soundtracks/06-Todo_lo_Que_Necesito.ogg")],
-	THEMES.MEDIAS: [preload("res://soundtracks/07-Tus_Medias.ogg")],
-	THEMES.ARROZ: [preload("res://soundtracks/08-Arroz.ogg")],
-	THEMES.LEVANTO: [preload("res://soundtracks/09-Recién_Me_Levanto.ogg")],
-	THEMES.CUMBIA: [preload("res://soundtracks/10-Cumbia_Naruto.ogg")]
+	THEMES.COLORES: [preload("res://soundtracks/Colores.ogg")],
+	THEMES.CUMBIA: [preload("res://soundtracks/Cumbia_naruto.ogg")],
+	THEMES.GRUA: [preload("res://soundtracks/Grua.ogg")],
+	THEMES.RECIEN: [preload("res://soundtracks/Recien_me_levanto.ogg")],
+	THEMES.REPOLLO: [preload("res://soundtracks/Repollo_Morado.ogg")],
+	THEMES.RESAKA: [preload("res://soundtracks/Resaka.ogg")],
+	THEMES.TODO: [preload("res://soundtracks/Todo_lo_que_necesito.ogg")],
+	THEMES.MEDIAS: [preload("res://soundtracks/Tus_medias.ogg")]
 }
 
-var current_theme: int = THEMES.REPOLLO
+var current_theme: int = THEMES.COLORES
 
 @onready var streamPlayer: AudioStreamPlayer = $AudioStreamPlayer
 
