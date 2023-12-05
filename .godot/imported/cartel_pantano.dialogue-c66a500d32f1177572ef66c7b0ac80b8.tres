@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_0avml"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_ryv31"]
 
 [resource]
-script = ExtResource("1_0avml")
+script = ExtResource("1_ryv31")
 using_states = PackedStringArray()
 titles = {
 "start": "3"
@@ -23,9 +23,9 @@ lines = {
 "id": "3",
 "next_id": "4",
 "tags": PackedStringArray(),
-"text": "En este Álbum Zine reunimos cosas de muchxs amigxs,",
+"text": "En este albumzine reunimos cosas de muchxs amigxs.",
 "text_replacements": Array[Dictionary]([]),
-"translation_key": "En este Álbum Zine reunimos cosas de muchxs amigxs,",
+"translation_key": "En este albumzine reunimos cosas de muchxs amigxs.",
 "type": "dialogue"
 },
 "4": {
@@ -34,9 +34,9 @@ lines = {
 "id": "4",
 "next_id": "6",
 "tags": PackedStringArray(),
-"text": "Dibujos, ideas, palabras, sonidos, técnicas, ruidos, lagrimas, enojos, roturas, resacas, medias, presentimientos, cables, Instrumentos, fuegos, asados y arroz, fotos, escenarios.",
+"text": "Dibujos, ideas, palabras, sonidos, técnicas, ruidos, lagrimas, enojos, roturas, resacas, medias, presentimientos, cables, instrumentos, fuegos, asados y arroz, fotos, escenarios.",
 "text_replacements": Array[Dictionary]([]),
-"translation_key": "Dibujos, ideas, palabras, sonidos, técnicas, ruidos, lagrimas, enojos, roturas, resacas, medias, presentimientos, cables, Instrumentos, fuegos, asados y arroz, fotos, escenarios.",
+"translation_key": "Dibujos, ideas, palabras, sonidos, técnicas, ruidos, lagrimas, enojos, roturas, resacas, medias, presentimientos, cables, instrumentos, fuegos, asados y arroz, fotos, escenarios.",
 "type": "dialogue"
 },
 "6": {
