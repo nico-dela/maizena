@@ -1,6 +1,6 @@
 8d8ed3fefe296d4ac7ac1dbb387c9c35
-::res://::1702000395
-export_presets.cfg::TextFile::-1::1701819744::0::1::::<><>::
+::res://::1702000622
+export_presets.cfg::TextFile::-1::1702000506::0::1::::<><>::
 README.md::TextFile::-1::1701525071::0::1::::<><>::
 ::res://addons/::1701525071
 ::res://addons/dialogue_manager/::1701525071
@@ -66,8 +66,8 @@ sanjin.png::CompressedTexture2D::6019636497724461046::1701988791::1702000349::1:
 ::res://art/logos/::1702000395
 Kumo_estudio_1.png::CompressedTexture2D::5540207675534888242::1701525071::1702000395::1::::<><>::
 Mascara.svg::CompressedTexture2D::5441426161266361531::1701525071::1702000379::1::::<><>::
-::res://art/shaders/::1702000348
-camera.gdshader::Shader::-1::1702000348::0::1::::<><>::
+::res://art/shaders/::1702000746
+camera.gdshader::Shader::-1::1702000746::0::1::::<><>::
 ::res://art/tilesets/::1702000395
 aldea de las sombras.png::CompressedTexture2D::5798921812511228545::1701525071::1701525071::1::::<><>::
 Basic Grass Biom things 1.png::CompressedTexture2D::1554320908772133148::1701525071::1701525071::1::::<><>::
@@ -87,7 +87,14 @@ Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1701525071::170152507
 Water.png::CompressedTexture2D::4159706795001771249::1701525071::1701525071::1::::<><>::
 Wood Bridge.png::CompressedTexture2D::3438859987437671950::1701525071::1701525071::1::::<><>::
 Wooden House.png::CompressedTexture2D::2954160572471588883::1701525071::1701525071::1::::<><>::
-::res://build/::1701819752
+::res://build/::1702000769
+index.144x144.png::CompressedTexture2D::261135861544191140::1702000769::1702000769::1::::<><>::
+index.180x180.png::CompressedTexture2D::3447758698012840561::1702000769::1702000769::1::::<><>::
+index.512x512.png::CompressedTexture2D::7435340937721818844::1702000769::1702000769::1::::<><>::
+index.apple-touch-icon.png::CompressedTexture2D::8422910804250568786::1702000769::1702000769::1::::<><>::
+index.icon.png::CompressedTexture2D::8877013996037873845::1702000769::1702000769::1::::<><>::
+index.manifest.json::JSON::-1::1702000769::0::1::::<><>::
+index.png::CompressedTexture2D::1590343865221689537::1702000769::1702000769::1::::<><>::
 ::res://dialogues/::1701819333
 bicicleta.dialogue::Resource::2823062603241343877::1701526971::1701554601::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 boji.dialogue::Resource::9047928892181090837::1701525071::1701526127::1::::<><>::
@@ -118,12 +125,12 @@ virtual_joystick.tscn::PackedScene::8038149555967335895::1701525071::0::1::::<><
 joystick_base_outline.png::CompressedTexture2D::3288008411285325467::1701525071::1701525071::1::::<><>::
 joystick_tip.png::CompressedTexture2D::3132432681801126628::1701525071::1701525071::1::::<><>::
 joystick_tip_arrows.png::CompressedTexture2D::8548255698028078709::1701525071::1701525071::1::::<><>::
-::res://scenes/::1702000348
-day_and_night.tscn::PackedScene::4229074412316466922::1702000239::0::1::::<><>::res://scripts/day_and_night.gd
+::res://scenes/::1702000746
+day_and_night.tscn::PackedScene::4229074412316466922::1702000746::0::1::::<><>::res://scripts/day_and_night.gd
 interactive_object.tscn::PackedScene::7427494846015621429::1701525071::0::1::::<><>::res://scripts/interactive_object.gd
 player.tscn::PackedScene::6284760147262208712::1702000347::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg
 soundtrack.tscn::PackedScene::8214520296324127879::1701813791::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1702000348::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://fmh6h3hn1e2l::::res://art/characters/personajes extras.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/characters/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>res://art/shaders/camera.gdshader<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn<>uid://b1iuic1m36bbm::::res://scenes/day_and_night.tscn
+world.tscn::PackedScene::8499304833516323026::1702000746::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://fmh6h3hn1e2l::::res://art/characters/personajes extras.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/characters/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://joystick/textures/joystick_base_outline.png<>res://art/shaders/camera.gdshader<>uid://dt13r06u87fib::::res://joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn<>uid://b1iuic1m36bbm::::res://scenes/day_and_night.tscn
 ::res://scripts/::1702000222
 day_and_night.gd::GDScript::-1::1702000222::0::1::::<>CanvasLayer<>::
 global.gd::GDScript::-1::1701525071::0::1::::<>Node<>::

@@ -1,5 +1,3 @@
 res://scenes/world.tscn
 res://art/shaders/camera.gdshader
-res://day_and_night.gd
 res://scenes/day_and_night.tscn
-res://scripts/day_and_night.gd
