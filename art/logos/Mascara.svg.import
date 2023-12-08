@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fmh6h3hn1e2l"
-path="res://.godot/imported/personajes extras.png-0bd2e03cf8524a4baaf22c2b84c68b70.ctex"
+uid="uid://cjr4q16hja1it"
+path="res://.godot/imported/Mascara.svg-7f29c530179ec37456c7759d83666ec7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/character/personajes extras.png"
-dest_files=["res://.godot/imported/personajes extras.png-0bd2e03cf8524a4baaf22c2b84c68b70.ctex"]
+source_file="res://art/logos/Mascara.svg"
+dest_files=["res://.godot/imported/Mascara.svg-7f29c530179ec37456c7759d83666ec7.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

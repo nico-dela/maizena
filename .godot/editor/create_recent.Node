@@ -1,6 +1,9 @@
+AnimationPlayer
 ColorRect
 CanvasLayer
 Node
+DirectionalLight2D
+WorldEnvironment
 Sprite2D
 CollisionShape2D
 Area2D

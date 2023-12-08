@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ck6yn8dhqyiqs"
-path="res://.godot/imported/Kumo_estudio_1.png-b73e7a696b4aa621544569bb502e559f.ctex"
+uid="uid://cr07se5dfwlsg"
+path="res://.godot/imported/sanjin.png-a348e14b33c89d11b174362a52452215.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/Kumo_estudio_1.png"
-dest_files=["res://.godot/imported/Kumo_estudio_1.png-b73e7a696b4aa621544569bb502e559f.ctex"]
+source_file="res://art/characters/sanjin.png"
+dest_files=["res://.godot/imported/sanjin.png-a348e14b33c89d11b174362a52452215.ctex"]
 
 [params]
 

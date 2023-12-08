@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=45 format=3 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_wjpli"]
@@ -9,21 +9,22 @@
 [ext_resource type="Texture2D" uid="uid://bxrqt8mpq6btq" path="res://art/tilesets/Tilled Dirt.png" id="5_3bidy"]
 [ext_resource type="Texture2D" uid="uid://covbnov3c3yc4" path="res://art/tilesets/aldea de las sombras.png" id="5_leiel"]
 [ext_resource type="Texture2D" uid="uid://bidaufsco4bw2" path="res://art/tilesets/Wooden House.png" id="6_db37e"]
-[ext_resource type="Texture2D" uid="uid://cr07se5dfwlsg" path="res://art/character/sanjin.png" id="6_g245f"]
-[ext_resource type="Texture2D" uid="uid://fmh6h3hn1e2l" path="res://art/character/personajes extras.png" id="7_2e88f"]
+[ext_resource type="Texture2D" uid="uid://cr07se5dfwlsg" path="res://art/characters/sanjin.png" id="7_8bpri"]
 [ext_resource type="Texture2D" uid="uid://cmnsp68w564un" path="res://art/tilesets/Fences.png" id="7_aojy2"]
 [ext_resource type="Texture2D" uid="uid://gvkwwqj55d1l" path="res://art/tilesets/Bollos house.png" id="8_pn6cv"]
 [ext_resource type="Texture2D" uid="uid://b0i807h0o1m6t" path="res://art/tilesets/Water.png" id="8_rwltq"]
+[ext_resource type="Texture2D" uid="uid://fmh6h3hn1e2l" path="res://art/characters/personajes extras.png" id="8_sb5t3"]
 [ext_resource type="PackedScene" uid="uid://cvsnc1d0y0q4g" path="res://scenes/player.tscn" id="9_4xl32"]
 [ext_resource type="Texture2D" uid="uid://63ouiwj3o8hf" path="res://art/tilesets/beach-desert.png" id="9_jidfe"]
 [ext_resource type="Texture2D" uid="uid://dscj1x67pe7ul" path="res://art/tilesets/Montaña.png" id="10_deyod"]
-[ext_resource type="Texture2D" uid="uid://cs3blnr07ntnx" path="res://art/character/anim personajes 1.png" id="11_k2bei"]
+[ext_resource type="Texture2D" uid="uid://cs3blnr07ntnx" path="res://art/characters/anim personajes 1.png" id="11_y18g1"]
 [ext_resource type="Texture2D" uid="uid://bo82ry606ks2q" path="res://art/tilesets/Wood Bridge.png" id="12_khak5"]
 [ext_resource type="Script" path="res://joystick/virtual_joystick.gd" id="19_yxuu0"]
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
 [ext_resource type="Shader" path="res://art/shaders/camera.gdshader" id="20_rxnmr"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
 [ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
+[ext_resource type="PackedScene" uid="uid://b1iuic1m36bbm" path="res://scenes/day_and_night.tscn" id="25_oejco"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u6vws"]
 texture = ExtResource("1_5id3o")
@@ -887,7 +888,7 @@ texture = ExtResource("5_leiel")
 10:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(14.1421, -8.48528, 15.5563, 0.353554, 13.2583, 8.83884, 8.83883, 14.1421, 0.530327, 16.4402, -7.24785, 14.8492, -14, 8.125, -15.5564, -1.41421, -13.25, -9, -8.66206, -13.9654, 0, -16.4402, 8.48528, -14.3189)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1chmw"]
-texture = ExtResource("6_g245f")
+texture = ExtResource("7_8bpri")
 1:1/0 = 0
 1:1/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 1:1/0/physics_layer_0/angular_velocity = 0.0
@@ -1265,7 +1266,7 @@ texture = ExtResource("6_g245f")
 8:29/0/physics_layer_0/angular_velocity = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5xaen"]
-texture = ExtResource("7_2e88f")
+texture = ExtResource("8_sb5t3")
 0:0/size_in_atlas = Vector2i(1, 2)
 0:0/0 = 0
 0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)
@@ -3924,7 +3925,7 @@ texture = ExtResource("9_jidfe")
 4:6/0/physics_layer_0/angular_velocity = 0.0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m2meh"]
-texture = ExtResource("11_k2bei")
+texture = ExtResource("11_y18g1")
 0:2/size_in_atlas = Vector2i(1, 2)
 0:2/animation_speed = 3.0
 0:2/animation_frame_0/duration = 1.0
@@ -5033,3 +5034,5 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="day_and_night" parent="." instance=ExtResource("25_oejco")]

@@ -13,8 +13,8 @@ void fragment() {
 
 // Pixelated version
 //void fragment() {
-    //vec2 k = 20.0 / TEXTURE_PIXEL_SIZE;
-    //vec2 pixel_coords = floor(k * UV) + k * vec2(TIME);
-    //float n = 2.0 * get_noise(pixel_coords) - 1.0;
-    //COLOR = texture(TEXTURE, UV) + n * u_amount;
+//	vec2 k = 50.0 / TEXTURE_PIXEL_SIZE;
+//	vec2 pixel_coords = floor(k * UV) + k * vec2(TIME);
+//	float n = 2.0 * get_noise(pixel_coords) - 1.0;
+//	COLOR = texture(TEXTURE, UV) + n * u_amount;
 //}
