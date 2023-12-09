@@ -24,8 +24,18 @@ var TRACKS = {
 }
 
 var current_theme: int = THEMES.COLORES
+var playlist: Array = []
 
 @onready var streamPlayer: AudioStreamPlayer = $AudioStreamPlayer
+
+func _ready():
+	create_playlist()
+
+func create_playlist():
+	for theme in THEMES.values():
+		playlist.append(theme)
+	
+	playlist.shuffle()
 
 func play_soundtrack(theme: int):
 	if current_theme != theme or !streamPlayer.playing:
@@ -39,16 +49,7 @@ func play_soundtrack(theme: int):
 			streamPlayer.play()
 	
 func play_all_soundtracks():
-	# Create an Array instance and duplicate the themes
-	var duplicate_themes = []
-	for theme in THEMES.values():
-		duplicate_themes.append(theme)
-	
-	# Shuffle the duplicate themes
-	duplicate_themes.shuffle()
-
-	# Iterate through the shuffled themes
-	for theme in duplicate_themes:
+	for theme in playlist:
 		play_soundtrack(theme)
 		await streamPlayer.finished
 
