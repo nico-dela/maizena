@@ -1,9 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1iuic1m36bbm"]
+[gd_scene load_steps=2 format=3 uid="uid://de1c8eq0twhsu"]
 
-[ext_resource type="Script" path="res://scripts/day_and_night.gd" id="1_0uqtj"]
+[sub_resource type="GDScript" id="GDScript_w36p0"]
+script/source = "extends CanvasLayer
+
+var current_hour = Time.get_time_dict_from_system().hour
+
+func _ready():
+	if current_hour >= 8 and current_hour < 18:
+		# Día
+		$ColorRect.color = Color(0, 0, 0, 0)
+	else:
+		# Noche
+		$ColorRect.color = Color(0, 0, 0, 0.4)
+"
 
 [node name="day_and_night" type="CanvasLayer"]
-script = ExtResource("1_0uqtj")
+script = SubResource("GDScript_w36p0")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 anchors_preset = 15

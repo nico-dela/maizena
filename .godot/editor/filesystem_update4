@@ -1,6 +1,2 @@
 res://scenes/world.tscn
-res://art/shaders/camera.gdshader
-res://scenes/paused_menu.tscn
-res://scenes/player.tscn
-res://addons/dialogue_manager/dialogue_label.tscn
-res://addons/dialogue_manager/dialogue_label.gd
+res://scenes/day_and_night.tscn
