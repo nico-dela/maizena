@@ -31,7 +31,7 @@ general/balloon_path="res://addons/dialogue_manager/example_balloon/small_exampl
 [display]
 
 window/size/initial_position_type=2
-window/stretch/mode="viewport"
+window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/stretch/scale=4.0
 
