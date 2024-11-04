@@ -1,5 +1,5 @@
 8d8ed3fefe296d4ac7ac1dbb387c9c35
-::res://::1730759627
+::res://::1730759750
 export_presets.cfg::TextFile::-1::1730758665::0::1::::<><>::
 README.md::TextFile::-1::1730758665::0::1::::<><>::
 ::res://addons/::1730759627
@@ -61,7 +61,7 @@ settings_view.tscn::PackedScene::5839841081119266502::1730758665::0::1::::<><>::
 ::res://addons/joystick/::1730759627
 virtual_joystick.gd::GDScript::-1::1730759526::0::1::::VirtualJoystick<>Control<>::
 virtual_joystick.tscn::PackedScene::8038149555967335895::1730759627::0::1::::<><>::res://addons/joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://addons/joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://addons/joystick/textures/joystick_tip_arrows.png
-::res://addons/joystick/textures/::1730758726
+::res://addons/joystick/textures/::1730759627
 joystick_base_outline.png::CompressedTexture2D::3288008411285325467::1730758665::1730759627::1::::<><>::
 joystick_tip.png::CompressedTexture2D::3132432681801126628::1730758665::1730759627::1::::<><>::
 joystick_tip_arrows.png::CompressedTexture2D::8548255698028078709::1730758665::1730759627::1::::<><>::
@@ -115,11 +115,11 @@ silueto_1.dialogue::Resource::2928147039679875062::1730758665::1730758725::1::::
 silueto_2.dialogue::Resource::3349850485296945577::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 spinetto.dialogue::Resource::2573125588094043216::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 templo_sapos.dialogue::Resource::3626779408213654015::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-::res://scenes/::1730759627
+::res://scenes/::1730759651
 interactive_object.tscn::PackedScene::7427494846015621429::1730758665::0::1::::<><>::res://scripts/interactive_object.gd
 player.tscn::PackedScene::6284760147262208712::1730758665::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png
 soundtrack.tscn::PackedScene::8214520296324127879::1730758665::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1730759627::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://fmh6h3hn1e2l::::res://art/characters/personajes extras.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/characters/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://addons/joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://addons/joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://addons/joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
+world.tscn::PackedScene::8499304833516323026::1730759651::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://fmh6h3hn1e2l::::res://art/characters/personajes extras.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/characters/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://addons/joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://addons/joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://addons/joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
 ::res://scripts/::1730758863
 global.gd::GDScript::-1::1730758665::0::1::::<>Node<>::
 interactive_object.gd::GDScript::-1::1730758665::0::1::::<>Node2D<>::
