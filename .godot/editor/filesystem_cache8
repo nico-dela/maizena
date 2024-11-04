@@ -1,5 +1,5 @@
 8d8ed3fefe296d4ac7ac1dbb387c9c35
-::res://::1730760084
+::res://::1730761460
 export_presets.cfg::TextFile::-1::1730758665::0::1::::<><>::
 README.md::TextFile::-1::1730758665::0::1::::<><>::
 ::res://addons/::1730759627
@@ -92,14 +92,14 @@ Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1730758665::173075872
 Water.png::CompressedTexture2D::4159706795001771249::1730758665::1730758726::1::::<><>::
 Wood Bridge.png::CompressedTexture2D::3438859987437671950::1730758665::1730758726::1::::<><>::
 Wooden House.png::CompressedTexture2D::2954160572471588883::1730758665::1730758726::1::::<><>::
-::res://build/::1730760086
-index.144x144.png::CompressedTexture2D::3111063370401684128::1730760086::1730760087::1::::<><>::
-index.180x180.png::CompressedTexture2D::1469419120787865519::1730760086::1730760087::1::::<><>::
-index.512x512.png::CompressedTexture2D::7379273622846233860::1730760086::1730760087::1::::<><>::
-index.apple-touch-icon.png::CompressedTexture2D::4670106801009742602::1730760086::1730760087::1::::<><>::
-index.icon.png::CompressedTexture2D::9105499650577783910::1730760086::1730760087::1::::<><>::
-index.manifest.json::JSON::-1::1730760086::0::1::::<><>::
-index.png::CompressedTexture2D::1647294966355593609::1730760086::1730760087::1::::<><>::
+::res://build/::1730762049
+index.144x144.png::CompressedTexture2D::5538041253173009696::1730762049::1730762049::1::::<><>::
+index.180x180.png::CompressedTexture2D::762308582460784521::1730762049::1730762049::1::::<><>::
+index.512x512.png::CompressedTexture2D::6916824106224818338::1730762049::1730762049::1::::<><>::
+index.apple-touch-icon.png::CompressedTexture2D::1458971295999861173::1730762049::1730762049::1::::<><>::
+index.icon.png::CompressedTexture2D::1777016597766070877::1730762049::1730762049::1::::<><>::
+index.manifest.json::JSON::-1::1730762049::0::1::::<><>::
+index.png::CompressedTexture2D::1677352155620652728::1730762049::1730762050::1::::<><>::
 ::res://dialogues/::1730758725
 bicicleta.dialogue::Resource::2823062603241343877::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 boji.dialogue::Resource::9047928892181090837::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
@@ -123,11 +123,11 @@ silueto_1.dialogue::Resource::2928147039679875062::1730758665::1730758725::1::::
 silueto_2.dialogue::Resource::3349850485296945577::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 spinetto.dialogue::Resource::2573125588094043216::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 templo_sapos.dialogue::Resource::3626779408213654015::1730758665::1730758725::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-::res://scenes/::1730759782
+::res://scenes/::1730762031
 interactive_object.tscn::PackedScene::7427494846015621429::1730758665::0::1::::<><>::res://scripts/interactive_object.gd
 player.tscn::PackedScene::6284760147262208712::1730758665::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png
 soundtrack.tscn::PackedScene::8214520296324127879::1730758665::0::1::::<><>::res://scripts/soundtrackplayer.gd
-world.tscn::PackedScene::8499304833516323026::1730759782::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://fmh6h3hn1e2l::::res://art/characters/personajes extras.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/characters/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://addons/joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://addons/joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://addons/joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
+world.tscn::PackedScene::8499304833516323026::1730762031::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>res://scripts/world.gd<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://fmh6h3hn1e2l::::res://art/characters/personajes extras.png<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/characters/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>res://addons/joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://addons/joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://addons/joystick/textures/joystick_tip_arrows.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
 ::res://scripts/::1730759782
 global.gd::GDScript::-1::1730758665::0::1::::<>Node<>::
 interactive_object.gd::GDScript::-1::1730758665::0::1::::<>Node2D<>::
