@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Maizena Web Game"
 run/main_scene="res://scenes/world.tscn"
-config/features=PackedStringArray("4.2", "GL Compatibility")
+config/features=PackedStringArray("4.3", "GL Compatibility")
 run/max_fps=20
 boot_splash/bg_color=Color(0.768627, 0.305882, 0.513726, 1)
 boot_splash/image="res://art/logos/Kumo_estudio_1.png"
@@ -42,6 +42,10 @@ enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
 [filesystem]
 
 import/blender/enabled=false
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [internationalization]
 
