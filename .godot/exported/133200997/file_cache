@@ -13,5 +13,5 @@ res://addons/dialogue_manager/dialogue_label.tscn::0250fa841c8b4e5ce21dc4be5987f
 res://addons/dialogue_manager/test_scene.tscn::ecc78dd42e86c64dfda2225df9ab4525::1730758665::res://.godot/exported/133200997/export-74a175fe1e216df3bdf79c5c27a2ac2c-test_scene.scn
 res://scenes/interactive_object.tscn::2c1bdda510c35d4a41ece844ff6dc963::1730758665::res://.godot/exported/133200997/export-6b9446230947edcb40918fa1c16721eb-interactive_object.scn
 res://scenes/player.tscn::22b9374548ba50d18f59a5e84ddce41b::1730758665::res://.godot/exported/133200997/export-234fb6894ec6226e856ab7f825500d3d-player.scn
-res://scenes/world.tscn::d119242e2879a4189e6adb01dc6587b9::1730772095::res://.godot/exported/133200997/export-6b9c1b1fd6ae6f795188dfdc89e222b0-world.scn
+res://scenes/world.tscn::d119242e2879a4189e6adb01dc6587b9::1730772861::res://.godot/exported/133200997/export-6b9c1b1fd6ae6f795188dfdc89e222b0-world.scn
 res://addons/joystick/virtual_joystick.tscn::5db34789aba0df3182f17046ac704288::1730759627::res://.godot/exported/133200997/export-bcf9652dfbd4c46fe01ba791362a5ce5-virtual_joystick.scn

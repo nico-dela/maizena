@@ -30,8 +30,9 @@ var current_song: int = SONGS.COLORES
 var playlist: Array = []
 
 func _ready():
+	volume_slider.focus_mode = Control.FOCUS_NONE
 	volume_slider.value = audio_player.volume_db
-	
+
 	create_playlist()
 	play_all_soundtracks()
 
