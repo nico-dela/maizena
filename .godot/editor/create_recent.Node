@@ -1,8 +1,10 @@
+VSlider
+Control
+CanvasLayer
 ColorRect
 Label
 RichTextLabel
 AnimationPlayer
-CanvasLayer
 Node
 DirectionalLight2D
 WorldEnvironment
@@ -11,6 +13,3 @@ CollisionShape2D
 Area2D
 StaticBody2D
 Node2D
-Control
-TileMap
-AnimatedSprite2D

@@ -1,7 +1,6 @@
 [gd_scene load_steps=42 format=4 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
-[ext_resource type="Script" path="res://scripts/world.gd" id="1_wjpli"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://art/tilesets/templo de los anfibios.png" id="2_osqrk"]
 [ext_resource type="Texture2D" uid="uid://dxs1vsn7urcf5" path="res://art/tilesets/Grass.png" id="3_hk72v"]
 [ext_resource type="Texture2D" uid="uid://boemw1emdmc8n" path="res://art/tilesets/OutdoorsTileset.png" id="4_1gr7h"]
@@ -23,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://addons/joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
 [ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://addons/joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
 [ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
+[ext_resource type="Script" path="res://scenes/volume_slider.gd" id="24_jbl5i"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u6vws"]
 texture = ExtResource("1_5id3o")
@@ -1914,7 +1914,6 @@ sources/16 = SubResource("TileSetAtlasSource_m2meh")
 
 [node name="world" type="Node2D"]
 y_sort_enabled = true
-script = ExtResource("1_wjpli")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_11gys")
@@ -2093,3 +2092,33 @@ scale = Vector2(0.725, 0.725)
 [node name="cartel_playa_sur" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
 position = Vector2(-232, 25)
 scale = Vector2(0.525625, 0.525625)
+
+[node name="volume_control" type="CanvasLayer" parent="."]
+
+[node name="Volume" type="Control" parent="volume_control"]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -21.0
+offset_top = -65.0
+offset_right = -21.0
+offset_bottom = -65.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("24_jbl5i")
+
+[node name="VolumeSlider" type="VSlider" parent="volume_control/Volume"]
+layout_mode = 0
+offset_left = -5.0
+offset_top = -15.0
+offset_right = 11.0
+offset_bottom = 55.0
+min_value = -60.0
+max_value = 0.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="volume_control/Volume"]
+
+[connection signal="value_changed" from="volume_control/Volume/VolumeSlider" to="volume_control/Volume" method="_on_volume_slider_value_changed"]
