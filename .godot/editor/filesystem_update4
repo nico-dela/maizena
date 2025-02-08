@@ -1,6 +1,2 @@
 res://scenes/world.tscn
 res://addons/dialogue_manager/test_scene.gd
-res://scripts/world.gd
-res://scenes/volume_slider.gd
-res://scripts/soundtrackplayer.gd
-res://scenes/soundtrack.tscn
