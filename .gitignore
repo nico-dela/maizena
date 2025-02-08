@@ -1,0 +1,31 @@
+# Directorios generados automáticamente
+.export/
+.import/
+.cache/
+
+# Archivos de usuario y temporales
+*.tmp
+*.log
+*.bak
+*.cfg
+*.mono
+*.ini
+
+# Archivos de Godot específicos
+*.godot
+*.translation
+*.remap
+*.converted.*
+
+# Archivos de compilación (si usás C#)
+mono/
+*.csproj
+*.sln
+*.mdb
+*.pdb
+*.dll
+*.exe
+
+# Archivos del editor
+.editor_config
+.settings/
