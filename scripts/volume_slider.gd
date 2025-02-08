@@ -2,7 +2,8 @@ extends Control
 
 
 @onready var audio_player = $AudioStreamPlayer
-@onready var volume_slider = $VolumeSlider
+@onready var volume_slider = $VolumeHSlider
+@onready var volume_icon = $Icon
 
 enum SONGS {
 	COLORES,
@@ -38,6 +39,11 @@ func _ready():
 
 func _on_volume_slider_value_changed(value: float) -> void:
 	audio_player.volume_db = value
+	
+	if value <= -60:  # Si el volumen es el mínimo, hacer el icono transparente
+		volume_icon.self_modulate = Color(1, 1, 1, 0.3)  # Opacidad al 30%
+	else:
+		volume_icon.self_modulate = Color(1, 1, 1, 1)  # Opacidad al 100%
 
 func create_playlist():
 	for song in SONGS.values():
