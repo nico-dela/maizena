@@ -1,60 +1,69 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_twkwp"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_g0pqd"]
 
 [resource]
-script = ExtResource("1_twkwp")
+script = ExtResource("1_g0pqd")
 using_states = PackedStringArray()
 titles = {
-"start": "3"
+"start": "2"
 }
 character_names = PackedStringArray()
-first_title = "3"
+first_title = "0"
 lines = {
-"1": {
-"id": "1",
-"next_id": "3",
-"text": "start",
+"0": {
+"id": "0",
+"next_id": "2",
 "type": "title"
 },
+"1": {
+"id": "1",
+"next_id": "2",
+"type": ""
+},
+"2": {
+"id": "2",
+"next_id": "3",
+"text": "Hacer un álbum es…",
+"type": "dialogue"
+},
 "3": {
-"character": "",
-"character_replacements": Array[Dictionary]([]),
 "id": "3",
 "next_id": "4",
-"tags": PackedStringArray(),
-"text": "Hacer un álbum es…",
-"text_replacements": Array[Dictionary]([]),
-"translation_key": "Hacer un álbum es…",
+"text": "¿Anotar todas las cosas tiradas? ¿Contar cuántas heridas tengo? ¿Romper algunas cosas? ¿También este enojo? ¿Creer mucho en mi arte? ¿Usar muchas técnicas?",
 "type": "dialogue"
 },
 "4": {
-"character": "",
-"character_replacements": Array[Dictionary]([]),
 "id": "4",
-"next_id": "5",
-"tags": PackedStringArray(),
-"text": "¿Anotar todas las cosas tiradas? ¿Contar cuántas heridas tengo? ¿Romper algunas cosas? ¿También este enojo? ¿Creer mucho en mi arte? ¿Usar muchas técnicas?",
-"text_replacements": Array[Dictionary]([]),
-"translation_key": "¿Anotar todas las cosas tiradas? ¿Contar cuántas heridas tengo? ¿Romper algunas cosas? ¿También este enojo? ¿Creer mucho en mi arte? ¿Usar muchas técnicas?",
+"next_id": "6",
+"text": "Resistir a la desidia",
 "type": "dialogue"
 },
 "5": {
-"character": "",
-"character_replacements": Array[Dictionary]([]),
 "id": "5",
-"next_id": "7",
-"tags": PackedStringArray(),
-"text": "Resistir a la desidia",
-"text_replacements": Array[Dictionary]([]),
-"translation_key": "Resistir a la desidia",
-"type": "dialogue"
+"next_id": "6",
+"type": ""
+},
+"6": {
+"id": "6",
+"is_snippet": false,
+"next_id": "end",
+"next_id_after": "",
+"type": "goto"
 },
 "7": {
 "id": "7",
 "is_snippet": false,
 "next_id": "end",
+"next_id_after": "",
 "type": "goto"
 }
 }
-metadata/dialogue_manager_version = "2.29.2"
+raw_text = "~ start
+
+Hacer un álbum es…
+¿Anotar todas las cosas tiradas? ¿Contar cuántas heridas tengo? ¿Romper algunas cosas? ¿También este enojo? ¿Creer mucho en mi arte? ¿Usar muchas técnicas?
+Resistir a la desidia
+
+=> END"
+metadata/dialogue_manager_version = "3.2.0"

@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://18542l13jsva"]
+
+[ext_resource type="PackedScene" uid="uid://dtdekra2n1gji" path="res://scenes/world.tscn" id="1_ckrdw"]
+[ext_resource type="PackedScene" uid="uid://cvsnc1d0y0q4g" path="res://scenes/player.tscn" id="2_p6wng"]
+[ext_resource type="PackedScene" uid="uid://wtbpnf36qq6q" path="res://scenes/settings_menu.tscn" id="3_7mwkq"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/joystick/virtual_joystick.tscn" id="4_k44sj"]
+[ext_resource type="Texture2D" uid="uid://f1j7bvynm5sw" path="res://art/settings (2).png" id="5_0flnm"]
+
+[node name="MainScene" type="Node2D"]
+
+[node name="world" parent="." instance=ExtResource("1_ckrdw")]
+
+[node name="player" parent="." instance=ExtResource("2_p6wng")]
+position = Vector2(-218, -264)
+
+[node name="Controller" type="CanvasLayer" parent="."]
+
+[node name="Virtual Joystick" parent="Controller" instance=ExtResource("4_k44sj")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Settings" parent="UI" instance=ExtResource("3_7mwkq")]
+
+[node name="SettingsButton" type="Button" parent="UI"]
+modulate = Color(1, 1, 1, 0.666667)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -46.0
+offset_top = 4.0
+offset_right = -6.0
+offset_bottom = 44.0
+grow_horizontal = 0
+icon = ExtResource("5_0flnm")
+flat = true
+icon_alignment = 1
+
+[connection signal="pressed" from="UI/SettingsButton" to="UI/Settings" method="_on_settings_button_pressed"]

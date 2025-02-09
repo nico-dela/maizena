@@ -2,7 +2,7 @@ extends Control
 
 
 @onready var audio_player = $AudioStreamPlayer
-@onready var volume_slider = $VolumeSlider
+@onready var volume_slider = $VolumeHSlider
 
 enum SONGS {
 	COLORES,
@@ -30,7 +30,7 @@ var current_song: int = SONGS.COLORES
 var playlist: Array = []
 
 func _ready():
-	volume_slider.focus_mode = Control.FOCUS_NONE
+	#volume_slider.focus_mode = Control.FOCUS_NONE
 	volume_slider.value = audio_player.volume_db
 
 	create_playlist()

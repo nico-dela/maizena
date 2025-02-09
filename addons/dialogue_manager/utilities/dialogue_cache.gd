@@ -1,11 +1,10 @@
-extends Node
+class_name DMCache extends Node
 
 
-const DialogueConstants = preload("../constants.gd")
-const DialogueSettings = preload("./settings.gd")
+signal file_content_changed(path: String, new_content: String)
 
 
-# Keeps track of errors and dependencies.
+# Keep track of errors and dependencies
 # {
 # 	<dialogue file path> = {
 # 		path = <dialogue file path>,
@@ -18,6 +17,8 @@ var _cache: Dictionary = {}
 var _update_dependency_timer: Timer = Timer.new()
 var _update_dependency_paths: PackedStringArray = []
 
+var _files_marked_for_reimport: PackedStringArray = []
+
 
 func _ready() -> void:
 	add_child(_update_dependency_timer)
@@ -26,30 +27,50 @@ func _ready() -> void:
 	_build_cache()
 
 
+func mark_files_for_reimport(files: PackedStringArray) -> void:
+	for file in files:
+		if not _files_marked_for_reimport.has(file):
+			_files_marked_for_reimport.append(file)
+
+
+func reimport_files(and_files: PackedStringArray = []) -> void:
+	for file in and_files:
+		if not _files_marked_for_reimport.has(file):
+			_files_marked_for_reimport.append(file)
+	
+	if _files_marked_for_reimport.is_empty(): return
+
+	EditorInterface.get_resource_filesystem().reimport_files(_files_marked_for_reimport)
+
+
 ## Add a dialogue file to the cache.
-func add_file(path: String, parse_results: DialogueManagerParseResult = null) -> void:
-	var dependencies: PackedStringArray = []
-
-	if parse_results != null:
-		dependencies = Array(parse_results.imported_paths).filter(func(d): return d != path)
-
+func add_file(path: String, compile_result: DMCompilerResult = null) -> void:
 	_cache[path] = {
 		path = path,
-		dependencies = dependencies,
+		dependencies = [],
 		errors = []
 	}
 
-	# If this is a fresh cache entry then we need to check for dependencies
-	if parse_results == null and not _update_dependency_paths.has(path):
+	if compile_result != null:
+		_cache[path].dependencies = Array(compile_result.imported_paths).filter(func(d): return d != path)
+		_cache[path].compiled_at = Time.get_ticks_msec()
+
+	# If this is a fresh cache entry, check for dependencies
+	if compile_result == null and not _update_dependency_paths.has(path):
 		queue_updating_dependencies(path)
 
 
-## Get the file paths in the cache.
+## Get the file paths in the cache
 func get_files() -> PackedStringArray:
 	return _cache.keys()
 
 
-## Remember any errors in a dialogue file.
+## Check if a file is known to the cache
+func has_file(path: String) -> bool:
+	return _cache.has(path)
+
+
+## Remember any errors in a dialogue file
 func add_errors_to_file(path: String, errors: Array[Dictionary]) -> void:
 	if _cache.has(path):
 		_cache[path].errors = errors
@@ -62,7 +83,7 @@ func add_errors_to_file(path: String, errors: Array[Dictionary]) -> void:
 		}
 
 
-## Get a list of files that have errors in them.
+## Get a list of files that have errors
 func get_files_with_errors() -> Array[Dictionary]:
 	var files_with_errors: Array[Dictionary] = []
 	for dialogue_file in _cache.values():
@@ -71,7 +92,7 @@ func get_files_with_errors() -> Array[Dictionary]:
 	return files_with_errors
 
 
-## Queue a file to have it's dependencies checked
+## Queue a file to have its dependencies checked
 func queue_updating_dependencies(of_path: String) -> void:
 	_update_dependency_timer.stop()
 	if not _update_dependency_paths.has(of_path):
@@ -81,22 +102,26 @@ func queue_updating_dependencies(of_path: String) -> void:
 
 ## Update any references to a file path that has moved
 func move_file_path(from_path: String, to_path: String) -> void:
-	if _cache.has(from_path):
+	if not _cache.has(from_path): return
+
+	if to_path != "":
 		_cache[to_path] = _cache[from_path].duplicate()
-		_cache.erase(from_path)
+	_cache.erase(from_path)
 
 
-## Get any dialogue files that import a given path.
+## Get every dialogue file that imports on a file of a given path
 func get_files_with_dependency(imported_path: String) -> Array:
 	return _cache.values().filter(func(d): return d.dependencies.has(imported_path))
 
 
 ## Get any paths that are dependent on a given path
-func get_dependent_paths(on_path: String) -> PackedStringArray:
-	return get_files_with_dependency(on_path).map(func(d): return d.path)
+func get_dependent_paths_for_reimport(on_path: String) -> PackedStringArray:
+	return get_files_with_dependency(on_path) \
+		.filter(func(d): return Time.get_ticks_msec() - d.get("compiled_at", 0) > 3000) \
+		.map(func(d): return d.path)
 
 
-# Build the initial cache for dialogue files.
+# Build the initial cache for dialogue files
 func _build_cache() -> void:
 	var current_files: PackedStringArray = _get_dialogue_files_in_filesystem()
 	for file in current_files:
@@ -123,7 +148,7 @@ func _get_dialogue_files_in_filesystem(path: String = "res://") -> PackedStringA
 	return files
 
 
-### Signals
+#region Signals
 
 
 func _on_update_dependency_timeout() -> void:
@@ -140,3 +165,6 @@ func _on_update_dependency_timeout() -> void:
 			dependencies.append(found.strings[found.names.path])
 		_cache[path].dependencies = dependencies
 	_update_dependency_paths.clear()
+
+
+#endregion

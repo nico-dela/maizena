@@ -18,28 +18,41 @@ func _physics_process(delta):
 func player_movement(_delta):
 	if !global.shown_dialogue:
 		velocity = Vector2.ZERO
-		if Input.is_action_pressed("ui_right"):
-			current_dir = "right"
-			velocity.x = SPEED
-		elif Input.is_action_pressed("ui_left"):
-			current_dir = "left"
-			velocity.x = -SPEED
-		elif Input.is_action_pressed("ui_down"):
-			current_dir = "down"
-			velocity.y = SPEED
-		elif Input.is_action_pressed("ui_up"):
-			current_dir = "up"
-			velocity.y = -SPEED
 
+		# Detectar múltiples entradas simultáneas
+		if Input.is_action_pressed("ui_right"):
+			velocity.x += 1
+		if Input.is_action_pressed("ui_left"):
+			velocity.x -= 1
+		if Input.is_action_pressed("ui_down"):
+			velocity.y += 1
+		if Input.is_action_pressed("ui_up"):
+			velocity.y -= 1
+
+		# Si el personaje se está moviendo, normalizamos la velocidad
 		if velocity != Vector2.ZERO:
+			velocity = velocity.normalized() * SPEED
+			update_current_dir()
 			play_anim(1)
 		else:
 			play_anim(0)
+
 	else:
 		velocity = Vector2.ZERO
 		play_anim(0)
 
 	move_and_slide()
+
+func update_current_dir():
+	# Determinar la dirección predominante para la animación
+	if velocity.x > 0:
+		current_dir = "right"
+	elif velocity.x < 0:
+		current_dir = "left"
+	elif velocity.y > 0:
+		current_dir = "down"
+	elif velocity.y < 0:
+		current_dir = "up"
 
 func play_anim(movement):
 	if current_dir in anim_dict:

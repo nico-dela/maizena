@@ -1,49 +1,62 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_frcxe"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_8xb4l"]
 
 [resource]
-script = ExtResource("1_frcxe")
+script = ExtResource("1_8xb4l")
 using_states = PackedStringArray()
 titles = {
-"start": "3"
+"start": "2"
 }
 character_names = PackedStringArray()
-first_title = "3"
+first_title = "0"
 lines = {
-"1": {
-"id": "1",
-"next_id": "3",
-"text": "start",
+"0": {
+"id": "0",
+"next_id": "2",
 "type": "title"
 },
-"3": {
-"character": "",
-"character_replacements": Array[Dictionary]([]),
-"id": "3",
-"next_id": "4",
-"tags": PackedStringArray(),
+"1": {
+"id": "1",
+"next_id": "2",
+"type": ""
+},
+"2": {
+"id": "2",
+"next_id": "3",
 "text": "¡Aquí yacen los demonios sellados!",
-"text_replacements": Array[Dictionary]([]),
-"translation_key": "¡Aquí yacen los demonios sellados!",
+"type": "dialogue"
+},
+"3": {
+"id": "3",
+"next_id": "5",
+"text": "¡Por nada en el mundo dejes que se rompa la piedra!",
 "type": "dialogue"
 },
 "4": {
-"character": "",
-"character_replacements": Array[Dictionary]([]),
 "id": "4",
-"next_id": "6",
-"tags": PackedStringArray(),
-"text": "¡Por nada en el mundo dejes que se rompa la piedra!",
-"text_replacements": Array[Dictionary]([]),
-"translation_key": "¡Por nada en el mundo dejes que se rompa la piedra!",
-"type": "dialogue"
+"next_id": "5",
+"type": ""
+},
+"5": {
+"id": "5",
+"is_snippet": false,
+"next_id": "end",
+"next_id_after": "",
+"type": "goto"
 },
 "6": {
 "id": "6",
 "is_snippet": false,
 "next_id": "end",
+"next_id_after": "",
 "type": "goto"
 }
 }
-metadata/dialogue_manager_version = "2.29.2"
+raw_text = "~ start
+
+¡Aquí yacen los demonios sellados!
+¡Por nada en el mundo dejes que se rompa la piedra!
+
+=> END"
+metadata/dialogue_manager_version = "3.2.0"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=4 uid="uid://dtdekra2n1gji"]
+[gd_scene load_steps=37 format=4 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://art/tilesets/laboratorio.png" id="1_5id3o"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://art/tilesets/templo de los anfibios.png" id="2_osqrk"]
@@ -13,16 +13,11 @@
 [ext_resource type="Texture2D" uid="uid://gvkwwqj55d1l" path="res://art/tilesets/Bollos house.png" id="8_pn6cv"]
 [ext_resource type="Texture2D" uid="uid://b0i807h0o1m6t" path="res://art/tilesets/Water.png" id="8_rwltq"]
 [ext_resource type="Texture2D" uid="uid://fmh6h3hn1e2l" path="res://art/characters/personajes extras.png" id="8_sb5t3"]
-[ext_resource type="PackedScene" uid="uid://cvsnc1d0y0q4g" path="res://scenes/player.tscn" id="9_4xl32"]
 [ext_resource type="Texture2D" uid="uid://63ouiwj3o8hf" path="res://art/tilesets/beach-desert.png" id="9_jidfe"]
 [ext_resource type="Texture2D" uid="uid://dscj1x67pe7ul" path="res://art/tilesets/Montaña.png" id="10_deyod"]
 [ext_resource type="Texture2D" uid="uid://cs3blnr07ntnx" path="res://art/characters/anim personajes 1.png" id="11_y18g1"]
 [ext_resource type="Texture2D" uid="uid://bo82ry606ks2q" path="res://art/tilesets/Wood Bridge.png" id="12_khak5"]
-[ext_resource type="Script" path="res://addons/joystick/virtual_joystick.gd" id="19_yxuu0"]
-[ext_resource type="Texture2D" uid="uid://bm30au8mjfc2f" path="res://addons/joystick/textures/joystick_base_outline.png" id="20_hhpxm"]
-[ext_resource type="Texture2D" uid="uid://dt13r06u87fib" path="res://addons/joystick/textures/joystick_tip_arrows.png" id="21_lv1v6"]
 [ext_resource type="PackedScene" uid="uid://dd260wyj55xsf" path="res://scenes/interactive_object.tscn" id="22_sdbvs"]
-[ext_resource type="Script" path="res://scenes/volume_slider.gd" id="24_jbl5i"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u6vws"]
 texture = ExtResource("1_5id3o")
@@ -1954,68 +1949,6 @@ use_parent_material = true
 tile_map_data = PackedByteArray("AAAGANv/AQABAAMAAAAHANv/AQABAAMAAAD//9v/AQABAAMAAAD+/9v/AQABAAMAAAD9/+X/CgAFAAYAAAD7/+X/CgAFAAYAAAD8/+X/CgAFAAcAAAD9/+L/CgAFAAcAAAD+/+L/CgAFAAcAAAD8/+T/CgADAAUAAAD8/+L/CgAEAAgAAAD8/+H/CgAIAAIAAAD//+P/CgAFAAMAAAD//+T/CgAFAAAAAAAEAOL/CgAFAAAAAAAFAOL/CgAFAAEAAAABAOL/CgAFAAEAAAAEAOD/CgAFAAEAAAABAN7/CgAFAAEAAADV/8//CwAAAAQAAADj/9D/CwAKAAQAAADs/8H/DQAAAAAAAADk/7n/DQAEAAAAAAAAALr/DQADAAAAAAD5/+L/DQAAAAIAAAAKAOH/DQABAAIAAADv/+v/AQABAAMAAADu//D/AQABAAMAAADl//L/AQABAAMAAADq//T/AQABAAMAAADj/+v/AQABAAMAAADZ/+7/AQABAAMAAADZ/+//AQABAAQAAADY/+z/AQAAAAQAAADW/+j/AQAAAAQAAADX/+j/AQAGAAMAAADk/+j/AQAGAAMAAADj/+n/AQAGAAMAAADa/+//CwAAAAYAAADj/+b/CwAAAAYAAADg/9L/CwAGAAIAAADg/9P/CwAGAAMAAADg/9T/CwAGAAQAAADg/9X/CwAGAAUAAADh/9L/CwAHAAIAAADh/9P/CwAHAAMAAADh/9T/CwAHAAQAAADh/9X/CwAHAAUAAADi/9L/CwAIAAIAAADi/9P/CwAIAAMAAADi/9T/CwAIAAQAAADi/9X/CwAIAAUAAADu/+3/CgAIAAIAAAAJANr/CAABAAYAAAANANj/CAABAAYAAAANANb/CAABAAYAAAANANf/CAABAAYAAAAOANf/CAABAAYAAAAOANj/CAABAAYAAAAOANb/CAABAAYAAAAMANf/CAABAAYAAAAMANb/CAABAAYAAAANANX/CAABAAYAAAANANT/CAABAAYAAAAOANT/CAABAAYAAAAOANX/CAABAAYAAAAOANP/CAABAAYAAAAHANX/CAABAAYAAAAGANX/CAABAAYAAAAHANT/CAABAAYAAAAHANb/CAAAAAcAAAAIANb/CAAAAAcAAAAIANX/CAAAAAcAAAAIANT/CAAAAAcAAAAIANP/CAAAAAcAAAAHANP/CAAAAAcAAAACANH/CAAAAAcAAAABANH/CAAAAAcAAAABANL/CAAAAAcAAAAAANL/CAAAAAcAAAD//9L/CAAAAAcAAAD+/9P/CAAAAAcAAAD9/9T/CAAAAAcAAAD+/9L/CAAAAAcAAAD9/9P/CAAAAAcAAAD8/9T/CAAAAAcAAAD5/9P/CAAAAAcAAAD6/9P/CAAAAAcAAAD7/9P/CAAAAAcAAAD8/9P/CAAAAAcAAAD7/9T/CAAAAAcAAAD6/9T/CAAAAAcAAAD5/9T/CAAAAAcAAAD4/9T/CAAAAAcAAAD3/9T/CAAAAAcAAAD4/9X/CAAAAAcAAAD5/9X/CAAAAAcAAAD6/9X/CAAAAAcAAAD5/9b/CAAAAAcAAAD7/9L/CAAAAAcAAAD8/9L/CAAAAAcAAAD9/9L/CAAAAAcAAAACANL/CAAAAAcAAAADANH/CAAAAAcAAAAEANH/CAAAAAcAAAAFANH/CAABAAYAAAACAND/CAAAAAcAAAADAND/CAAAAAcAAAAEAND/CAAAAAcAAAADAM//CAAAAAcAAAD9/83/CAAEAAcAAAD6/8//CAAEAAcAAAALANb/CAAEAAcAAAALANX/CAAEAAcAAAAMANX/CAAEAAcAAAAMANT/CAAEAAcAAAASAND/CAAEAAcAAAAWAND/CAAHAAUAAAAXAND/CAAHAAYAAAAXANH/CAAHAAcAAAARANL/CAACAAcAAAARANT/CAACAAcAAAAPANX/CAACAAcAAAAIAMj/CAABAAYAAAAIAMn/CAABAAYAAAAJAMn/CAABAAYAAAAJAMr/CAABAAYAAAAKAMn/CAABAAYAAAAKAMj/CAABAAYAAAAJAMj/CAABAAYAAAAKAMr/CAABAAYAAAALAMn/CAABAAYAAAALAMj/CAABAAYAAAAMAMj/CAABAAYAAAAMAMn/CAABAAYAAAALAMr/CAABAAYAAAAMAMr/CAABAAYAAAAMAMv/CAABAAYAAAALAMv/CAABAAYAAAAKAMv/CAABAAYAAAALAMz/CAABAAYAAAAMAMz/CAABAAYAAAANAMz/CAABAAYAAAAMAM3/CAABAAYAAAANAMv/CAABAAYAAAANAM3/CAABAAYAAAAOAM3/CAABAAYAAAAOAMz/CAABAAYAAAANAM7/CAABAAYAAAAMAM7/CAABAAYAAAAOAM7/CAABAAYAAAAPAM7/CAABAAYAAAAPAM3/CAABAAYAAAANAM//CAABAAYAAAAOAM//CAABAAYAAAANAND/CAABAAYAAAAGANL/CAABAAYAAAAGANH/CAABAAYAAAAHANL/CAABAAYAAAAHANH/CAABAAYAAAAGAND/CAABAAYAAAAFAND/CAABAAYAAAAFAM//CAABAAYAAAAHAND/CAABAAYAAAAEAM//CAABAAYAAAAEAM7/CAABAAYAAAAIANL/CAABAAYAAAAMANH/CAADAAcAAAAMAND/CAADAAcAAAAMAM//CAADAAcAAADk/73/CgADAAUAAADw/8T/CgAIAAIAAADv/8X/CgAIAAIAAADZ/8f/CwAAAAYAAAD//9//AQAGAAEAAAD//93/AQAGAAEAAAAAANz/AQAGAAEAAAAFANz/AQAGAAEAAAAGAN3/AQAGAAEAAAAGAN//AQAGAAEAAAAFAN7/AQAAAAQAAADq/+z/EAAAAAIAAADr/+v/EAAAAAAAAADa/8z/EAAAAAEAAAD9/9b/DwAMABoAAAD9/9f/DwAMABsAAAD+/9b/DwANABoAAAD+/9f/DwANABsAAAD7/9j/DwAIABwAAAD7/9n/DwAIAB0AAAD8/9j/DwAJABwAAAD8/9n/DwAJAB0AAAA=")
 tile_set = SubResource("TileSet_11gys")
 
-[node name="Layer0" type="TileMapLayer" parent="TileMap"]
-use_parent_material = true
-tile_set = SubResource("TileSet_11gys")
-
-[node name="player" parent="." instance=ExtResource("9_4xl32")]
-z_index = 1
-y_sort_enabled = true
-position = Vector2(-218, -264)
-
-[node name="mobile_joystick" type="CanvasLayer" parent="."]
-
-[node name="Virtual Joystick" type="Control" parent="mobile_joystick"]
-modulate = Color(1, 1, 1, 0.470588)
-layout_mode = 3
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -100.0
-offset_right = 200.0
-offset_bottom = 100.0
-grow_vertical = 0
-scale = Vector2(0.5, 0.5)
-script = ExtResource("19_yxuu0")
-deadzone_size = 5.0
-clampzone_size = 37.0
-visibility_mode = 1
-
-[node name="Base" type="TextureRect" parent="mobile_joystick/Virtual Joystick"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(100, 100)
-mouse_force_pass_scroll_events = false
-texture = ExtResource("20_hhpxm")
-stretch_mode = 5
-
-[node name="Tip" type="TextureRect" parent="mobile_joystick/Virtual Joystick/Base"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-pivot_offset = Vector2(50, 50)
-texture = ExtResource("21_lv1v6")
-stretch_mode = 5
-
 [node name="interactive_objects" type="Node" parent="."]
 
 [node name="cartel_sanjin" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
@@ -2092,33 +2025,3 @@ scale = Vector2(0.725, 0.725)
 [node name="cartel_playa_sur" parent="interactive_objects" instance=ExtResource("22_sdbvs")]
 position = Vector2(-232, 25)
 scale = Vector2(0.525625, 0.525625)
-
-[node name="volume_control" type="CanvasLayer" parent="."]
-
-[node name="Volume" type="Control" parent="volume_control"]
-layout_mode = 3
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -16.0
-offset_top = -61.0
-offset_right = -16.0
-offset_bottom = -61.0
-grow_horizontal = 0
-grow_vertical = 0
-script = ExtResource("24_jbl5i")
-
-[node name="VolumeSlider" type="VSlider" parent="volume_control/Volume"]
-layout_mode = 0
-offset_left = -5.0
-offset_top = -15.0
-offset_right = 11.0
-offset_bottom = 55.0
-min_value = -60.0
-max_value = 0.0
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="volume_control/Volume"]
-
-[connection signal="value_changed" from="volume_control/Volume/VolumeSlider" to="volume_control/Volume" method="_on_volume_slider_value_changed"]
