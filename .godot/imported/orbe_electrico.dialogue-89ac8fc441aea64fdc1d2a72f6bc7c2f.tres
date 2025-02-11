@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_42pxp"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_pdit1"]
 
 [resource]
-script = ExtResource("1_42pxp")
+script = ExtResource("1_pdit1")
 using_states = PackedStringArray()
 titles = {
 "start": "2"
@@ -24,7 +24,7 @@ lines = {
 "2": {
 "id": "2",
 "next_id": "4",
-"text": "Este album se hizo con mucho amor y porro ˙ᵕ˙",
+"text": "Este album se hizo con mucho amor y porro",
 "type": "dialogue"
 },
 "3": {
@@ -49,7 +49,7 @@ lines = {
 }
 raw_text = "~ start
 
-Este album se hizo con mucho amor y porro ˙ᵕ˙
+Este album se hizo con mucho amor y porro
 
 => END"
 metadata/dialogue_manager_version = "3.2.0"

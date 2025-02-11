@@ -13,9 +13,9 @@ res://addons/dialogue_manager/test_scene.tscn::1c4f0614e6fdd1dd8eccbe244b1175c7:
 res://scenes/interactive_object.tscn::2c1bdda510c35d4a41ece844ff6dc963::1739130063::res://.godot/exported/133200997/export-6b9446230947edcb40918fa1c16721eb-interactive_object.scn
 res://scenes/player.tscn::22b9374548ba50d18f59a5e84ddce41b::1739130124::res://.godot/exported/133200997/export-234fb6894ec6226e856ab7f825500d3d-player.scn
 res://scenes/world.tscn::26c1965c864c0a3bf7a3dffa31905253::1739130125::res://.godot/exported/133200997/export-6b9c1b1fd6ae6f795188dfdc89e222b0-world.scn
-res://addons/joystick/virtual_joystick.tscn::d7f415d25376e1eee743d0a30c333413::1739134494::res://.godot/exported/133200997/export-bcf9652dfbd4c46fe01ba791362a5ce5-virtual_joystick.scn
+res://addons/joystick/virtual_joystick.tscn::2c0385af8be64957133f75c9db760a66::1739311975::res://.godot/exported/133200997/export-bcf9652dfbd4c46fe01ba791362a5ce5-virtual_joystick.scn
 res://addons/dialogue_manager/components/editor_property/editor_property_control.tscn::1ac5a656b8ebd0c1c3f388fbabb13108::1739130075::res://.godot/exported/133200997/export-e6551c697be622f6f28de3ce27c66911-editor_property_control.scn
 res://addons/dialogue_manager/components/editor_property/resource_button.tscn::98d9ef89ece54c5a65394b8e3e429616::1739130075::res://.godot/exported/133200997/export-d6982417a6d4bbaa52c872e8d58f148a-resource_button.scn
 res://addons/dialogue_manager/components/find_in_files.tscn::a70e35d5f6718053f22ad04e350d0ccf::1739130075::res://.godot/exported/133200997/export-60c9c2fb186c3ec58bf069f3b83f71d0-find_in_files.scn
-res://scenes/main_scene.tscn::0a3c137accc785ade02c2e7862415cfd::1739134494::res://.godot/exported/133200997/export-21a49e14a0c58d7941d04142a5bf9ddc-main_scene.scn
-res://scenes/settings_menu.tscn::2633d370cdd8dd9a15ed5db5d8476bff::1739134495::res://.godot/exported/133200997/export-8b57c6bc760461035449d3426e587698-settings_menu.scn
+res://scenes/main_scene.tscn::3e7292e1b1201771e59ce47a239b040e::1739311974::res://.godot/exported/133200997/export-21a49e14a0c58d7941d04142a5bf9ddc-main_scene.scn
+res://scenes/settings_menu.tscn::915dcc0ceb851d79469a65387762a0e5::1739311975::res://.godot/exported/133200997/export-8b57c6bc760461035449d3426e587698-settings_menu.scn

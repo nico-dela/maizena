@@ -1,9 +1,4 @@
-res://scenes/world.tscn
-res://addons/dialogue_manager/test_scene.gd
 res://scenes/main_scene.tscn
-res://scenes/settings_menu.tscn
+res://addons/dialogue_manager/test_scene.gd
 res://addons/joystick/virtual_joystick.tscn
-res://scenes/player.tscn
-res://scripts/joystick_placement.gd
-res://scripts/settings_menu.gd
-res://addons/joystick/virtual_joystick.gd
+res://scenes/settings_menu.tscn

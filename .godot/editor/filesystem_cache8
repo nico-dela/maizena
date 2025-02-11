@@ -1,9 +1,9 @@
 3d2893b3edb386a04fdf123af9d541f9
-::res://::1739135381
+::res://::1739314982
 export_presets.cfg::TextFile::-1::1739034955::0::1::::<><>::
 README.md::TextFile::-1::1730758665::0::1::::<><>::
 ::res://addons/::1739130075
-::res://addons/dialogue_manager/::1739130105
+::res://addons/dialogue_manager/::1739309930
 constants.gd::GDScript::-1::1739130075::0::1::::DMConstants<>RefCounted<>::
 dialogue_label.gd::GDScript::-1::1739130075::0::1::::DialogueLabel<>RichTextLabel<>res://addons/dialogue_manager/assets/icon.svg::
 dialogue_label.tscn::PackedScene::5518490004210093266::1739130075::0::1::::<><>::res://addons/dialogue_manager/dialogue_label.gd
@@ -18,7 +18,7 @@ inspector_plugin.gd::GDScript::-1::1739130075::0::1::::DMInspectorPlugin<>Editor
 plugin.cfg::TextFile::-1::1739130075::0::1::::<><>::
 plugin.gd::GDScript::-1::1739130075::0::1::::<>EditorPlugin<>::
 settings.gd::GDScript::-1::1739130075::0::1::::DMSettings<>Node<>::
-test_scene.gd::GDScript::-1::1739130105::0::1::::BaseDialogueTestScene<>Node2D<>::
+test_scene.gd::GDScript::-1::1739309930::0::1::::BaseDialogueTestScene<>Node2D<>::
 test_scene.tscn::PackedScene::1416400481679934567::1739130075::0::1::::<><>::res://addons/dialogue_manager/test_scene.gd
 ::res://addons/dialogue_manager/assets/::1739130089
 icon.svg::CompressedTexture2D::9148339284877624195::1739130075::1739130089::1::::<><>::
@@ -76,9 +76,9 @@ dialogue_cache.gd::GDScript::-1::1739130075::0::1::::DMCache<>Node<>::
 ::res://addons/dialogue_manager/views/::1739130075
 main_view.gd::GDScript::-1::1739130075::0::1::::<>Control<>::
 main_view.tscn::PackedScene::4884668666408697448::1739130075::0::1::::<><>::res://addons/dialogue_manager/views/main_view.gd<>uid://civ6shmka5e8u::::res://addons/dialogue_manager/components/code_edit.tscn<>uid://dnufpcdrreva3::::res://addons/dialogue_manager/components/files_list.tscn<>uid://ctns6ouwwd68i::::res://addons/dialogue_manager/components/title_list.tscn<>uid://co8yl23idiwbi::::res://addons/dialogue_manager/components/update_button.tscn<>uid://gr8nakpbrhby::::res://addons/dialogue_manager/components/search_and_replace.tscn<>uid://cs8pwrxr5vxix::::res://addons/dialogue_manager/components/errors_panel.tscn<>res://addons/dialogue_manager/components/code_edit_syntax_highlighter.gd<>uid://0n7hwviyyly4::::res://addons/dialogue_manager/components/find_in_files.tscn
-::res://addons/joystick/::1739135393
+::res://addons/joystick/::1739314998
 virtual_joystick.gd::GDScript::-1::1739133715::0::1::::VirtualJoystick<>Control<>::
-virtual_joystick.tscn::PackedScene::8038149555967335895::1739135411::0::1::::<><>::res://addons/joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://addons/joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://addons/joystick/textures/joystick_tip_arrows.png
+virtual_joystick.tscn::PackedScene::8038149555967335895::1739315009::0::1::::<><>::res://addons/joystick/virtual_joystick.gd<>uid://bm30au8mjfc2f::::res://addons/joystick/textures/joystick_base_outline.png<>uid://dt13r06u87fib::::res://addons/joystick/textures/joystick_tip_arrows.png
 ::res://addons/joystick/textures/::1739038238
 joystick_base_outline.png::CompressedTexture2D::3288008411285325467::1730758665::1739038238::1::::<><>::
 joystick_tip.png::CompressedTexture2D::3132432681801126628::1730758665::1739038238::1::::<><>::
@@ -113,8 +113,8 @@ Tilled Dirt.png::CompressedTexture2D::4036865663667659250::1730758665::173903823
 Water.png::CompressedTexture2D::4159706795001771249::1730758665::1739038239::1::::<><>::
 Wood Bridge.png::CompressedTexture2D::3438859987437671950::1730758665::1739038239::1::::<><>::
 Wooden House.png::CompressedTexture2D::2954160572471588883::1730758665::1739038239::1::::<><>::
-::res://build/::1739134795
-::res://dialogues/::1739135393
+::res://build/::1739312116
+::res://dialogues/::1739314999
 bicicleta.dialogue::Resource::2823062603241343877::1730758665::1739130089::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 boji.dialogue::Resource::9047928892181090837::1730758665::1739130089::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 bollo.dialogue::Resource::966614776552521974::1730758665::1739130089::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
@@ -130,18 +130,18 @@ hi.dialogue::Resource::5987608695978817420::1730758665::1739130088::1::::<><>::r
 kaeru.dialogue::Resource::869208265641221921::1730758665::1739130088::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 laboratorio.dialogue::Resource::2861256220591533109::1730758665::1739130088::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 michis.dialogue::Resource::8801197046450375107::1730758665::1739130088::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-orbe_electrico.dialogue::Resource::7192707452088466845::1739130122::1739135411::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
+orbe_electrico.dialogue::Resource::7192707452088466845::1739311389::1739315009::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 piedra_grieta.dialogue::Resource::4250267943405242463::1730758665::1739130088::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 ranancio.dialogue::Resource::1054758610061757074::1730758665::1739130088::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 silueto_1.dialogue::Resource::2928147039679875062::1730758665::1739130088::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 silueto_2.dialogue::Resource::3349850485296945577::1730758665::1739130088::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 spinetto.dialogue::Resource::2573125588094043216::1730758665::1739130087::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
 templo_sapos.dialogue::Resource::3626779408213654015::1730758665::1739130087::1::::<><>::res://addons/dialogue_manager/dialogue_resource.gd
-::res://scenes/::1739135393
+::res://scenes/::1739314998
 interactive_object.tscn::PackedScene::7427494846015621429::1739130063::0::1::::<><>::res://scripts/interactive_object.gd
-main_scene.tscn::PackedScene::1894909134621466650::1739135411::0::1::::<><>::uid://dtdekra2n1gji::::res://scenes/world.tscn<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://wtbpnf36qq6q::::res://scenes/settings_menu.tscn<>uid://dmr0fcamx7t56::::res://addons/joystick/virtual_joystick.tscn<>uid://f1j7bvynm5sw::::res://art/settings (2).png
+main_scene.tscn::PackedScene::1894909134621466650::1739315008::0::1::::<><>::uid://dtdekra2n1gji::::res://scenes/world.tscn<>uid://cvsnc1d0y0q4g::::res://scenes/player.tscn<>uid://wtbpnf36qq6q::::res://scenes/settings_menu.tscn<>uid://dmr0fcamx7t56::::res://addons/joystick/virtual_joystick.tscn<>uid://f1j7bvynm5sw::::res://art/settings (2).png
 player.tscn::PackedScene::6284760147262208712::1739130124::0::1::::<><>::res://scripts/player.gd<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png
-settings_menu.tscn::PackedScene::1583465933107028766::1739135411::0::1::::<><>::uid://bwratb785l7ig::::res://art/Candefont-Regular.ttf<>res://scripts/settings_menu.gd<>res://scripts/volume_slider.gd
+settings_menu.tscn::PackedScene::1583465933107028766::1739315009::0::1::::<><>::uid://bwratb785l7ig::::res://art/Candefont-Regular.ttf<>res://scripts/settings_menu.gd<>res://scripts/volume_slider.gd
 world.tscn::PackedScene::8499304833516323026::1739130125::0::1::::<><>::uid://dnbiyjpwy46sh::::res://art/tilesets/laboratorio.png<>uid://pkqub3ypbmga::::res://art/tilesets/templo de los anfibios.png<>uid://dxs1vsn7urcf5::::res://art/tilesets/Grass.png<>uid://boemw1emdmc8n::::res://art/tilesets/OutdoorsTileset.png<>uid://bhafsii3o8ipu::::res://art/tilesets/Hills.png<>uid://bxrqt8mpq6btq::::res://art/tilesets/Tilled Dirt.png<>uid://covbnov3c3yc4::::res://art/tilesets/aldea de las sombras.png<>uid://bidaufsco4bw2::::res://art/tilesets/Wooden House.png<>uid://cr07se5dfwlsg::::res://art/characters/sanjin.png<>uid://cmnsp68w564un::::res://art/tilesets/Fences.png<>uid://gvkwwqj55d1l::::res://art/tilesets/Bollos house.png<>uid://b0i807h0o1m6t::::res://art/tilesets/Water.png<>uid://fmh6h3hn1e2l::::res://art/characters/personajes extras.png<>uid://63ouiwj3o8hf::::res://art/tilesets/beach-desert.png<>uid://dscj1x67pe7ul::::res://art/tilesets/Montaña.png<>uid://cs3blnr07ntnx::::res://art/characters/anim personajes 1.png<>uid://bo82ry606ks2q::::res://art/tilesets/Wood Bridge.png<>uid://dd260wyj55xsf::::res://scenes/interactive_object.tscn
 ::res://scripts/::1739134343
 global.gd::GDScript::-1::1730758665::0::1::::<>Node<>::
