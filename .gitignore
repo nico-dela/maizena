@@ -1,26 +1,50 @@
-# Directorios generados automáticamente
-.export/
+# =============================
+# 🛠️ Archivos y carpetas de Godot
+# =============================
+
+# Caché del editor (configuración local, historial de archivos abiertos, etc.)
+.godot/
+
+# Caché de recursos generados automáticamente por el editor
 .import/
-.cache/
+
+# Caché de exportación
+.export/
+
+# =============================
+# 📄 Archivos temporales y logs
+# =============================
 
 # Archivos de usuario y temporales
 *.tmp
 *.log
 *.bak
 *.cfg
-*.mono
 *.ini
+*.mono
 
-# Archivos de Godot específicos
-*.godot
+# Archivos de backup de scripts
+*.gd~
+*.tscn~
+*.tres~
+*.res~
+
+# =============================
+# 🎮 Archivos específicos de Godot
+# =============================
+
+# Traducciones y conversiones de assets
 *.translation
 *.remap
 *.converted.*
 
-# Ignorar configuración del editor de Godot
-.godot/
+# Configuración de la interfaz del editor
+.godot/editor/editor_layout.cfg
 
-# Archivos de compilación (si usás C#)
+# =============================
+# 🖥️ Archivos de compilación (si usás C#)
+# =============================
+
 mono/
 *.csproj
 *.sln
@@ -29,7 +53,35 @@ mono/
 *.dll
 *.exe
 
-# Archivos del editor
+# =============================
+# 📝 Archivos del editor y configuraciones
+# =============================
+
 .editor_config
 .settings/
+
+# =============================
+# 🌐 Git y otros archivos no deseados
+# =============================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+~$*
+.nfs*
+
+# Archivos de control de versiones de otros sistemas
+*.swp
+*.swo
+*.swn
 
