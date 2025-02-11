@@ -17,6 +17,9 @@
 *.remap
 *.converted.*
 
+# Ignorar configuración del editor de Godot
+.godot/
+
 # Archivos de compilación (si usás C#)
 mono/
 *.csproj
@@ -29,3 +32,4 @@ mono/
 # Archivos del editor
 .editor_config
 .settings/
+
