@@ -9,6 +9,7 @@
 
 # --- Versionar archivos esenciales del proyecto ---
 # Nota: Asegúrate de NO ignorar 'project.godot', ya que es la configuración global del proyecto.
+!project.godot
 # Y versiona tus escenas (por ejemplo, en la carpeta scenes/).
 
 # Caché de recursos generados automáticamente por el editor
