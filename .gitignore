@@ -2,8 +2,14 @@
 # 🛠️ Archivos y carpetas de Godot
 # =============================
 
-# Caché del editor (configuración local, historial de archivos abiertos, etc.)
+# --- No versionar archivos generados localmente por el editor ---
+# La carpeta .godot contiene la caché y configuraciones locales del editor.
+# ¡No se deben incluir en el repositorio!
 .godot/
+
+# --- Versionar archivos esenciales del proyecto ---
+# Nota: Asegúrate de NO ignorar 'project.godot', ya que es la configuración global del proyecto.
+# Y versiona tus escenas (por ejemplo, en la carpeta scenes/).
 
 # Caché de recursos generados automáticamente por el editor
 .import/
@@ -38,8 +44,7 @@
 *.remap
 *.converted.*
 
-# Configuración de la interfaz del editor
-.godot/editor/editor_layout.cfg
+# (La configuración de la interfaz del editor, que está dentro de .godot, ya se ignora)
 
 # =============================
 # 🖥️ Archivos de compilación (si usás C#)
