@@ -3,8 +3,6 @@ class_name DMResolvedLineData extends RefCounted
 
 ## The line's text
 var text: String = ""
-## A map of pauses against where they are found in the text.
-var pauses: Dictionary = {}
 ## A map of speed changes against where they are found in the text.
 var speeds: Dictionary = {}
 ## A list of any mutations to run and where they are found in the text.
@@ -15,7 +13,6 @@ var time: String = ""
 
 func _init(line: String) -> void:
 	text = line
-	pauses = {}
 	speeds = {}
 	mutations = []
 	time = ""
@@ -39,7 +36,7 @@ func _init(line: String) -> void:
 	var accumulaive_length_offset = 0
 	for position in bbcode_positions:
 		# Ignore our own markers
-		if position.code in ["wait", "speed", "/speed", "do", "do!", "set", "next", "if", "else", "/if"]:
+		if position.code in ["wait", "speed", "/speed", "$>", "$>>", "do", "do!", "set", "next", "if", "else", "/if"]:
 			continue
 
 		bbcodes.append({
@@ -59,14 +56,12 @@ func _init(line: String) -> void:
 		limit += 1
 
 		var bbcode = next_bbcode_position[0]
-
 		var index = bbcode.start
 		var code = bbcode.code
 		var raw_args = bbcode.raw_args
 		var args = {}
-		if code in ["do", "do!", "set"]:
-			var compilation: DMCompilation = DMCompilation.new()
-			args["value"] = compilation.extract_mutation("%s %s" % [code, raw_args])
+		if code in ["$>", "$>>", "do", "do!", "set"]:
+			args["value"] = DMCompiler.extract_mutation("%s %s" % [code, raw_args])
 		else:
 			# Could be something like:
 			# 	"=1.0"
@@ -80,15 +75,13 @@ func _init(line: String) -> void:
 
 		match code:
 			"wait":
-				if pauses.has(index):
-					pauses[index] += args.get("value").to_float()
-				else:
-					pauses[index] = args.get("value").to_float()
+				var wait: Dictionary = DMCompiler.extract_mutation("do wait(%s)" % [args.get("value", "null")])
+				mutations.append([index, wait])
 			"speed":
 				speeds[index] = args.get("value").to_float()
 			"/speed":
 				speeds[index] = 1.0
-			"do", "do!", "set":
+			"$>", "$>>", "do", "do!", "set":
 				mutations.append([index, args.get("value")])
 			"next":
 				time = args.get("value") if args.has("value") else "0"
@@ -122,7 +115,7 @@ func _init(line: String) -> void:
 		text = text.left(index) + "]" + text.right(text.length() - index - 1)
 
 
-func find_bbcode_positions_in_string(string: String, find_all: bool = true) -> Array[Dictionary]:
+func find_bbcode_positions_in_string(string: String, find_all: bool = true, include_conditions: bool = false) -> Array[Dictionary]:
 	if not "[" in string: return []
 
 	var positions: Array[Dictionary] = []
@@ -142,7 +135,7 @@ func find_bbcode_positions_in_string(string: String, find_all: bool = true) -> A
 			open_brace_count += 1
 
 		else:
-			if not is_finished_code and (string[i].to_upper() != string[i] or string[i] == "/" or string[i] == "!"):
+			if not is_finished_code and (string[i].to_upper() != string[i] or ["/", "!", "$", ">"].has(string[i])):
 				code += string[i]
 			else:
 				is_finished_code = true
@@ -152,11 +145,12 @@ func find_bbcode_positions_in_string(string: String, find_all: bool = true) -> A
 
 		if string[i] == "]":
 			open_brace_count -= 1
-			if open_brace_count == 0 and not code in ["if", "else", "/if"]:
+			if open_brace_count == 0 and (include_conditions or not code in ["if", "else", "/if"]):
 				positions.append({
 					bbcode = bbcode,
 					code = code,
 					start = start,
+					end = i,
 					raw_args = bbcode.substr(code.length() + 1, bbcode.length() - code.length() - 2).strip_edges()
 				})
 

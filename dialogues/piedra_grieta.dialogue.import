@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://b1s4j6u75wsah"
 path="res://.godot/imported/piedra_grieta.dialogue-682fe6ac0227b5ef0b4972e408a525d2.tres"
