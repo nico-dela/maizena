@@ -9,37 +9,58 @@ var anim_dict = {
 	"up": {"flip_h": true, "walk": "back_walk", "idle": "back_idle"}
 }
 
+# Añade esta variable para referencia al menú
+var settings_menu = null
+
 func _ready():
 	$AnimatedSprite2D.play("front_idle")
+	# Obtener referencia al nodo Settings en la escena
+	settings_menu = get_tree().root.find_child("Settings", true, false)
 
-func _physics_process(delta):
-	player_movement(delta)
-
-func player_movement(_delta):
-	if !global.shown_dialogue:
+func _physics_process(_delta):
+	# Verificar si el menú de configuración está abierto
+	if settings_menu and settings_menu.is_open:
 		velocity = Vector2.ZERO
-		if Input.is_action_pressed("ui_right"):
-			current_dir = "right"
-			velocity.x = SPEED
-		elif Input.is_action_pressed("ui_left"):
-			current_dir = "left"
-			velocity.x = -SPEED
-		elif Input.is_action_pressed("ui_down"):
-			current_dir = "down"
-			velocity.y = SPEED
-		elif Input.is_action_pressed("ui_up"):
-			current_dir = "up"
-			velocity.y = -SPEED
+		play_anim(0)
+		move_and_slide()
+		return
+	
+	if DialogueController.input_locked:
+		velocity = Vector2.ZERO
+		play_anim(0)
+		move_and_slide()
+		return
 
-		if velocity != Vector2.ZERO:
-			play_anim(1)
-		else:
-			play_anim(0)
+	velocity = Vector2.ZERO
+
+	if Input.is_action_pressed("ui_right"):
+		velocity.x += 1
+	if Input.is_action_pressed("ui_left"):
+		velocity.x -= 1
+	if Input.is_action_pressed("ui_down"):
+		velocity.y += 1
+	if Input.is_action_pressed("ui_up"):
+		velocity.y -= 1
+
+	if velocity != Vector2.ZERO:
+		velocity = velocity.normalized() * SPEED
+		update_current_dir()
+		play_anim(1)
 	else:
-		velocity = Vector2.ZERO
 		play_anim(0)
 
 	move_and_slide()
+
+# El resto del script se mantiene igual...
+func update_current_dir():
+	if velocity.x > 0:
+		current_dir = "right"
+	elif velocity.x < 0:
+		current_dir = "left"
+	elif velocity.y > 0:
+		current_dir = "down"
+	elif velocity.y < 0:
+		current_dir = "up"
 
 func play_anim(movement):
 	if current_dir in anim_dict:

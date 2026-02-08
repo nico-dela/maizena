@@ -1,38 +1,56 @@
-[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DialogueResource" format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_ypc4i"]
+[ext_resource type="Script" uid="uid://dbs4435dsf3ry" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_d5ml7"]
 
 [resource]
-script = ExtResource("1_ypc4i")
+script = ExtResource("1_d5ml7")
 using_states = PackedStringArray()
 titles = {
-"start": "3"
+"start": "2"
 }
 character_names = PackedStringArray("Silueto 1")
-first_title = "3"
+first_title = "0"
 lines = {
+"0": {
+&"id": "0",
+&"next_id": "2",
+&"type": "title"
+},
 "1": {
-"id": "1",
-"next_id": "3",
-"text": "start",
-"type": "title"
+&"id": "1",
+&"next_id": "2",
+&"type": ""
+},
+"2": {
+&"character": "Silueto 1",
+&"id": "2",
+&"next_id": "4",
+&"text": "¿Que escondes detras de tu mascara? ¿No podras salvarlos a todos?",
+&"type": "dialogue"
 },
 "3": {
-"character": "Silueto 1",
-"character_replacements": Array[Dictionary]([]),
-"id": "3",
-"next_id": "5",
-"tags": PackedStringArray(),
-"text": "¿Que escondes detrás de tu máscara? ¿No podrás salvarlos a todos?",
-"text_replacements": Array[Dictionary]([]),
-"translation_key": "¿Que escondes detrás de tu máscara? ¿No podrás salvarlos a todos?",
-"type": "dialogue"
+&"id": "3",
+&"next_id": "4",
+&"type": ""
+},
+"4": {
+&"id": "4",
+&"is_snippet": false,
+&"next_id": "end",
+&"next_id_after": "",
+&"type": "goto"
 },
 "5": {
-"id": "5",
-"is_snippet": false,
-"next_id": "end",
-"type": "goto"
+&"id": "5",
+&"is_snippet": false,
+&"next_id": "end",
+&"next_id_after": "",
+&"type": "goto"
 }
 }
-metadata/dialogue_manager_version = "2.29.2"
+raw_text = "~ start
+
+Silueto 1: ¿Que escondes detras de tu mascara? ¿No podras salvarlos a todos?
+
+=> END"
+metadata/dialogue_manager_version = "3.10.0"

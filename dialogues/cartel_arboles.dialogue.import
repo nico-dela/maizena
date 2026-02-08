@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_11"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://cynlg0h2pwi0w"
 path="res://.godot/imported/cartel_arboles.dialogue-f94136fa7d719306199b497a7c2c2760.tres"

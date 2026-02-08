@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_11"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://mnby6roko3xt"
 path="res://.godot/imported/kaeru.dialogue-5b188b9d93ccbda523bba1858c6255b6.tres"

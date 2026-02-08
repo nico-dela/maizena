@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://18542l13jsva"]
+
+[ext_resource type="PackedScene" uid="uid://dtdekra2n1gji" path="res://scenes/world.tscn" id="1_ckrdw"]
+[ext_resource type="PackedScene" uid="uid://cvsnc1d0y0q4g" path="res://scenes/player.tscn" id="2_p6wng"]
+[ext_resource type="PackedScene" uid="uid://wtbpnf36qq6q" path="res://scenes/settings_menu.tscn" id="3_7mwkq"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/joystick/virtual_joystick.tscn" id="4_k44sj"]
+[ext_resource type="Texture2D" uid="uid://f1j7bvynm5sw" path="res://assets/ui/settings (2).png" id="5_0flnm"]
+[ext_resource type="PackedScene" uid="uid://cdgya8rhsv24l" path="res://scenes/song_banner.tscn" id="6_rt2n2"]
+[ext_resource type="PackedScene" uid="uid://eq0kjkx20xsw" path="res://scenes/music_manager.tscn" id="7_c16ls"]
+
+[node name="MainScene" type="Node2D" unique_id=910432244]
+
+[node name="World" parent="." unique_id=524533904 instance=ExtResource("1_ckrdw")]
+
+[node name="Player" parent="." unique_id=1271161695 instance=ExtResource("2_p6wng")]
+position = Vector2(-218, -264)
+
+[node name="Controller" type="CanvasLayer" parent="." unique_id=2000166020]
+
+[node name="Virtual Joystick" parent="Controller" unique_id=377446146 instance=ExtResource("4_k44sj")]
+visibility_mode = 1
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=74604997]
+
+[node name="Settings" parent="UI" unique_id=2051298128 instance=ExtResource("3_7mwkq")]
+
+[node name="SettingsButton" type="Button" parent="UI" unique_id=380496572]
+modulate = Color(1, 1, 1, 0.666667)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -46.0
+offset_top = 4.0
+offset_right = -6.0
+offset_bottom = 44.0
+grow_horizontal = 0
+icon = ExtResource("5_0flnm")
+flat = true
+icon_alignment = 1
+
+[node name="SongBanner" parent="UI" unique_id=163109551 instance=ExtResource("6_rt2n2")]
+visible = false
+
+[node name="MusicManager" parent="." unique_id=683985731 instance=ExtResource("7_c16ls")]
+visible = false
+
+[connection signal="pressed" from="UI/SettingsButton" to="UI/Settings" method="_on_settings_button_pressed"]

@@ -1,0 +1,87 @@
+[gd_scene format=3 uid="uid://wtbpnf36qq6q"]
+
+[ext_resource type="Script" uid="uid://ccb0gio54jpvx" path="res://scripts/settings_menu.gd" id="1_ds00t"]
+[ext_resource type="Script" uid="uid://fqa5gwdec4i5" path="res://scripts/volume_slider.gd" id="2_nqdjw"]
+[ext_resource type="FontFile" uid="uid://bde64xf7bs8ji" path="res://assets/ui/Early GameBoy.ttf" id="2_wswnh"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_foakb"]
+font = ExtResource("2_wswnh")
+
+[sub_resource type="LabelSettings" id="LabelSettings_iks7g"]
+font = ExtResource("2_wswnh")
+
+[node name="Settings" type="Control" unique_id=1277165601]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_ds00t")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1689264033]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=881228146]
+layout_mode = 2
+color = Color(0, 0, 0, 0.784314)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1565064515]
+layout_mode = 2
+alignment = 1
+
+[node name="Titulo" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1901277714]
+layout_mode = 2
+text = "Configuracion"
+label_settings = SubResource("LabelSettings_foakb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Volume" type="Control" parent="MarginContainer/VBoxContainer" unique_id=484439236]
+layout_mode = 2
+size_flags_vertical = 4
+script = ExtResource("2_nqdjw")
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Volume" unique_id=2042519782]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -145.0
+offset_top = 3.0
+offset_right = -33.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Volumen"
+label_settings = SubResource("LabelSettings_iks7g")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VolumeHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Volume" unique_id=149283923]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -22.0
+offset_top = 4.0
+offset_right = 128.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+min_value = -60.0
+max_value = 0.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MarginContainer/VBoxContainer/Volume" unique_id=2003269195]
+
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Volume/VolumeHSlider" to="MarginContainer/VBoxContainer/Volume" method="_on_volume_slider_value_changed"]

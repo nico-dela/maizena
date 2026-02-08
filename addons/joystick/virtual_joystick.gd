@@ -30,6 +30,8 @@ var _touch_index: int = -1
 @onready var _default_color: Color = _tip.modulate
 
 func _ready() -> void:
+	#position = SettingsManager.joystick_position
+	
 	if not DisplayServer.is_touchscreen_available() and visibility_mode == VisibilityMode.TOUCHSCREEN_ONLY:
 		hide()
 
