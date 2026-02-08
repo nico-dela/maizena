@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://n1iae167vlu1"
 path="res://.godot/imported/bollo.dialogue-6da68cc37f0c577a2f3f9902c03caa20.tres"

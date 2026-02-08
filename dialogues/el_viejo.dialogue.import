@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://cxsb6sns4b02l"
 path="res://.godot/imported/el_viejo.dialogue-be7d8c2a1ca166922bcd9b51f146a3e6.tres"

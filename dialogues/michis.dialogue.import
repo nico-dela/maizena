@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://dxnmouqpahdmh"
 path="res://.godot/imported/michis.dialogue-fef1d1f7933e04e03043548e33f0da39.tres"

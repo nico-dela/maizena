@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://cji1hddl433m0"
 path="res://.godot/imported/cartel_bollo.dialogue-8eebef01156a7373c7402a13ccacc0fc.tres"

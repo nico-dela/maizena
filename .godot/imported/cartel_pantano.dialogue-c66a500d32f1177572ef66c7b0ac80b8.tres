@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DialogueResource" format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_4d651"]
+[ext_resource type="Script" uid="uid://dbs4435dsf3ry" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_daqgg"]
 
 [resource]
-script = ExtResource("1_4d651")
+script = ExtResource("1_daqgg")
 using_states = PackedStringArray()
 titles = {
 "start": "2"
@@ -12,45 +12,45 @@ character_names = PackedStringArray()
 first_title = "0"
 lines = {
 "0": {
-"id": "0",
-"next_id": "2",
-"type": "title"
+&"id": "0",
+&"next_id": "2",
+&"type": "title"
 },
 "1": {
-"id": "1",
-"next_id": "2",
-"type": ""
+&"id": "1",
+&"next_id": "2",
+&"type": ""
 },
 "2": {
-"id": "2",
-"next_id": "3",
-"text": "En este albumzine reunimos cosas de muchxs amigxs.",
-"type": "dialogue"
+&"id": "2",
+&"next_id": "3",
+&"text": "En este albumzine reunimos cosas de muchxs amigxs.",
+&"type": "dialogue"
 },
 "3": {
-"id": "3",
-"next_id": "5",
-"text": "Dibujos, ideas, palabras, sonidos, técnicas, ruidos, lagrimas, enojos, roturas, resacas, medias, presentimientos, cables, instrumentos, fuegos, asados y arroz, fotos, escenarios.",
-"type": "dialogue"
+&"id": "3",
+&"next_id": "5",
+&"text": "Dibujos, ideas, palabras, sonidos, técnicas, ruidos, lagrimas, enojos, roturas, resacas, medias, presentimientos, cables, instrumentos, fuegos, asados y arroz, fotos, escenarios.",
+&"type": "dialogue"
 },
 "4": {
-"id": "4",
-"next_id": "5",
-"type": ""
+&"id": "4",
+&"next_id": "5",
+&"type": ""
 },
 "5": {
-"id": "5",
-"is_snippet": false,
-"next_id": "end",
-"next_id_after": "",
-"type": "goto"
+&"id": "5",
+&"is_snippet": false,
+&"next_id": "end",
+&"next_id_after": "",
+&"type": "goto"
 },
 "6": {
-"id": "6",
-"is_snippet": false,
-"next_id": "end",
-"next_id_after": "",
-"type": "goto"
+&"id": "6",
+&"is_snippet": false,
+&"next_id": "end",
+&"next_id_after": "",
+&"type": "goto"
 }
 }
 raw_text = "~ start
@@ -59,4 +59,4 @@ En este albumzine reunimos cosas de muchxs amigxs.
 Dibujos, ideas, palabras, sonidos, técnicas, ruidos, lagrimas, enojos, roturas, resacas, medias, presentimientos, cables, instrumentos, fuegos, asados y arroz, fotos, escenarios.
 
 => END"
-metadata/dialogue_manager_version = "3.2.0"
+metadata/dialogue_manager_version = "3.10.0"

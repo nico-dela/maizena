@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="DialogueResource" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DialogueResource" format=3]
 
-[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_nlj64"]
+[ext_resource type="Script" uid="uid://dbs4435dsf3ry" path="res://addons/dialogue_manager/dialogue_resource.gd" id="1_8ssoe"]
 
 [resource]
-script = ExtResource("1_nlj64")
+script = ExtResource("1_8ssoe")
 using_states = PackedStringArray()
 titles = {
 "start": "2"
@@ -12,40 +12,40 @@ character_names = PackedStringArray("Spinetto")
 first_title = "0"
 lines = {
 "0": {
-"id": "0",
-"next_id": "2",
-"type": "title"
+&"id": "0",
+&"next_id": "2",
+&"type": "title"
 },
 "1": {
-"id": "1",
-"next_id": "2",
-"type": ""
+&"id": "1",
+&"next_id": "2",
+&"type": ""
 },
 "2": {
-"character": "Spinetto",
-"id": "2",
-"next_id": "4",
-"text": "Oh Sanjin! ¿Que queres ahora?",
-"type": "dialogue"
+&"character": "Spinetto",
+&"id": "2",
+&"next_id": "4",
+&"text": "Oh Sanjin! ¿Que queres ahora?",
+&"type": "dialogue"
 },
 "3": {
-"id": "3",
-"next_id": "4",
-"type": ""
+&"id": "3",
+&"next_id": "4",
+&"type": ""
 },
 "4": {
-"id": "4",
-"is_snippet": false,
-"next_id": "end",
-"next_id_after": "",
-"type": "goto"
+&"id": "4",
+&"is_snippet": false,
+&"next_id": "end",
+&"next_id_after": "",
+&"type": "goto"
 },
 "5": {
-"id": "5",
-"is_snippet": false,
-"next_id": "end",
-"next_id_after": "",
-"type": "goto"
+&"id": "5",
+&"is_snippet": false,
+&"next_id": "end",
+&"next_id_after": "",
+&"type": "goto"
 }
 }
 raw_text = "~ start
@@ -53,4 +53,4 @@ raw_text = "~ start
 Spinetto: Oh Sanjin! ¿Que queres ahora?
 
 => END"
-metadata/dialogue_manager_version = "3.2.0"
+metadata/dialogue_manager_version = "3.10.0"

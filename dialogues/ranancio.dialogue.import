@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_14"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://pa6yqs7u10p7"
 path="res://.godot/imported/ranancio.dialogue-e041a1a1ec5a537a0cf352236ad36a3b.tres"
