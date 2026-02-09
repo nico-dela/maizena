@@ -1,6 +1,7 @@
+CanvasModulate
+CanvasLayer
 RichTextLabel
 AudioStreamPlayer2D
-CanvasLayer
 Label
 MarginContainer
 PanelContainer
@@ -12,4 +13,3 @@ HBoxContainer
 ColorRect
 VBoxContainer
 HSlider
-BoxContainer

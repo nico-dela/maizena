@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://assets/tilesets/laboratorio.png" id="1_5id3o"]
+[ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="1_eo1xk"]
 [ext_resource type="Resource" uid="uid://df3qxy1b8rrsc" path="res://dialogues/cartel_sanjin.dialogue" id="2_kpybi"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://assets/tilesets/templo de los anfibios.png" id="2_osqrk"]
 [ext_resource type="Resource" uid="uid://d155cjm3ai77v" path="res://dialogues/boji.dialogue" id="3_hi6a0"]
@@ -3511,104 +3512,107 @@ sources/14 = SubResource("TileSetAtlasSource_l0gbv")
 sources/15 = SubResource("TileSetAtlasSource_q4kl7")
 sources/16 = SubResource("TileSetAtlasSource_m2meh")
 
-[node name="world" type="Node2D" unique_id=1286119642]
+[node name="World" type="Node2D" unique_id=1286119642]
 y_sort_enabled = true
+script = ExtResource("1_eo1xk")
 
-[node name="interactive_objects" type="Node" parent="." unique_id=855853933]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=77373919]
 
-[node name="cartel_sanjin" parent="interactive_objects" unique_id=759448462 instance=ExtResource("22_sdbvs")]
+[node name="InteractiveObjects" type="Node" parent="." unique_id=855853933]
+
+[node name="cartel_sanjin" parent="InteractiveObjects" unique_id=759448462 instance=ExtResource("22_sdbvs")]
 position = Vector2(-232, -311)
 scale = Vector2(0.58, 0.58)
 dialogue = ExtResource("2_kpybi")
 
-[node name="boji" parent="interactive_objects" unique_id=1360136207 instance=ExtResource("22_sdbvs")]
+[node name="boji" parent="InteractiveObjects" unique_id=1360136207 instance=ExtResource("22_sdbvs")]
 position = Vector2(-345, -308)
 dialogue = ExtResource("3_hi6a0")
 
-[node name="hi" parent="interactive_objects" unique_id=1130282239 instance=ExtResource("22_sdbvs")]
+[node name="hi" parent="InteractiveObjects" unique_id=1130282239 instance=ExtResource("22_sdbvs")]
 position = Vector2(-328, -328)
 dialogue = ExtResource("4_eo1xk")
 
-[node name="bollo" parent="interactive_objects" unique_id=23161702 instance=ExtResource("22_sdbvs")]
+[node name="bollo" parent="InteractiveObjects" unique_id=23161702 instance=ExtResource("22_sdbvs")]
 position = Vector2(-600, -328)
 dialogue = ExtResource("5_18clu")
 
-[node name="spinetto" parent="interactive_objects" unique_id=1377613463 instance=ExtResource("22_sdbvs")]
+[node name="spinetto" parent="InteractiveObjects" unique_id=1377613463 instance=ExtResource("22_sdbvs")]
 position = Vector2(-311, -997)
 dialogue = ExtResource("6_4wdv8")
 
-[node name="silueto_1" parent="interactive_objects" unique_id=465840521 instance=ExtResource("22_sdbvs")]
+[node name="silueto_1" parent="InteractiveObjects" unique_id=465840521 instance=ExtResource("22_sdbvs")]
 position = Vector2(-440, -1125)
 dialogue = ExtResource("7_d46x8")
 
-[node name="silueto_2" parent="interactive_objects" unique_id=1233014882 instance=ExtResource("22_sdbvs")]
+[node name="silueto_2" parent="InteractiveObjects" unique_id=1233014882 instance=ExtResource("22_sdbvs")]
 position = Vector2(9, -1109)
 dialogue = ExtResource("8_3l05q")
 
-[node name="michis" parent="interactive_objects" unique_id=1954414131 instance=ExtResource("22_sdbvs")]
+[node name="michis" parent="InteractiveObjects" unique_id=1954414131 instance=ExtResource("22_sdbvs")]
 position = Vector2(-632, -805)
 scale = Vector2(0.72, 0.72)
 dialogue = ExtResource("9_x28ej")
 
-[node name="kaeru" parent="interactive_objects" unique_id=938771111 instance=ExtResource("22_sdbvs")]
+[node name="kaeru" parent="InteractiveObjects" unique_id=938771111 instance=ExtResource("22_sdbvs")]
 position = Vector2(-104, -467)
 scale = Vector2(0.56, 0.56)
 dialogue = ExtResource("10_1jxku")
 
-[node name="ranancio" parent="interactive_objects" unique_id=1686194783 instance=ExtResource("22_sdbvs")]
+[node name="ranancio" parent="InteractiveObjects" unique_id=1686194783 instance=ExtResource("22_sdbvs")]
 position = Vector2(168, -486)
 dialogue = ExtResource("11_1dgkn")
 
-[node name="el_viejo" parent="interactive_objects" unique_id=417162255 instance=ExtResource("22_sdbvs")]
+[node name="el_viejo" parent="InteractiveObjects" unique_id=417162255 instance=ExtResource("22_sdbvs")]
 position = Vector2(-599, -519)
 dialogue = ExtResource("12_e68xj")
 
-[node name="bicicleta" parent="interactive_objects" unique_id=222201645 instance=ExtResource("22_sdbvs")]
+[node name="bicicleta" parent="InteractiveObjects" unique_id=222201645 instance=ExtResource("22_sdbvs")]
 position = Vector2(-561, -966)
 dialogue = ExtResource("13_5hglh")
 
-[node name="cartel_bollo" parent="interactive_objects" unique_id=1971061993 instance=ExtResource("22_sdbvs")]
+[node name="cartel_bollo" parent="InteractiveObjects" unique_id=1971061993 instance=ExtResource("22_sdbvs")]
 position = Vector2(-478, -405)
 dialogue = ExtResource("14_qg546")
 
-[node name="cartel_laboratorio" parent="interactive_objects" unique_id=1977706728 instance=ExtResource("22_sdbvs")]
+[node name="cartel_laboratorio" parent="InteractiveObjects" unique_id=1977706728 instance=ExtResource("22_sdbvs")]
 position = Vector2(-184, -1096)
 dialogue = ExtResource("15_pf35h")
 
-[node name="laboratorio" parent="interactive_objects" unique_id=1800403090 instance=ExtResource("22_sdbvs")]
+[node name="laboratorio" parent="InteractiveObjects" unique_id=1800403090 instance=ExtResource("22_sdbvs")]
 position = Vector2(-345, -996)
 dialogue = ExtResource("16_iexy4")
 
-[node name="cartel_arboles" parent="interactive_objects" unique_id=1245863271 instance=ExtResource("22_sdbvs")]
+[node name="cartel_arboles" parent="InteractiveObjects" unique_id=1245863271 instance=ExtResource("22_sdbvs")]
 position = Vector2(-232, -724)
 scale = Vector2(0.755, 0.755)
 dialogue = ExtResource("17_npbic")
 
-[node name="cartel_pantano" parent="interactive_objects" unique_id=1515662786 instance=ExtResource("22_sdbvs")]
+[node name="cartel_pantano" parent="InteractiveObjects" unique_id=1515662786 instance=ExtResource("22_sdbvs")]
 position = Vector2(8, -454)
 scale = Vector2(0.45, 0.45)
 dialogue = ExtResource("18_e6ckp")
 
-[node name="piedra_grieta" parent="interactive_objects" unique_id=1299155054 instance=ExtResource("22_sdbvs")]
+[node name="piedra_grieta" parent="InteractiveObjects" unique_id=1299155054 instance=ExtResource("22_sdbvs")]
 position = Vector2(-40, -168)
 scale = Vector2(0.5, 0.5)
 dialogue = ExtResource("19_mvg0v")
 
-[node name="templo_sapos" parent="interactive_objects" unique_id=1902140872 instance=ExtResource("22_sdbvs")]
+[node name="templo_sapos" parent="InteractiveObjects" unique_id=1902140872 instance=ExtResource("22_sdbvs")]
 position = Vector2(48, -552)
 dialogue = ExtResource("20_h3odw")
 
-[node name="orbe_electrico" parent="interactive_objects" unique_id=1744954375 instance=ExtResource("22_sdbvs")]
+[node name="orbe_electrico" parent="InteractiveObjects" unique_id=1744954375 instance=ExtResource("22_sdbvs")]
 position = Vector2(-600, -823)
 scale = Vector2(0.75, 0.75)
 dialogue = ExtResource("21_5hl1e")
 
-[node name="cartel_aldea" parent="interactive_objects" unique_id=1114158571 instance=ExtResource("22_sdbvs")]
+[node name="cartel_aldea" parent="InteractiveObjects" unique_id=1114158571 instance=ExtResource("22_sdbvs")]
 position = Vector2(-552, -726)
 scale = Vector2(0.725, 0.725)
 dialogue = ExtResource("22_66tox")
 
-[node name="cartel_playa_sur" parent="interactive_objects" unique_id=1832526856 instance=ExtResource("22_sdbvs")]
+[node name="cartel_playa_sur" parent="InteractiveObjects" unique_id=1832526856 instance=ExtResource("22_sdbvs")]
 position = Vector2(-232, 25)
 scale = Vector2(0.525625, 0.525625)
 dialogue = ExtResource("23_pq8jk")
