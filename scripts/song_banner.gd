@@ -24,7 +24,7 @@ func _ready():
 
 func show_song(title: String):
 	# Usar BBCode con color personalizado
-	label.text = "Reproduciendo: [color=#F23049]" + title + "[/color]"
+	label.text = "Reproduciendo: [color=#F23049]" + title.to_upper() + "[/color]"
 	
 	# Resetear posición y opacidad antes de animar
 	position.y -= slide_distance
