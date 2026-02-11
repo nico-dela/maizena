@@ -1,14 +1,13 @@
 [gd_scene format=3 uid="uid://wtbpnf36qq6q"]
 
 [ext_resource type="Script" uid="uid://ccb0gio54jpvx" path="res://scripts/settings_menu.gd" id="1_ds00t"]
-[ext_resource type="Script" uid="uid://fqa5gwdec4i5" path="res://scripts/volume_slider.gd" id="2_nqdjw"]
-[ext_resource type="FontFile" uid="uid://bde64xf7bs8ji" path="res://assets/ui/Early GameBoy.ttf" id="2_wswnh"]
+[ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="2_cr101"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_foakb"]
-font = ExtResource("2_wswnh")
+font = ExtResource("2_cr101")
 
 [sub_resource type="LabelSettings" id="LabelSettings_iks7g"]
-font = ExtResource("2_wswnh")
+font = ExtResource("2_cr101")
 
 [node name="Settings" type="Control" unique_id=1277165601]
 layout_mode = 3
@@ -38,7 +37,8 @@ alignment = 1
 
 [node name="Titulo" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1901277714]
 layout_mode = 2
-text = "Configuracion"
+text = "Configuracion
+"
 label_settings = SubResource("LabelSettings_foakb")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -46,7 +46,6 @@ vertical_alignment = 1
 [node name="Volume" type="Control" parent="MarginContainer/VBoxContainer" unique_id=484439236]
 layout_mode = 2
 size_flags_vertical = 4
-script = ExtResource("2_nqdjw")
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Volume" unique_id=2042519782]
 layout_mode = 1

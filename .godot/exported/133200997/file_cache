@@ -1,13 +1,13 @@
-res://addons/dialogue_manager/example_balloon/example_balloon.tscn::48b91f5618c56b43138c165c9293d8c1::1770468672::res://.godot/exported/133200997/export-57fc9b32a4ae3d4a3041b46baf4b8f92-example_balloon.scn
-res://addons/dialogue_manager/example_balloon/small_example_balloon.tscn::ad39f864cd724c0ab85c37ccb1b3962b::1770468672::res://.godot/exported/133200997/export-25872080cd204f02261b5746b425708f-small_example_balloon.scn
-res://addons/dialogue_manager/dialogue_label.tscn::5087c11b45dfaf8effc779674dfe11e8::1770468672::res://.godot/exported/133200997/export-e41b7d5321416240678013b406b79557-dialogue_label.scn
-res://addons/dialogue_manager/test_scene.tscn::5946a9a55ceff988ba46e7f734ff0538::1770468672::res://.godot/exported/133200997/export-74a175fe1e216df3bdf79c5c27a2ac2c-test_scene.scn
-res://scenes/interactive_object.tscn::7a916249d1e21f8027a78848cfbf7895::1770473840::res://.godot/exported/133200997/export-6b9446230947edcb40918fa1c16721eb-interactive_object.scn
-res://scenes/player.tscn::aeec22169675e4368ee3195e2c3afd45::1770587742::res://.godot/exported/133200997/export-234fb6894ec6226e856ab7f825500d3d-player.scn
-res://scenes/world.tscn::dd3baf1aa0e1f5c843687e2676184e86::1770585662::res://.godot/exported/133200997/export-6b9c1b1fd6ae6f795188dfdc89e222b0-world.scn
-res://addons/joystick/virtual_joystick.tscn::2e9e61293aae115252f6369ec138ae58::1751163795::res://.godot/exported/133200997/export-bcf9652dfbd4c46fe01ba791362a5ce5-virtual_joystick.scn
-res://scenes/main_scene.tscn::a5c3442530cba9c0b2b11216221b5ade::1770589249::res://.godot/exported/133200997/export-21a49e14a0c58d7941d04142a5bf9ddc-main_scene.scn
-res://scenes/settings_menu.tscn::b6b79c154363bf40d6878ccb8c14c657::1770592387::res://.godot/exported/133200997/export-8b57c6bc760461035449d3426e587698-settings_menu.scn
-res://scenes/music_manager.tscn::5c6d61af7311881f344e9a22307618b7::1770476127::res://.godot/exported/133200997/export-70a10c3937bee67bd22343e5ac536038-music_manager.scn
-res://scenes/song_banner.tscn::9b7409e9d92b309fc7a170c29c98c8c0::1770592221::res://.godot/exported/133200997/export-94060293eb021e7a79181dfabd2446ee-song_banner.scn
-res://dialogue balloon/balloon.tscn::26783ce0d0fdb1566b426ea4144ef258::1770586681::res://.godot/exported/133200997/export-fbdd74490b1adf8c2ff70ffe580c2377-balloon.scn
+res://addons/dialogue_manager/example_balloon/example_balloon.tscn::48b91f5618c56b43138c165c9293d8c1::1770594140::res://.godot/exported/133200997/export-57fc9b32a4ae3d4a3041b46baf4b8f92-example_balloon.scn
+res://addons/dialogue_manager/example_balloon/small_example_balloon.tscn::ad39f864cd724c0ab85c37ccb1b3962b::1770594140::res://.godot/exported/133200997/export-25872080cd204f02261b5746b425708f-small_example_balloon.scn
+res://addons/dialogue_manager/dialogue_label.tscn::5087c11b45dfaf8effc779674dfe11e8::1770594140::res://.godot/exported/133200997/export-e41b7d5321416240678013b406b79557-dialogue_label.scn
+res://addons/dialogue_manager/test_scene.tscn::5946a9a55ceff988ba46e7f734ff0538::1770594140::res://.godot/exported/133200997/export-74a175fe1e216df3bdf79c5c27a2ac2c-test_scene.scn
+res://scenes/interactive_object.tscn::7a916249d1e21f8027a78848cfbf7895::1770594140::res://.godot/exported/133200997/export-6b9446230947edcb40918fa1c16721eb-interactive_object.scn
+res://scenes/player.tscn::aeec22169675e4368ee3195e2c3afd45::1770594140::res://.godot/exported/133200997/export-234fb6894ec6226e856ab7f825500d3d-player.scn
+res://scenes/world.tscn::cd6388207c9db8833833e8cec8ff4389::1770602706::res://.godot/exported/133200997/export-6b9c1b1fd6ae6f795188dfdc89e222b0-world.scn
+res://addons/joystick/virtual_joystick.tscn::2e9e61293aae115252f6369ec138ae58::1770594140::res://.godot/exported/133200997/export-bcf9652dfbd4c46fe01ba791362a5ce5-virtual_joystick.scn
+res://scenes/main_scene.tscn::a5c3442530cba9c0b2b11216221b5ade::1770594140::res://.godot/exported/133200997/export-21a49e14a0c58d7941d04142a5bf9ddc-main_scene.scn
+res://scenes/settings_menu.tscn::b6b79c154363bf40d6878ccb8c14c657::1770594140::res://.godot/exported/133200997/export-8b57c6bc760461035449d3426e587698-settings_menu.scn
+res://scenes/music_manager.tscn::5c6d61af7311881f344e9a22307618b7::1770594140::res://.godot/exported/133200997/export-70a10c3937bee67bd22343e5ac536038-music_manager.scn
+res://scenes/song_banner.tscn::9b7409e9d92b309fc7a170c29c98c8c0::1770594140::res://.godot/exported/133200997/export-94060293eb021e7a79181dfabd2446ee-song_banner.scn
+res://dialogue balloon/balloon.tscn::26783ce0d0fdb1566b426ea4144ef258::1770594140::res://.godot/exported/133200997/export-fbdd74490b1adf8c2ff70ffe580c2377-balloon.scn

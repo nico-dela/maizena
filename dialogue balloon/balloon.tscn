@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dqop8r1h7521t" path="res://dialogue balloon/balloon.gd" id="1_ocg2d"]
 [ext_resource type="PackedScene" uid="uid://ckvgyvclnwggo" path="res://addons/dialogue_manager/dialogue_label.tscn" id="2_a8ve6"]
-[ext_resource type="FontFile" uid="uid://bde64xf7bs8ji" path="res://assets/ui/Early GameBoy.ttf" id="2_r68uq"]
+[ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="2_ocg2d"]
 [ext_resource type="Script" uid="uid://bb52rsfwhkxbn" path="res://addons/dialogue_manager/dialogue_responses_menu.gd" id="3_72ixx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_spyqn"]
@@ -53,7 +53,7 @@ corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
 [sub_resource type="Theme" id="Theme_qq3yp"]
-default_font = ExtResource("2_r68uq")
+default_font = ExtResource("2_ocg2d")
 default_font_size = 20
 Button/styles/disabled = SubResource("StyleBoxFlat_spyqn")
 Button/styles/focus = SubResource("StyleBoxFlat_ri4m3")
