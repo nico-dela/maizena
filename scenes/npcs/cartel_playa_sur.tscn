@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://hsr2jst4mrr"]
+
+[ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/interactive_object.gd" id="1_1fh6r"]
+[ext_resource type="Resource" uid="uid://fxwwifkkxtum" path="res://dialogues/cartel_playa_sur.dialogue" id="2_0urma"]
+[ext_resource type="Texture2D" uid="uid://dscj1x67pe7ul" path="res://assets/tilesets/Montaña.png" id="2_h1lkr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0urma"]
+atlas = ExtResource("2_h1lkr")
+region = Rect2(80, 80, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2rou7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0urma")
+}],
+"loop": true,
+"name": &"cartel_playa_sur",
+"speed": 5.0
+}]
+
+[node name="StaticBody2D" type="StaticBody2D" unique_id=1033152148 groups=["dialogue"]]
+script = ExtResource("1_1fh6r")
+dialogue = ExtResource("2_0urma")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
+shape = SubResource("CircleShape2D_jxmtf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2088313280]
+sprite_frames = SubResource("SpriteFrames_2rou7")
+animation = &"cartel_playa_sur"
+autoplay = "cartel_playa_sur"

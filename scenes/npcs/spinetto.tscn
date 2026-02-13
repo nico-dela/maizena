@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://c3lpk1pu0ear6"]
+
+[ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/interactive_object.gd" id="1_1fh6r"]
+[ext_resource type="Resource" uid="uid://bcwpac5ftq6lo" path="res://dialogues/spinetto.dialogue" id="2_irb4i"]
+[ext_resource type="Texture2D" uid="uid://fmh6h3hn1e2l" path="res://assets/characters/personajes extras.png" id="2_lel61"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_irb4i"]
+atlas = ExtResource("2_lel61")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2rou7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_irb4i")
+}],
+"loop": true,
+"name": &"spinetto",
+"speed": 5.0
+}]
+
+[node name="StaticBody2D" type="StaticBody2D" unique_id=1033152148 groups=["dialogue"]]
+script = ExtResource("1_1fh6r")
+dialogue = ExtResource("2_irb4i")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
+shape = SubResource("CircleShape2D_jxmtf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2088313280]
+sprite_frames = SubResource("SpriteFrames_2rou7")
+animation = &"spinetto"
+autoplay = "spinetto"

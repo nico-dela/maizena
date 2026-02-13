@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://tpn7tvkuinym"]
+
+[ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/interactive_object.gd" id="1_1fh6r"]
+[ext_resource type="Resource" uid="uid://bhyofh7kcqila" path="res://dialogues/silueto_1.dialogue" id="2_66n8c"]
+[ext_resource type="Texture2D" uid="uid://fmh6h3hn1e2l" path="res://assets/characters/personajes extras.png" id="2_bm4b1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_66n8c"]
+atlas = ExtResource("2_bm4b1")
+region = Rect2(48, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2rou7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_66n8c")
+}],
+"loop": true,
+"name": &"silueto_1",
+"speed": 5.0
+}]
+
+[node name="StaticBody2D" type="StaticBody2D" unique_id=1033152148 groups=["dialogue"]]
+script = ExtResource("1_1fh6r")
+dialogue = ExtResource("2_66n8c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
+shape = SubResource("CircleShape2D_jxmtf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2088313280]
+sprite_frames = SubResource("SpriteFrames_2rou7")
+animation = &"silueto_1"
+autoplay = "silueto_1"

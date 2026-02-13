@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://dtvxthg8v012b"]
+
+[ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/interactive_object.gd" id="1_1fh6r"]
+[ext_resource type="Resource" uid="uid://bghrotqrmyxeb" path="res://dialogues/bicicleta.dialogue" id="2_jks7k"]
+[ext_resource type="Texture2D" uid="uid://boemw1emdmc8n" path="res://assets/tilesets/OutdoorsTileset.png" id="2_ydjge"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jks7k"]
+atlas = ExtResource("2_ydjge")
+region = Rect2(95, 62, 35, 20)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2rou7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jks7k")
+}],
+"loop": true,
+"name": &"bicicleta",
+"speed": 5.0
+}]
+
+[node name="StaticBody2D" type="StaticBody2D" unique_id=1033152148 groups=["dialogue"]]
+script = ExtResource("1_1fh6r")
+dialogue = ExtResource("2_jks7k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
+shape = SubResource("CircleShape2D_jxmtf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2088313280]
+sprite_frames = SubResource("SpriteFrames_2rou7")
+animation = &"bicicleta"
+autoplay = "bicicleta"
