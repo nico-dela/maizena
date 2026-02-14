@@ -1,6 +1,8 @@
 extends Node
 class_name TimeOfDaySystem
 
+signal time_updated(current_hour: float, is_day: bool)
+
 # Colores para cada hora (puedes ajustarlos)
 var time_colors = {
 	"morning": Color(1.0, 1.0, 0.9),     # Amarillo suave
@@ -18,6 +20,8 @@ var time_speed: float = 0.0    # Por defecto, tiempo estático (no avanza autom�
 var use_real_time: bool = true # Usar hora real del sistema
 
 func _ready():
+	add_to_group("time_system")
+	
 	if not canvas_modulate:
 		# Crear dinámicamente si no existe
 		canvas_modulate = CanvasModulate.new()
@@ -79,6 +83,7 @@ func advance_time(delta: float):
 		current_time = 0.0
 
 func update_time_color():
+	emit_signal("time_updated", current_time, is_daytime())
 	var color: Color
 	
 	if current_time >= 5.0 and current_time < 8.0:
