@@ -91,15 +91,3 @@ $RECYCLE.BIN/
 *.swo
 *.swn
 
-# =============================
-# 📦 Exportaciones y builds
-# =============================
-
-build/
-export/
-releases/
-*.exe
-*.apk
-*.pck
-*.zip
-*.7z
