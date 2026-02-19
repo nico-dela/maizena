@@ -22,11 +22,11 @@ func _input(event):
 	if not is_open:
 		return
 	
-	if event.is_action_pressed("ui_right"):
+	if event.is_action_pressed("ui_up"):
 		volume_slider.value += 1
 		get_viewport().set_input_as_handled()
 	
-	if event.is_action_pressed("ui_left"):
+	if event.is_action_pressed("ui_down"):
 		volume_slider.value -= 1
 		get_viewport().set_input_as_handled()
 

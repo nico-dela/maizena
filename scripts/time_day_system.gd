@@ -60,9 +60,6 @@ func get_current_system_time():
 	# Convertir a formato decimal (ej: 14:30:00 = 14.5)
 	current_time = float(hour) + float(minute) / 60.0 + float(second) / 3600.0
 	
-	print("Hora del sistema: %02d:%02d:%02d" % [hour, minute, second])
-	print("Hora en decimal: %.2f" % current_time)
-	
 	return current_time
 
 func update_with_real_time():

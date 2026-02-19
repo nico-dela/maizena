@@ -145,6 +145,7 @@ unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.501961)
 layout_mode = 2
 mouse_filter = 1
+theme_override_constants/line_separation = 10
 bbcode_enabled = true
 text = "Character"
 fit_content = true
