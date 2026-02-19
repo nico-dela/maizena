@@ -35,12 +35,12 @@ color = Color(0, 0, 0, 0.784314)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1565064515]
 layout_mode = 2
+theme_override_constants/separation = 50
 alignment = 1
 
 [node name="Titulo" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1901277714]
 layout_mode = 2
-text = "Configuracion
-"
+text = "CONFIGURACIÓN"
 label_settings = SubResource("LabelSettings_foakb")
 horizontal_alignment = 1
 vertical_alignment = 1
