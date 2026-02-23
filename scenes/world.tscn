@@ -3591,7 +3591,7 @@ scale = Vector2(1.5, 1.5)
 
 [node name="templo_sapos" parent="InteractiveObjects" unique_id=1400442337 instance=ExtResource("20_d46x8")]
 z_index = -1
-position = Vector2(48, -590)
+position = Vector2(48, -554)
 
 [node name="orbe_electrico" parent="InteractiveObjects" unique_id=1395510267 instance=ExtResource("21_hi6a0")]
 position = Vector2(-614, -816)
