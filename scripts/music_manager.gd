@@ -42,6 +42,7 @@ var current_index := -1
 var current_song: int
 
 func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("music_manager")
 	player.finished.connect(_play_next)
 	_create_playlist()

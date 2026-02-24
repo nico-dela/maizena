@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://ccb0gio54jpvx" path="res://scripts/settings_menu.gd" id="1_ds00t"]
 [ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="2_cr101"]
+[ext_resource type="Texture2D" uid="uid://bbm4e102unldq" path="res://assets/ui/close_button.png" id="3_labj1"]
+[ext_resource type="Texture2D" uid="uid://f1j7bvynm5sw" path="res://assets/ui/settings_button.png" id="3_wswnh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_foakb"]
 font = ExtResource("2_cr101")
@@ -11,17 +13,20 @@ font_size = 38
 font = ExtResource("2_cr101")
 font_size = 28
 
-[node name="Settings" type="Control" unique_id=1277165601]
+[node name="Settings" type="CanvasLayer" unique_id=1182201072]
+script = ExtResource("1_ds00t")
+icon_open = ExtResource("3_wswnh")
+icon_close = ExtResource("3_labj1")
+
+[node name="Menu" type="Control" parent="." unique_id=1079332477]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("1_ds00t")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1689264033]
+[node name="MarginContainer" type="MarginContainer" parent="Menu" unique_id=1689264033]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,27 +34,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=881228146]
+[node name="ColorRect" type="ColorRect" parent="Menu/MarginContainer" unique_id=881228146]
 layout_mode = 2
 color = Color(0, 0, 0, 0.784314)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1565064515]
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/MarginContainer" unique_id=1565064515]
 layout_mode = 2
 theme_override_constants/separation = 50
 alignment = 1
 
-[node name="Titulo" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1901277714]
+[node name="Titulo" type="Label" parent="Menu/MarginContainer/VBoxContainer" unique_id=1901277714]
 layout_mode = 2
 text = "CONFIGURACIÓN"
 label_settings = SubResource("LabelSettings_foakb")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Volume" type="Control" parent="MarginContainer/VBoxContainer" unique_id=484439236]
+[node name="Volume" type="Control" parent="Menu/MarginContainer/VBoxContainer" unique_id=484439236]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Volume" unique_id=2042519782]
+[node name="Label" type="Label" parent="Menu/MarginContainer/VBoxContainer/Volume" unique_id=2042519782]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -67,7 +72,7 @@ label_settings = SubResource("LabelSettings_iks7g")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VolumeHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Volume" unique_id=149283923]
+[node name="VolumeHSlider" type="HSlider" parent="Menu/MarginContainer/VBoxContainer/Volume" unique_id=149283923]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -82,6 +87,20 @@ grow_vertical = 2
 min_value = -60.0
 max_value = 0.0
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="MarginContainer/VBoxContainer/Volume" unique_id=2003269195]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Menu/MarginContainer/VBoxContainer/Volume" unique_id=2003269195]
 
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/Volume/VolumeHSlider" to="MarginContainer/VBoxContainer/Volume" method="_on_volume_slider_value_changed"]
+[node name="Button" type="Button" parent="." unique_id=375551595]
+modulate = Color(1, 1, 1, 0.666667)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_right = -150.0
+offset_bottom = 50.0
+grow_horizontal = 0
+scale = Vector2(4, 4)
+flat = true
+icon_alignment = 1
+
+[connection signal="value_changed" from="Menu/MarginContainer/VBoxContainer/Volume/VolumeHSlider" to="Menu/MarginContainer/VBoxContainer/Volume" method="_on_volume_slider_value_changed"]
+[connection signal="pressed" from="Button" to="." method="_on_settings_button_pressed"]
