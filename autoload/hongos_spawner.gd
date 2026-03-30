@@ -1,7 +1,7 @@
 extends Node
 
-var cabbage_scene = preload("res://scenes/interactive_objects/hongos.tscn")
-var cabbage_spawned := false
+var hongos_scene = preload("res://scenes/interactive_objects/hongos.tscn")
+var hongos_spawned := false
 
 # posiciones válidas
 var spawn_positions := [
@@ -16,9 +16,9 @@ var last_index := -1
 func _ready():
 	rng.randomize()
 
-func spawn_cabbage():
+func spawn_hongos():
 
-	if cabbage_spawned:
+	if hongos_spawned:
 		return
 
 	if spawn_positions.is_empty():
@@ -30,7 +30,7 @@ func spawn_cabbage():
 		print("No hay escena actual")
 		return
 
-	var cabbage = cabbage_scene.instantiate()
+	var hongos = hongos_scene.instantiate()
 
 	# elegir índice aleatorio evitando repetir el último
 	var index = rng.randi_range(0, spawn_positions.size() - 1)
@@ -41,10 +41,10 @@ func spawn_cabbage():
 	last_index = index
 	var pos = spawn_positions[index]
 
-	cabbage.global_position = pos
+	hongos.global_position = pos
 	
-	scene.add_child(cabbage)
+	scene.add_child(hongos)
 
 	print("Spawn en índice:", index, "posición:", pos)
 
-	cabbage_spawned = true
+	hongos_spawned = true

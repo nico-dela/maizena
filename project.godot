@@ -27,7 +27,7 @@ config/icon="res://assets/ui/logos/Mascara.svg"
 DialogueManager="*uid://c3rodes2l3gxb"
 DialogueController="*uid://8f3elygc73ow"
 GameState="*uid://4ywmoeftrovc"
-CabbageSpawner="*uid://cig0a62b7bo21"
+HongosSpawner="*uid://cig0a62b7bo21"
 
 [dialogue_manager]
 

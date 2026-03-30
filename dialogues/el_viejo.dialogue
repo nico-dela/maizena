@@ -14,7 +14,7 @@ El viejo: … ¿Podrías buscarme algo para comer? Creo haber visto unos hongos 
 
 - Si
 	do GameState.buscar_comida()
-	do CabbageSpawner.spawn_cabbage()
+	do HongosSpawner.spawn_cabbage()
 	El viejo: Gracias… no tengo fuerzas para salir. => END
 
 - No
