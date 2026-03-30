@@ -1,5 +1,21 @@
 ~ start
 
-El viejo: … ¿No tendrás algo para comer?
+if GameState.quest_hambre_completed:
+	El viejo: Gracias… ahora puedo seguir. => END
 
-=> END
+if GameState.tiene_comida:
+	do GameState.completar_comida()
+	El viejo: Gracias… de verdad. => END
+
+if GameState.quest_hambre_active:
+	El viejo: Sigo esperando… tengo hambre. => END
+
+El viejo: … ¿Podrías buscarme algo para comer?
+
+- Si
+	do GameState.buscar_comida()
+	do CabbageSpawner.spawn_cabbage()
+	El viejo: Gracias… no tengo fuerzas para salir. => END
+
+- No
+	El viejo: Ya veo… entonces seguiré esperando. => END

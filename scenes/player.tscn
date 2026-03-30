@@ -294,7 +294,7 @@ radius = 6.08276
 [sub_resource type="CircleShape2D" id="CircleShape2D_x6vw2"]
 radius = 14.0357
 
-[node name="Player" type="CharacterBody2D" unique_id=1923423102]
+[node name="Player" type="CharacterBody2D" unique_id=1923423102 groups=["player"]]
 script = ExtResource("1_lwbni")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=451106761]

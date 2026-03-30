@@ -26,6 +26,8 @@ config/icon="res://assets/ui/logos/Mascara.svg"
 
 DialogueManager="*uid://c3rodes2l3gxb"
 DialogueController="*uid://8f3elygc73ow"
+GameState="*uid://4ywmoeftrovc"
+CabbageSpawner="*uid://cig0a62b7bo21"
 
 [dialogue_manager]
 
@@ -42,13 +44,21 @@ window/emulate_touch_from_mouse=true
 
 project/assembly_name="Maizena Web Game"
 
+[editor]
+
+movie_writer/movie_file="/mnt/Data/Videos/maizena web game.avi"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/script-ide/plugin.cfg")
 
 [filesystem]
 
 import/blender/enabled=false
+
+[global_group]
+
+player=""
 
 [input]
 

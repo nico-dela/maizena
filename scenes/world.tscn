@@ -3522,6 +3522,19 @@ script = ExtResource("1_eo1xk")
 [node name="cartel_sanjin" parent="InteractiveObjects" unique_id=1033152148 instance=ExtResource("24_eo1xk")]
 z_index = -1
 position = Vector2(-234, -313)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 19.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="boji" parent="InteractiveObjects" unique_id=1360136207 instance=ExtResource("22_sdbvs")]
 z_index = -1
@@ -3561,6 +3574,19 @@ position = Vector2(168, -486)
 [node name="el_viejo" parent="InteractiveObjects" unique_id=930916203 instance=ExtResource("12_e68xj")]
 z_index = -1
 position = Vector2(-599, -519)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 0.3,
+"start": 8.0
+}, {
+"end": 20.0,
+"probability": 0.8,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 0.5,
+"start": 20.0
+}])
 
 [node name="bicicleta" parent="InteractiveObjects" unique_id=2107986575 instance=ExtResource("13_5hglh")]
 z_index = -1
@@ -3568,10 +3594,36 @@ position = Vector2(-561, -966)
 
 [node name="cartel_bollo" parent="InteractiveObjects" unique_id=1561957745 instance=ExtResource("14_qg546")]
 position = Vector2(-478, -405)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="cartel_laboratorio" parent="InteractiveObjects" unique_id=346935561 instance=ExtResource("15_pf35h")]
 z_index = -1
 position = Vector2(-184, -1096)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="laboratorio" parent="InteractiveObjects" unique_id=1016396735 instance=ExtResource("16_npbic")]
 z_index = -2
@@ -3579,10 +3631,36 @@ position = Vector2(-320, -1038)
 
 [node name="cartel_arboles" parent="InteractiveObjects" unique_id=201741350 instance=ExtResource("17_eo1xk")]
 position = Vector2(-232, -724)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="cartel_pantano" parent="InteractiveObjects" unique_id=635294986 instance=ExtResource("18_18clu")]
 z_index = -1
 position = Vector2(8, -454)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="piedra_grieta" parent="InteractiveObjects" unique_id=2040334671 instance=ExtResource("19_4wdv8")]
 z_index = -1
@@ -3592,16 +3670,55 @@ scale = Vector2(1.5, 1.5)
 [node name="templo_sapos" parent="InteractiveObjects" unique_id=1400442337 instance=ExtResource("20_d46x8")]
 z_index = -1
 position = Vector2(48, -554)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="orbe_electrico" parent="InteractiveObjects" unique_id=1395510267 instance=ExtResource("21_hi6a0")]
 position = Vector2(-614, -816)
 
 [node name="cartel_aldea" parent="InteractiveObjects" unique_id=863487666 instance=ExtResource("22_eo1xk")]
 position = Vector2(-552, -726)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="cartel_playa_sur" parent="InteractiveObjects" unique_id=664886971 instance=ExtResource("23_18clu")]
 z_index = -1
 position = Vector2(-232, 25)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 1.0,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 1.0,
+"start": 14.0
+}, {
+"end": 23.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1110444177]
 tile_set = SubResource("TileSet_hi6a0")
