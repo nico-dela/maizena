@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://basmobrfjk3q3"
+path="res://.godot/imported/hongos.dialogue-3b2df12115e4bd3766ed5eba8533a8cd.tres"
+
+[deps]
+
+source_file="res://dialogues/hongos.dialogue"
+dest_files=["res://.godot/imported/hongos.dialogue-3b2df12115e4bd3766ed5eba8533a8cd.tres"]
+
+[params]
+
+defaults=true

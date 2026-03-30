@@ -1,6 +1,6 @@
 extends Node
 
-var cabbage_scene = preload("res://scenes/interactive_objects/comida.tscn")
+var cabbage_scene = preload("res://scenes/interactive_objects/hongos.tscn")
 var cabbage_spawned := false
 
 # posiciones válidas

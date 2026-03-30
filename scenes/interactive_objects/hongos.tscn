@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://d1nntyw1wo3g7"]
 
-[ext_resource type="Script" uid="uid://yg2ud15js2f6" path="res://scenes/interactive_objects/comida.gd" id="1_nif84"]
-[ext_resource type="Texture2D" uid="uid://we6o5wdew5gi" path="res://assets/tilesets/Basic Grass Biom things 1.png" id="2_24kqm"]
-[ext_resource type="Resource" uid="uid://basmobrfjk3q3" path="res://dialogues/comida.dialogue" id="2_ircrk"]
+[ext_resource type="Script" uid="uid://yg2ud15js2f6" path="res://scenes/interactive_objects/hongos.gd" id="1_vu1qm"]
+[ext_resource type="Resource" uid="uid://basmobrfjk3q3" path="res://dialogues/hongos.dialogue" id="2_bt8yu"]
+[ext_resource type="Texture2D" uid="uid://we6o5wdew5gi" path="res://assets/tilesets/Basic Grass Biom things 1.png" id="3_fsycg"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x7nm8"]
 radius = 7.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gg54o"]
-atlas = ExtResource("2_24kqm")
+atlas = ExtResource("3_fsycg")
 region = Rect2(80, 0, 16, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_bwe1j"]
@@ -23,8 +23,8 @@ animations = [{
 }]
 
 [node name="Area2D" type="Area2D" unique_id=1525761360 groups=["dialogue"]]
-script = ExtResource("1_nif84")
-dialogue = ExtResource("2_ircrk")
+script = ExtResource("1_vu1qm")
+dialogue = ExtResource("2_bt8yu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1913436761]
 shape = SubResource("CircleShape2D_x7nm8")
