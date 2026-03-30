@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://basmobrfjk3q3"
+path="res://.godot/imported/comida.dialogue-79e37167c8f259f73ec84e5cd6a77822.tres"
+
+[deps]
+
+source_file="res://dialogues/comida.dialogue"
+dest_files=["res://.godot/imported/comida.dialogue-79e37167c8f259f73ec84e5cd6a77822.tres"]
+
+[params]
+
+defaults=true

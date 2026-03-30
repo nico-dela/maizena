@@ -3584,7 +3584,7 @@ spawn_schedules = Array[Dictionary]([{
 "start": 14.0
 }, {
 "end": 23.0,
-"probability": 0.5,
+"probability": 1.0,
 "start": 20.0
 }])
 

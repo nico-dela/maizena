@@ -10,7 +10,7 @@ if GameState.tiene_comida:
 if GameState.quest_hambre_active:
 	El viejo: Sigo esperando… tengo hambre. => END
 
-El viejo: … ¿Podrías buscarme algo para comer?
+El viejo: … ¿Podrías buscarme algo para comer? Creo haber visto unos hongos en el bosque o en la playa …
 
 - Si
 	do GameState.buscar_comida()
