@@ -13,7 +13,7 @@ font_size = 38
 font = ExtResource("2_cr101")
 font_size = 28
 
-[node name="Settings" type="CanvasLayer" unique_id=1182201072]
+[node name="Settings" type="CanvasLayer" unique_id=1182201072 groups=["settings_menu"]]
 script = ExtResource("1_ds00t")
 icon_open = ExtResource("3_wswnh")
 icon_close = ExtResource("3_labj1")
@@ -89,6 +89,13 @@ max_value = 0.0
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Menu/MarginContainer/VBoxContainer/Volume" unique_id=2003269195]
 
+[node name="WelcomeInfo" type="Button" parent="Menu/MarginContainer/VBoxContainer" unique_id=375551596]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 26
+text = "Noticias del mundo Maizena"
+
 [node name="Button" type="Button" parent="." unique_id=375551595]
 modulate = Color(1, 1, 1, 0.666667)
 anchors_preset = 1
@@ -98,9 +105,7 @@ offset_left = -200.0
 offset_right = -150.0
 offset_bottom = 50.0
 grow_horizontal = 0
-scale = Vector2(4, 4)
+scale = Vector2(1, 1)
 flat = true
+expand_icon = true
 icon_alignment = 1
-
-[connection signal="value_changed" from="Menu/MarginContainer/VBoxContainer/Volume/VolumeHSlider" to="Menu/MarginContainer/VBoxContainer/Volume" method="_on_volume_slider_value_changed"]
-[connection signal="pressed" from="Button" to="." method="_on_settings_button_pressed"]

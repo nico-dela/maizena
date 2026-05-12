@@ -15,9 +15,11 @@ var time_colors = {
 @onready var canvas_modulate: CanvasModulate = get_node("CanvasModulate")
 
 # Sistema de tiempo
-var current_time: float = 8.0  # Se establecerá con la hora real
-var time_speed: float = 0.0    # Por defecto, tiempo estático (no avanza automáticamente)
-var use_real_time: bool = true # Usar hora real del sistema
+var current_time: float = 8.0
+var time_speed: float = 0.0
+var use_real_time: bool = true
+var _time_poll_accumulator := 0.0
+var world_state: Node = null
 
 func _ready():
 	add_to_group("time_system")
@@ -28,25 +30,40 @@ func _ready():
 		canvas_modulate.name = "CanvasModulate"
 		get_node("..").call_deferred("add_child", canvas_modulate)
 	
-	# Obtener hora actual del sistema
-	get_current_system_time()
+	world_state = get_node_or_null("/root/WorldState")
+	if world_state:
+		world_state.world_time_updated.connect(_on_world_time_updated)
+		world_state.world_state_changed.connect(_on_world_state_changed)
+		current_time = world_state.current_hour
+	else:
+		get_current_system_time()
 	
 	update_time_color()
-	
-	# Si queremos que el tiempo avance en tiempo real
-	if time_speed > 0:
-		set_process(true)
-	else:
-		set_process(false)
+	set_process(true)
 
 func _process(delta):
 	if time_speed > 0:
-		# Avanzar tiempo de juego (no tiempo real)
 		advance_time(delta)
 		update_time_color()
+		return
+
+	_time_poll_accumulator += delta
+	if _time_poll_accumulator < 10.0:
+		return
+	_time_poll_accumulator = 0.0
+
+	if world_state:
+		current_time = world_state.current_hour
+		update_time_color()
 	elif use_real_time:
-		# Actualizar con hora real del sistema periódicamente
 		update_with_real_time()
+
+func _on_world_time_updated(hour: float):
+	current_time = hour
+	update_time_color()
+
+func _on_world_state_changed():
+	update_time_color()
 
 func get_current_system_time():
 	# Obtener fecha y hora actual del sistema
@@ -108,6 +125,9 @@ func update_time_color():
 	
 	# Aplicar con suavizado
 	if canvas_modulate:
+		if world_state:
+			var decay_color := Color(0.76, 0.70, 0.64, color.a)
+			color = color.lerp(decay_color, world_state.get_decay_factor())
 		canvas_modulate.color = color
 
 # Funciones para cambiar tiempo manualmente

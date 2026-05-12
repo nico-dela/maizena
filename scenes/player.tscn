@@ -321,3 +321,4 @@ scale = Vector2(0.61, 0.61)
 shape = SubResource("CircleShape2D_x6vw2")
 
 [connection signal="body_entered" from="detection_area" to="." method="_on_detection_area_body_entered"]
+[connection signal="area_entered" from="detection_area" to="." method="_on_detection_area_area_entered"]

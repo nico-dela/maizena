@@ -1,5 +1,15 @@
 ~ start
 
+if GameState.bollo_training_completed:
+	Bollo: Sanjin, gracias por entrenarme. Ahora puedo defenderme un poco mejor. => END
+
 Bollo: Por favor, Sanjin, enséñame a pelear.
+
+- Si
+	do GameState.start_bollo_training()
+	Bollo: ¡Vamos! Estoy listo. => END
+
+- No
+	Bollo: Bueno... cuando quieras, yo espero. => END
 
 => END

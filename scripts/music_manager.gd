@@ -67,4 +67,13 @@ func _play_next():
 	player.stream = TRACKS[current_song]
 	player.play()
 
+	MaizenaMeta.record_song_play(current_song)
 	song_changed.emit(SONG_TITLES[current_song])
+
+
+func get_current_song_title() -> String:
+	return str(SONG_TITLES.get(current_song, "…"))
+
+
+func get_current_song_key() -> int:
+	return current_song

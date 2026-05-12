@@ -76,7 +76,12 @@ func _evaluate_appearance(current_hour: float):
 		
 		if in_schedule:
 			# Aplicar probabilidad independiente para cada NPC
-			if rng.randf() < prob:
+			var presence_multiplier := 1.0
+			var world_state = get_node_or_null("/root/WorldState")
+			if world_state:
+				presence_multiplier = world_state.get_presence_multiplier()
+			var adjusted_prob = clamp(prob * presence_multiplier, 0.0, 1.0)
+			if rng.randf() < adjusted_prob:
 				should_appear = true
 				break
 	

@@ -16,14 +16,19 @@ var tap_threshold = 10.0
 
 # Referencia al menú
 var settings_menu = null
+var welcome_popup: Node = null
 
 func _ready():
 	$AnimatedSprite2D.play("front_idle")
-	settings_menu = get_tree().root.find_child("Settings", true, false)
+	settings_menu = get_tree().get_first_node_in_group("settings_menu")
+	welcome_popup = get_tree().get_first_node_in_group("welcome_popup")
 
 func _input(event):
 	# Solo procesar taps si el menú no está abierto
 	if settings_menu and settings_menu.is_open:
+		return
+
+	if welcome_popup and welcome_popup.has_method("is_blocking") and welcome_popup.call("is_blocking"):
 		return
 		
 	if DialogueController.input_locked:
@@ -42,6 +47,12 @@ func _input(event):
 func _physics_process(_delta):
 	# Verificar si el menú de configuración está abierto
 	if settings_menu and settings_menu.is_open:
+		velocity = Vector2.ZERO
+		play_anim(0)
+		move_and_slide()
+		return
+
+	if welcome_popup and welcome_popup.has_method("is_blocking") and welcome_popup.call("is_blocking"):
 		velocity = Vector2.ZERO
 		play_anim(0)
 		move_and_slide()
@@ -114,5 +125,9 @@ func play_anim(movement):
 			$AnimatedSprite2D.play(dir_info["idle"])
 
 func _on_detection_area_body_entered(body):
-	if body.is_in_group("dialogue"):
+	if body.is_in_group("dialogue") and body.has_method("show_dialogue"):
 		body.show_dialogue()
+
+func _on_detection_area_area_entered(area):
+	if area.is_in_group("dialogue") and area.has_method("show_dialogue"):
+		area.show_dialogue()

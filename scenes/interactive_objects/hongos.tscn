@@ -22,7 +22,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Area2D" type="Area2D" unique_id=1525761360 groups=["dialogue"]]
+[node name="Area2D" type="Area2D" unique_id=1525761360]
 script = ExtResource("1_vu1qm")
 dialogue = ExtResource("2_bt8yu")
 

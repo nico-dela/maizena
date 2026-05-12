@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bnb6qeisa6ks2"
+path="res://.godot/imported/cartel_casa.dialogue-4483344b7d2e54d16898315477195b24.tres"
+
+[deps]
+
+source_file="res://dialogues/cartel_casa.dialogue"
+dest_files=["res://.godot/imported/cartel_casa.dialogue-4483344b7d2e54d16898315477195b24.tres"]
+
+[params]
+
+defaults=true

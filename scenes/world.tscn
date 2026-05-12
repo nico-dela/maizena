@@ -1,7 +1,9 @@
 [gd_scene format=4 uid="uid://dtdekra2n1gji"]
 
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://assets/tilesets/laboratorio.png" id="1_5id3o"]
+[ext_resource type="Script" uid="uid://bwcwvumehbess" path="res://scripts/world_autonomy_system.gd" id="1_autoz"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="1_eo1xk"]
+[ext_resource type="Script" uid="uid://daf7nnw21qel" path="res://scripts/world_residue_system.gd" id="1_resid"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://assets/tilesets/templo de los anfibios.png" id="2_osqrk"]
 [ext_resource type="Texture2D" uid="uid://dxs1vsn7urcf5" path="res://assets/tilesets/Grass.png" id="3_hk72v"]
 [ext_resource type="Texture2D" uid="uid://boemw1emdmc8n" path="res://assets/tilesets/OutdoorsTileset.png" id="4_1gr7h"]
@@ -3517,6 +3519,12 @@ script = ExtResource("1_eo1xk")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=77373919]
 
+[node name="ResidueSystem" type="Node2D" parent="." unique_id=1747012205]
+script = ExtResource("1_resid")
+
+[node name="WorldAutonomySystem" type="Node" parent="." unique_id=713704220]
+script = ExtResource("1_autoz")
+
 [node name="InteractiveObjects" type="Node" parent="." unique_id=855853933]
 
 [node name="cartel_sanjin" parent="InteractiveObjects" unique_id=1033152148 instance=ExtResource("24_eo1xk")]
@@ -3546,6 +3554,19 @@ position = Vector2(-329, -320)
 [node name="bollo" parent="InteractiveObjects" unique_id=920485956 instance=ExtResource("5_18clu")]
 z_index = -1
 position = Vector2(-600, -328)
+spawn_schedules = Array[Dictionary]([{
+"end": 12.0,
+"probability": 0.3,
+"start": 8.0
+}, {
+"end": 18.0,
+"probability": 0.5,
+"start": 14.0
+}, {
+"end": 1.0,
+"probability": 1.0,
+"start": 20.0
+}])
 
 [node name="spinetto" parent="InteractiveObjects" unique_id=761516794 instance=ExtResource("6_4wdv8")]
 z_index = -1
@@ -3554,10 +3575,20 @@ position = Vector2(-294, -993)
 [node name="silueto_1" parent="InteractiveObjects" unique_id=899319803 instance=ExtResource("7_d46x8")]
 z_index = -1
 position = Vector2(-440, -1125)
+spawn_schedules = Array[Dictionary]([{
+"end": 6.5,
+"probability": 0.3,
+"start": 5.5
+}])
 
 [node name="silueto_2" parent="InteractiveObjects" unique_id=1401549069 instance=ExtResource("8_3l05q")]
 z_index = -1
 position = Vector2(9, -1109)
+spawn_schedules = Array[Dictionary]([{
+"end": 7.2,
+"probability": 0.25,
+"start": 6.2
+}])
 
 [node name="michis" parent="InteractiveObjects" unique_id=2119731270 instance=ExtResource("9_x28ej")]
 z_index = -1
@@ -3570,22 +3601,27 @@ position = Vector2(-104, -467)
 [node name="ranancio" parent="InteractiveObjects" unique_id=146472044 instance=ExtResource("11_1dgkn")]
 z_index = -1
 position = Vector2(168, -486)
+spawn_schedules = Array[Dictionary]([{
+"end": 8.0,
+"probability": 1.0,
+"start": 5.0
+}])
 
 [node name="el_viejo" parent="InteractiveObjects" unique_id=930916203 instance=ExtResource("12_e68xj")]
 z_index = -1
 position = Vector2(-599, -519)
 spawn_schedules = Array[Dictionary]([{
-"end": 12.0,
-"probability": 0.3,
-"start": 8.0
+"end": 3.0,
+"probability": 0.75,
+"start": 0.0
 }, {
-"end": 20.0,
-"probability": 0.8,
-"start": 14.0
+"end": 24.0,
+"probability": 0.95,
+"start": 20.0
 }, {
 "end": 23.0,
-"probability": 0.5,
-"start": 20.0
+"probability": 0.1,
+"start": 8.0
 }])
 
 [node name="bicicleta" parent="InteractiveObjects" unique_id=2107986575 instance=ExtResource("13_5hglh")]

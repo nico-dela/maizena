@@ -44,7 +44,15 @@ func spawn_hongos():
 	hongos.global_position = pos
 	
 	scene.add_child(hongos)
+	hongos.tree_exited.connect(_on_hongos_removed)
 
 	print("Spawn en índice:", index, "posición:", pos)
 
 	hongos_spawned = true
+
+func spawn_cabbage():
+	# Compatibilidad con llamadas antiguas desde diálogo.
+	spawn_hongos()
+
+func _on_hongos_removed():
+	hongos_spawned = false
