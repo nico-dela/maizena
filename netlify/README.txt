@@ -4,12 +4,12 @@ Métricas Maizena + Netlify / GitHub Pages
 1) Godot — Project Settings → crear o editar claves (también en project.godot sección [maizena]):
 
    maizena/metrics/endpoint
-     URL HTTPS del endpoint. Ejemplo si el juego y Netlify comparten sitio:
-     https://TU-SITIO.netlify.app/.netlify/functions/maizena-metrics
+	 URL HTTPS del endpoint. Ejemplo si el juego y Netlify comparten sitio:
+	 https://TU-SITIO.netlify.app/.netlify/functions/maizena-metrics
 
    maizena/metrics/ingest_secret (opcional)
-     Misma cadena que METRICS_INGEST_SECRET en Netlify (no subas secretos al repo público:
-     configura el valor solo en el panel de Netlify y en export presets locales si hace falta).
+	 Misma cadena que METRICS_INGEST_SECRET en Netlify (no subas secretos al repo público:
+	 configura el valor solo en el panel de Netlify y en export presets locales si hace falta).
 
 2) Netlify — Environment variables:
 

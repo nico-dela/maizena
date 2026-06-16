@@ -7,11 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cdgya8rhsv24l" path="res://scenes/song_banner.tscn" id="6_rt2n2"]
 [ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="7_c1pb6"]
 [ext_resource type="PackedScene" uid="uid://eq0kjkx20xsw" path="res://scenes/music_manager.tscn" id="7_c16ls"]
-[ext_resource type="PackedScene" path="res://scenes/welcome_world_popup.tscn" id="8_welcome"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_foakb"]
-font = ExtResource("7_c1pb6")
-font_size = 38
+[ext_resource type="PackedScene" uid="uid://cfngsm8uld2q5" path="res://scenes/welcome_world_popup.tscn" id="8_welcome"]
 
 [node name="MainScene" type="Node2D" unique_id=910432244]
 
@@ -27,23 +23,24 @@ position = Vector2(-218, -264)
 [node name="SongBanner" parent="UI" unique_id=163109551 instance=ExtResource("6_rt2n2")]
 visible = false
 
-[node name="EraCounter" type="Control" parent="UI" unique_id=541901368]
+[node name="NewsContainer" type="Control" parent="UI" unique_id=541901368]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 19.0
 offset_top = 24.0
-offset_right = 263.0
+offset_right = 280.0
 offset_bottom = 64.0
 script = ExtResource("6_18nlu")
 
-[node name="Label" type="Label" parent="UI/EraCounter" unique_id=2096876301]
+[node name="NewsButton" type="Button" parent="UI/NewsContainer" unique_id=2096876301]
 layout_mode = 1
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Era: 119"
-label_settings = SubResource("LabelSettings_foakb")
+offset_right = 240.0
+offset_bottom = 36.0
+theme_override_fonts/font = ExtResource("7_c1pb6")
+theme_override_font_sizes/font_size = 24
+text = "◇ Noticias
+"
 
 [node name="MusicManager" parent="." unique_id=683985731 instance=ExtResource("7_c16ls")]
-visible = false
 
 [node name="WelcomeWorldPopup" parent="." unique_id=683985732 instance=ExtResource("8_welcome")]

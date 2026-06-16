@@ -1,90 +1,13 @@
 extends Node
 
-const RARE_SILENCE_CHANCE := 0.04
-
 var world_state: Node = null
 var world_rng := RandomNumberGenerator.new()
-var ambient_player_a: AudioStreamPlayer2D
-var ambient_player_b: AudioStreamPlayer2D
-var ambient_timer := 0.0
-
-const EVENT_TRACKS := {
-	"hum_3am": preload("res://assets/soundtrack/Resaka.ogg"),
-	"distant_knock": preload("res://assets/soundtrack/Grua.ogg"),
-	"ghost_pass": preload("res://assets/soundtrack/Colores.ogg")
-}
 
 func _ready():
 	world_state = get_node_or_null("/root/WorldState")
 	world_rng.randomize()
-	_build_ambient_players()
 	apply_decay_stage()
 	apply_absence_mutation()
-	set_process(true)
-
-func _process(delta: float):
-	if not world_state:
-		return
-
-	ambient_timer += delta
-	if ambient_timer >= 14.0:
-		ambient_timer = 0.0
-		_run_ambient_cycle()
-
-func _build_ambient_players():
-	ambient_player_a = AudioStreamPlayer2D.new()
-	ambient_player_a.name = "AmbientOffscreenA"
-	ambient_player_a.position = Vector2(-920, -980)
-	ambient_player_a.volume_db = -22.0
-	add_child(ambient_player_a)
-
-	ambient_player_b = AudioStreamPlayer2D.new()
-	ambient_player_b.name = "AmbientOffscreenB"
-	ambient_player_b.position = Vector2(680, -120)
-	ambient_player_b.volume_db = -20.0
-	add_child(ambient_player_b)
-
-func _run_ambient_cycle():
-	var hour := float(world_state.current_hour)
-	var presence := float(world_state.get_presence_multiplier())
-	var anti_anxiety_factor: float = clamp(1.25 / max(presence, 0.25), 0.4, 2.2)
-
-	if hour >= 2.8 and hour < 3.4:
-		_try_play_offscreen("hum_3am", ambient_player_a, 0.18 * anti_anxiety_factor, -18.0)
-	elif hour >= 19.0 and hour < 23.0:
-		_try_play_offscreen("distant_knock", ambient_player_b, 0.14 * anti_anxiety_factor, -20.0)
-	elif hour >= 5.2 and hour < 6.6:
-		_try_play_offscreen("ghost_pass", ambient_player_a, 0.10 * anti_anxiety_factor, -23.0)
-
-	if world_rng.randf() < RARE_SILENCE_CHANCE * anti_anxiety_factor:
-		_trigger_rare_silence()
-
-func _try_play_offscreen(event_key: String, player: AudioStreamPlayer2D, chance: float, volume_db: float):
-	if player.playing:
-		return
-	if world_rng.randf() > chance:
-		return
-
-	player.stream = EVENT_TRACKS[event_key]
-	player.volume_db = volume_db
-	player.pitch_scale = world_rng.randf_range(0.88, 1.08)
-	player.play()
-
-func _trigger_rare_silence():
-	var music_manager = get_tree().get_first_node_in_group("music_manager")
-	if not music_manager:
-		return
-	var player = music_manager.get_node_or_null("AudioStreamPlayer2D")
-	if not player:
-		return
-
-	var original_db: float = player.volume_db
-	player.volume_db = -80.0
-	var timer := get_tree().create_timer(world_rng.randf_range(4.0, 8.0))
-	timer.timeout.connect(func():
-		if is_instance_valid(player):
-			player.volume_db = original_db
-	)
 
 func apply_absence_mutation():
 	if not world_state:

@@ -1,6 +1,6 @@
 extends Node
 
-@onready var player: AudioStreamPlayer2D = $AudioStreamPlayer2D
+@onready var player: AudioStreamPlayer = $AudioStreamPlayer
 
 signal song_changed(title: String)
 
@@ -43,6 +43,7 @@ var current_song: int
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	player.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("music_manager")
 	player.finished.connect(_play_next)
 	_create_playlist()

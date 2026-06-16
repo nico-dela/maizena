@@ -9,9 +9,9 @@ extends StaticBody2D
 # - end: hora de fin (ej: 17.0 = 17:00)
 # - probability: 0.0 a 1.0 (0% a 100%)
 @export var spawn_schedules: Array[Dictionary] = [
-	{"start": 8.0, "end": 12.0, "probability": 0.3},   # 30% por la mañana
-	{"start": 14.0, "end": 18.0, "probability": 0.5},  # 50% por la tarde
-	{"start": 20.0, "end": 23.0, "probability": 0.2}   # 20% por la noche
+	{"start": 9.0, "end": 12.0, "probability": 0.75},
+	{"start": 15.0, "end": 19.0, "probability": 0.85},
+	{"start": 20.0, "end": 22.0, "probability": 0.5},
 ]
 
 @onready var animated_sprite = $AnimatedSprite2D
@@ -21,6 +21,7 @@ var is_active: bool = false
 var time_system: TimeOfDaySystem
 var rng = RandomNumberGenerator.new()
 var original_modulate: Color
+var _active_schedule_key := ""
 
 func _ready():
 	original_modulate = modulate
@@ -40,6 +41,8 @@ func _ready():
 	
 	if time_system:
 		time_system.time_updated.connect(_on_time_updated)
+		if not spawn_schedules.is_empty():
+			add_to_group("world_npc")
 		# Evaluar inmediatamente al iniciar
 		_evaluate_appearance(time_system.current_time)
 	else:
@@ -53,39 +56,62 @@ func _on_time_updated(current_hour: float, _is_day: bool):
 	_evaluate_appearance(current_hour)
 
 func _evaluate_appearance(current_hour: float):
-	var should_appear = false
-	
 	# Si no hay horarios configurados, aparecer siempre
 	if spawn_schedules.is_empty():
 		set_active(true)
 		return
-	
-	# Revisar todos los horarios configurados
+
+	var schedule := _find_active_schedule(current_hour)
+	if schedule.is_empty():
+		if _active_schedule_key != "":
+			_active_schedule_key = ""
+			set_active(false)
+		return
+
+	var schedule_key := _schedule_key(schedule)
+	if schedule_key == _active_schedule_key:
+		return
+
+	_active_schedule_key = schedule_key
+	var prob: float = schedule.get("probability", 1.0)
+	var presence_multiplier := 1.0
+	var world_state = get_node_or_null("/root/WorldState")
+	if world_state:
+		presence_multiplier = world_state.get_presence_multiplier()
+	var adjusted_prob := clampf(prob * presence_multiplier, 0.0, 1.0)
+	set_active(rng.randf() < adjusted_prob)
+
+func _find_active_schedule(current_hour: float) -> Dictionary:
 	for schedule in spawn_schedules:
-		var start = schedule.get("start", 8.0)
-		var end = schedule.get("end", 20.0)
-		var prob = schedule.get("probability", 1.0)
-		
-		var in_schedule = false
+		var start: float = schedule.get("start", 8.0)
+		var end: float = schedule.get("end", 20.0)
+		var in_schedule := false
 		if start <= end:
-			# Horario normal (ej: 8:00 - 20:00)
 			in_schedule = current_hour >= start and current_hour < end
 		else:
-			# Horario que cruza medianoche (ej: 22:00 - 6:00)
 			in_schedule = current_hour >= start or current_hour < end
-		
 		if in_schedule:
-			# Aplicar probabilidad independiente para cada NPC
-			var presence_multiplier := 1.0
-			var world_state = get_node_or_null("/root/WorldState")
-			if world_state:
-				presence_multiplier = world_state.get_presence_multiplier()
-			var adjusted_prob = clamp(prob * presence_multiplier, 0.0, 1.0)
-			if rng.randf() < adjusted_prob:
-				should_appear = true
-				break
-	
-	set_active(should_appear)
+			return schedule
+	return {}
+
+func _schedule_key(schedule: Dictionary) -> String:
+	return "%s-%s" % [schedule.get("start", 0.0), schedule.get("end", 0.0)]
+
+
+func is_in_schedule(current_hour: float) -> bool:
+	return not _find_active_schedule(current_hour).is_empty()
+
+
+func force_present() -> void:
+	if is_active:
+		return
+	var hour := time_system.current_time if time_system else 0.0
+	var schedule := _find_active_schedule(hour)
+	if schedule.is_empty():
+		return
+	_active_schedule_key = _schedule_key(schedule)
+	set_active(true)
+
 
 func set_active(active: bool):
 	if is_active == active:
@@ -114,7 +140,7 @@ func set_active(active: bool):
 				animated_sprite.visible = true
 		else:
 			animated_sprite.stop()
-			animated_sprite.visible = false  # <-- AÑADIR ESTO
+			animated_sprite.visible = false
 	
 	# Animación de fade al aparecer/desaparecer
 	if active:

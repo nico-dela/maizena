@@ -10,6 +10,22 @@ var _plays_val: Label
 var _field_bar: ProgressBar
 var _field_note: Label
 var _era_val: Label
+var _npc_val: Label
+
+const NPC_SKIP_PREFIXES := ["cartel_"]
+const NPC_SKIP_NAMES := ["laboratorio", "templo_sapos", "orbe_electrico", "piedra_grieta", "bicicleta"]
+const NPC_DISPLAY_NAMES := {
+	"bollo": "Bollo",
+	"boji": "Boji",
+	"hi": "Hi",
+	"spinetto": "Spinetto",
+	"silueto_1": "Silueto",
+	"silueto_2": "Silueto",
+	"michis": "Michis",
+	"kaeru": "Kaeru",
+	"ranancio": "Ranancio",
+	"el_viejo": "El Viejo",
+}
 
 var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
@@ -28,9 +44,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	if not MaizenaMeta.is_welcome_seen():
-		# Evita abrir con tamaño 0: el viewport ya midió el árbol.
-		call_deferred("open_welcome", true)
+	call_deferred("open_welcome", false)
 
 
 func _promote_if_nested_under_canvas_layer() -> void:
@@ -81,9 +95,14 @@ func _build_infographic_ui() -> void:
 	infographic_root.add_child(grid)
 
 	_song_val = _add_stat_card(grid, "♫", "Radio", "Título actual")
-	_plays_val = _add_stat_card(grid, "↻", "REPETICIONES", "Últimas eras")
+	_plays_val = _add_stat_card(
+		grid,
+		"↻",
+		"REPETICIONES",
+		"Veces que sonó la canción de radio (últ. %d eras)" % MaizenaMeta.get_recent_era_window()
+	)
 	_field_bar = _add_field_card(grid)
-	_era_val = _add_stat_card(grid, "◷", "ERA", "Contador semanal")
+	_era_val = _add_stat_card(grid, "◷", "ERA", "Semanas desde el lanzamiento del disco")
 	_add_npc_full_width_row(infographic_root)
 
 
@@ -116,14 +135,19 @@ func _add_npc_full_width_row(parent: VBoxContainer) -> void:
 	row.add_child(col)
 
 	var tag_l := _lbl(13, Color(0.62, 0.78, 0.9, 1.0))
-	tag_l.text = "NPC"
+	tag_l.text = "NPCs"
 	col.add_child(tag_l)
 
+	var hint_l := _lbl(11, Color(0.45, 0.55, 0.62, 1.0))
+	hint_l.text = "Visibles en el mapa ahora"
+	col.add_child(hint_l)
+
 	var val := _lbl(20, Color(0.95, 0.97, 1.0, 1.0), true)
-	val.text = "Aparecen cuando toca · Charlar suma lore"
+	val.text = "—"
 	val.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	val.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	col.add_child(val)
+	_npc_val = val
 
 	parent.add_child(panel)
 
@@ -252,7 +276,10 @@ func open_welcome(mark_seen_when_closed: bool) -> void:
 	_refresh_infographic()
 	visible = true
 	show()
-	get_tree().paused = true
+
+
+func open_from_button() -> void:
+	open_welcome(false)
 
 
 func open_from_settings() -> void:
@@ -261,22 +288,35 @@ func open_from_settings() -> void:
 
 func _on_close_pressed() -> void:
 	hide()
-	var sm := get_tree().get_first_node_in_group("settings_menu")
-	if sm != null and sm.is_open:
-		pass
-	else:
-		get_tree().paused = false
 	if _mark_seen_on_close:
 		MaizenaMeta.mark_welcome_seen()
 	_mark_seen_on_close = false
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_world_news") and _can_toggle_news():
+		if visible:
+			_on_close_pressed()
+		else:
+			open_from_button()
+		get_viewport().set_input_as_handled()
+		return
 	if not visible:
 		return
 	if event.is_action_pressed("ui_cancel"):
 		_on_close_pressed()
 		get_viewport().set_input_as_handled()
+
+
+func _can_toggle_news() -> bool:
+	if GameState.bollo_training_active:
+		return false
+	if DialogueController.input_locked:
+		return false
+	var sm := get_tree().get_first_node_in_group("settings_menu")
+	if sm != null and sm.get("is_open"):
+		return false
+	return true
 
 
 func _refresh_infographic() -> void:
@@ -287,21 +327,18 @@ func _refresh_infographic() -> void:
 	var song_title := "…"
 	var song_key := -1
 	if mm != null:
-		if mm.has_method("get_current_song_title"):
-			song_title = str(mm.call("get_current_song_title"))
-		if mm.has_method("get_current_song_key"):
-			song_key = int(mm.call("get_current_song_key"))
+		song_title = mm.get_current_song_title()
+		song_key = mm.get_current_song_key()
 
 	var plays := 0
 	if song_key >= 0:
 		plays = MaizenaMeta.count_song_plays_in_recent_eras(song_key)
 
-	var recent := MaizenaMeta.get_recent_era_window()
 	var things := MaizenaMeta.get_visible_residue_count()
 	var era := MaizenaMeta.get_current_era_number()
 
 	_song_val.text = song_title
-	_plays_val.text = "%d veces\n(últimas %d eras)" % [plays, recent]
+	_plays_val.text = "%d veces\n«%s»" % [plays, song_title]
 
 	_field_bar.value = float(things)
 	_field_note.text = "%d / 80" % things
@@ -310,3 +347,49 @@ func _refresh_infographic() -> void:
 		_era_val.text = "Pre-Era"
 	else:
 		_era_val.text = "Era %d" % era
+
+	if _npc_val != null:
+		_npc_val.text = _get_visible_npc_text()
+
+
+func _get_visible_npc_text() -> String:
+	var names: Array[String] = []
+	var world := get_tree().root.get_node_or_null("MainScene/World")
+	if world == null:
+		world = get_tree().get_first_node_in_group("world")
+	var objects: Node = null
+	if world != null:
+		objects = world.get_node_or_null("InteractiveObjects")
+
+	if objects != null:
+		for child in objects.get_children():
+			if not _is_trackable_npc(child):
+				continue
+			if not child.visible:
+				continue
+			var display := _format_npc_name(str(child.name))
+			if display.is_empty() or names.has(display):
+				continue
+			names.append(display)
+
+	if names.is_empty():
+		return "Nadie en pantalla ahora"
+	return ", ".join(names)
+
+
+func _is_trackable_npc(node: Node) -> bool:
+	var node_name := str(node.name)
+	for prefix in NPC_SKIP_PREFIXES:
+		if node_name.begins_with(prefix):
+			return false
+	if node_name in NPC_SKIP_NAMES:
+		return false
+	return node is StaticBody2D or node.has_method("set_active")
+
+
+func _format_npc_name(node_name: String) -> String:
+	if NPC_DISPLAY_NAMES.has(node_name):
+		return NPC_DISPLAY_NAMES[node_name]
+	if node_name.begins_with("silueto"):
+		return "Silueto"
+	return node_name.capitalize().replace("_", " ")

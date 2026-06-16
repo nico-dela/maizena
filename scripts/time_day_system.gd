@@ -20,6 +20,7 @@ var time_speed: float = 0.0
 var use_real_time: bool = true
 var _time_poll_accumulator := 0.0
 var world_state: Node = null
+var _last_time_signal_hour: float = -999.0
 
 func _ready():
 	add_to_group("time_system")
@@ -97,7 +98,10 @@ func advance_time(delta: float):
 		current_time = 0.0
 
 func update_time_color():
-	emit_signal("time_updated", current_time, is_daytime())
+	var hour_changed := absf(current_time - _last_time_signal_hour) >= 1.0 / 60.0
+	if hour_changed:
+		_last_time_signal_hour = current_time
+		emit_signal("time_updated", current_time, is_daytime())
 	var color: Color
 	
 	if current_time >= 5.0 and current_time < 8.0:

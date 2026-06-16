@@ -52,7 +52,7 @@ func _connect_sources() -> void:
 
 	await get_tree().process_frame
 	var mm := get_tree().get_first_node_in_group("music_manager")
-	if mm != null and mm.has_signal("song_changed"):
+	if mm != null:
 		mm.song_changed.connect(_on_song_changed)
 
 

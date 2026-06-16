@@ -3,21 +3,57 @@
 [ext_resource type="Script" path="res://scripts/bollo_fight_minigame.gd" id="1"]
 [ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="2_font"]
 
-[sub_resource type="StyleBoxFlat" id="1"]
+[sub_resource type="StyleBoxFlat" id="panel_dark"]
 bg_color = Color(0.05, 0.05, 0.09, 0.94)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="2"]
-bg_color = Color(0.15, 0.15, 0.2, 0.98)
+[sub_resource type="StyleBoxFlat" id="panel_battle"]
+bg_color = Color(0.12, 0.18, 0.14, 0.98)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="Theme" id="3_fight_theme"]
+[sub_resource type="StyleBoxFlat" id="panel_hud"]
+bg_color = Color(0.92, 0.9, 0.82, 0.96)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 3
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="panel_action"]
+bg_color = Color(0.08, 0.1, 0.22, 0.98)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.85, 0.72, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="hp_bg"]
+bg_color = Color(0.2, 0.2, 0.25, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="hp_fill"]
+bg_color = Color(0.25, 0.78, 0.35, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="Theme" id="fight_theme"]
 default_font = ExtResource("2_font")
 default_font_size = 16
 
@@ -32,8 +68,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-theme = SubResource("3_fight_theme")
+theme = SubResource("fight_theme")
 
 [node name="Overlay" type="ColorRect" parent="Root"]
 layout_mode = 1
@@ -42,214 +77,272 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0, 0, 0, 0.82)
 
-[node name="Top" type="Panel" parent="Root"]
-layout_mode = 1
-anchors_preset = 10
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -380.0
-offset_top = 20.0
-offset_right = 380.0
-offset_bottom = 118.0
-theme_override_styles/panel = SubResource("1")
-
-[node name="Title" type="Label" parent="Root/Top"]
-layout_mode = 1
-anchors_preset = 10
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -250.0
-offset_top = 8.0
-offset_right = 250.0
-offset_bottom = 34.0
-text = "ENTRENAMIENTO DE PELEA"
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
-
-[node name="PlayerHP" type="Label" parent="Root/Top"]
-layout_mode = 1
-offset_left = 20.0
-offset_top = 44.0
-offset_right = 250.0
-offset_bottom = 74.0
-text = "Sanjin HP: 100"
-theme_override_font_sizes/font_size = 16
-
-[node name="EnemyHP" type="Label" parent="Root/Top"]
+[node name="ExitButton" type="Button" parent="Root"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -250.0
-offset_top = 44.0
-offset_right = -20.0
-offset_bottom = 74.0
-text = "Bollo HP: 100"
-horizontal_alignment = 2
-theme_override_font_sizes/font_size = 16
-
-[node name="Status" type="Label" parent="Root/Top"]
-layout_mode = 1
-anchors_preset = 10
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -260.0
-offset_top = 78.0
-offset_right = 260.0
-offset_bottom = 104.0
-text = "Usa botones o teclado."
-horizontal_alignment = 1
-theme_override_font_sizes/font_size = 15
-
-[node name="Exit" type="Button" parent="Root/Top"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -118.0
-offset_top = 8.0
-offset_right = -12.0
-offset_bottom = 38.0
-text = "CANCELAR"
-theme_override_font_sizes/font_size = 16
-
-[node name="Countdown" type="Label" parent="Root"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -120.0
-offset_top = -240.0
-offset_right = 120.0
-offset_bottom = -170.0
-text = "3"
-horizontal_alignment = 1
-vertical_alignment = 1
-theme_override_font_sizes/font_size = 46
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 16
+text = "SALIR"
 
-[node name="Arena" type="Panel" parent="Root"]
+[node name="BattleContent" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BattleField" type="Panel" parent="Root/BattleContent"]
 layout_mode = 1
 anchors_preset = 10
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -420.0
-offset_top = -170.0
-offset_right = 420.0
-offset_bottom = 190.0
-theme_override_styles/panel = SubResource("2")
+offset_left = -400.0
+offset_top = -220.0
+offset_right = 400.0
+offset_bottom = 80.0
+theme_override_styles/panel = SubResource("panel_battle")
 
-[node name="Ground" type="ColorRect" parent="Root/Arena"]
+[node name="Background" type="ColorRect" parent="Root/BattleContent/BattleField"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.45, 0.62, 0.48, 1)
+
+[node name="Ground" type="ColorRect" parent="Root/BattleContent/BattleField"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -70.0
-color = Color(0.25, 0.25, 0.3, 1)
+offset_top = -60.0
+grow_horizontal = 2
+color = Color(0.32, 0.42, 0.28, 1)
 
-[node name="PlayerFighter" type="ColorRect" parent="Root/Arena"]
-offset_left = 45.0
-offset_top = 170.0
-offset_right = 125.0
-offset_bottom = 310.0
-color = Color(0.89, 0.25, 0.39, 1)
+[node name="EnemyPlatform" type="ColorRect" parent="Root/BattleContent/BattleField"]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 210.0
+offset_right = 620.0
+offset_bottom = 240.0
+color = Color(0.55, 0.5, 0.42, 0.6)
 
-[node name="EnemyFighter" type="ColorRect" parent="Root/Arena"]
-offset_left = 700.0
-offset_top = 170.0
-offset_right = 780.0
-offset_bottom = 310.0
+[node name="PlayerPlatform" type="ColorRect" parent="Root/BattleContent/BattleField"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 250.0
+offset_right = 220.0
+offset_bottom = 280.0
+color = Color(0.55, 0.5, 0.42, 0.6)
+
+[node name="EnemySprite" type="ColorRect" parent="Root/BattleContent/BattleField"]
+layout_mode = 0
+offset_left = 530.0
+offset_top = 110.0
+offset_right = 610.0
+offset_bottom = 230.0
 color = Color(0.21, 0.72, 0.47, 1)
 
-[node name="Controls" type="Control" parent="Root"]
+[node name="PlayerSprite" type="ColorRect" parent="Root/BattleContent/BattleField"]
+layout_mode = 0
+offset_left = 130.0
+offset_top = 150.0
+offset_right = 210.0
+offset_bottom = 270.0
+color = Color(0.89, 0.25, 0.39, 1)
+
+[node name="PlayerHUD" type="Panel" parent="Root/BattleContent/BattleField"]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 58.0
+offset_right = 280.0
+offset_bottom = 138.0
+theme_override_styles/panel = SubResource("panel_hud")
+
+[node name="Name" type="Label" parent="Root/BattleContent/BattleField/PlayerHUD"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 6.0
+offset_right = 200.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.12, 1)
+theme_override_font_sizes/font_size = 18
+text = "SANJIN"
+
+[node name="HPBar" type="ProgressBar" parent="Root/BattleContent/BattleField/PlayerHUD"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 34.0
+offset_right = 208.0
+offset_bottom = 50.0
+theme_override_styles/background = SubResource("hp_bg")
+theme_override_styles/fill = SubResource("hp_fill")
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HPValue" type="Label" parent="Root/BattleContent/BattleField/PlayerHUD"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 52.0
+offset_right = 208.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.15, 0.15, 0.18, 1)
+theme_override_font_sizes/font_size = 14
+text = "100/100"
+horizontal_alignment = 2
+
+[node name="EnemyHUD" type="Panel" parent="Root/BattleContent/BattleField"]
+layout_mode = 0
+offset_left = 460.0
+offset_top = 18.0
+offset_right = 680.0
+offset_bottom = 98.0
+theme_override_styles/panel = SubResource("panel_hud")
+
+[node name="Name" type="Label" parent="Root/BattleContent/BattleField/EnemyHUD"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 6.0
+offset_right = 200.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.12, 1)
+theme_override_font_sizes/font_size = 18
+text = "BOLLO"
+
+[node name="HPBar" type="ProgressBar" parent="Root/BattleContent/BattleField/EnemyHUD"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 34.0
+offset_right = 208.0
+offset_bottom = 50.0
+theme_override_styles/background = SubResource("hp_bg")
+theme_override_styles/fill = SubResource("hp_fill")
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HPValue" type="Label" parent="Root/BattleContent/BattleField/EnemyHUD"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 52.0
+offset_right = 208.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.15, 0.15, 0.18, 1)
+theme_override_font_sizes/font_size = 14
+text = "100/100"
+horizontal_alignment = 2
+
+[node name="ActionPanel" type="Panel" parent="Root/BattleContent"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -132.0
-grow_vertical = 0
+offset_left = 12.0
+offset_top = -196.0
+offset_right = -12.0
+offset_bottom = -12.0
+theme_override_styles/panel = SubResource("panel_action")
 
-[node name="MoveLeft" type="Button" parent="Root/Controls"]
-offset_left = 16.0
-offset_top = 20.0
-offset_right = 156.0
-offset_bottom = 106.0
-text = "IZQ"
-theme_override_font_sizes/font_size = 16
-
-[node name="MoveRight" type="Button" parent="Root/Controls"]
-offset_left = 164.0
-offset_top = 20.0
-offset_right = 304.0
-offset_bottom = 106.0
-text = "DER"
-theme_override_font_sizes/font_size = 16
-
-[node name="Guard" type="Button" parent="Root/Controls"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -444.0
-offset_top = 20.0
-offset_right = -304.0
-offset_bottom = 106.0
-text = "BLOQ"
-theme_override_font_sizes/font_size = 16
-
-[node name="Punch" type="Button" parent="Root/Controls"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -296.0
-offset_top = 20.0
-offset_right = -156.0
-offset_bottom = 106.0
-text = "GOLPE"
-theme_override_font_sizes/font_size = 16
-
-[node name="PunchCooldown" type="ProgressBar" parent="Root/Controls"]
+[node name="TurnBanner" type="Label" parent="Root/BattleContent/ActionPanel"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -296.0
-offset_top = 108.0
-offset_right = -156.0
-offset_bottom = 124.0
-max_value = 1.0
-value = 1.0
-show_percentage = false
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 8.0
+offset_right = 180.0
+offset_bottom = 32.0
+theme_override_font_sizes/font_size = 18
+text = "TU TURNO"
+horizontal_alignment = 1
 
-[node name="Kick" type="Button" parent="Root/Controls"]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -148.0
-offset_top = 20.0
-offset_right = -8.0
-offset_bottom = 106.0
-text = "PATADA"
-theme_override_font_sizes/font_size = 16
-
-[node name="KickCooldown" type="ProgressBar" parent="Root/Controls"]
+[node name="MessageLabel" type="Label" parent="Root/BattleContent/ActionPanel"]
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -360.0
+offset_top = 36.0
+offset_right = 360.0
+offset_bottom = 64.0
+theme_override_colors/font_color = Color(0.95, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Elige un movimiento."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="MoveGrid" type="GridContainer" parent="Root/BattleContent/ActionPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = -148.0
-offset_top = 108.0
-offset_right = -8.0
-offset_bottom = 124.0
-max_value = 1.0
-value = 1.0
-show_percentage = false
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -88.0
+offset_right = -12.0
+offset_bottom = -8.0
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="Move0" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "GOLPE (1)"
+
+[node name="Move1" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "PATADA (2)"
+
+[node name="Move2" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "BLOQUEAR (3)"
+
+[node name="Move3" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "DESCANSAR (4)"
+
+[node name="ContinueButton" type="Button" parent="Root/BattleContent/ActionPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -64.0
+offset_right = -12.0
+offset_bottom = -8.0
+theme_override_font_sizes/font_size = 18
+text = "CONTINUAR"
 
 [node name="TutorialPanel" type="Panel" parent="Root"]
 layout_mode = 1
@@ -258,11 +351,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -330.0
-offset_top = -140.0
-offset_right = 330.0
-offset_bottom = 170.0
-theme_override_styles/panel = SubResource("1")
+offset_left = -340.0
+offset_top = -160.0
+offset_right = 340.0
+offset_bottom = 180.0
+theme_override_styles/panel = SubResource("panel_dark")
 
 [node name="Title" type="Label" parent="Root/TutorialPanel"]
 layout_mode = 1
@@ -273,40 +366,95 @@ offset_left = -220.0
 offset_top = 12.0
 offset_right = 220.0
 offset_bottom = 48.0
-text = "COMO JUGAR"
-horizontal_alignment = 1
 theme_override_font_sizes/font_size = 26
+text = "ENTRENAMIENTO"
+horizontal_alignment = 1
 
 [node name="Instructions" type="Label" parent="Root/TutorialPanel"]
 layout_mode = 1
-offset_left = 20.0
-offset_top = 56.0
-offset_right = 640.0
-offset_bottom = 232.0
-text = "Desktop:
-- Mover: Flechas Izq/Der
-- Golpe: Space
-- Patada: Enter
-- Bloquear: Shift
-
-Celular/Tablet:
-- Usa los botones de abajo.
-
-Objetivo:
-- Baja la vida de Bollo antes de que te baje la tuya."
-autowrap_mode = 3
+offset_left = 24.0
+offset_top = 52.0
+offset_right = 656.0
+offset_bottom = 200.0
 theme_override_font_sizes/font_size = 15
+text = "Objetivo: baja la vida de Bollo antes que la tuya.
+En tu turno, elige un movimiento.
+Golpe y patada pueden fallar o ser críticos.
+Bollo también falla, esquiva o se tropieza.
+Bloquear reduce el daño del siguiente golpe.
+Descansar solo se puede usar una vez.
+Puedes salir cuando quieras (botón SALIR).
+
+Toca un botón · PC: 1-4, Esc para salir"
+autowrap_mode = 3
 
 [node name="StartButton" type="Button" parent="Root/TutorialPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -56.0
+offset_right = 160.0
+offset_bottom = -12.0
+theme_override_font_sizes/font_size = 20
+text = "EMPEZAR"
+
+[node name="ConfirmExitPanel" type="Panel" parent="Root"]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -90.0
-offset_top = 112.0
-offset_right = 90.0
-offset_bottom = 152.0
-text = "EMPEZAR"
-theme_override_font_sizes/font_size = 18
+offset_left = -280.0
+offset_top = -100.0
+offset_right = 280.0
+offset_bottom = 100.0
+theme_override_styles/panel = SubResource("panel_dark")
+
+[node name="Message" type="Label" parent="Root/ConfirmExitPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -240.0
+offset_top = 16.0
+offset_right = 240.0
+offset_bottom = 80.0
+theme_override_font_sizes/font_size = 16
+text = "¿Salir del entrenamiento?
+No se guardará el progreso de esta pelea."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Root/ConfirmExitPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -56.0
+offset_right = 240.0
+offset_bottom = -12.0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="ConfirmNo" type="Button" parent="Root/ConfirmExitPanel/Buttons"]
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "NO, SEGUIR"
+
+[node name="ConfirmYes" type="Button" parent="Root/ConfirmExitPanel/Buttons"]
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "SÍ, SALIR"

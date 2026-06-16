@@ -1,0 +1,27 @@
+================================================================================
+MAIZENA — Sprites de combate Bollo (assets/battle)
+================================================================================
+
+Qué es esto
+------------
+Arte estático para el minijuego de entrenamiento por turnos estilo Pokémon.
+Solo se necesitan imágenes fijas (vista frontal / trasera), sin animación.
+
+Archivos a entregar (PNG, pixel art, fondo transparente salvo el fondo)
+-----------------------------------------------------------------------
+• sanjin_battle_back.png   — ~96×96 px — Sanjin visto desde atrás, postura combate
+• bollo_battle_front.png   — ~96×96 px — Bollo visto de frente (referencia: personajes extras.png)
+• battle_bg.png            — ~640×360 px — Fondo simple (campo o interior casa de Bollo)
+• platform.png (opcional)  — ~64×32 px — Óvalo/plataforma bajo los personajes
+
+Dónde guardar
+-------------
+    res://assets/battle/
+
+Referencia de estilo
+--------------------
+Sprite overworld de Bollo: assets/characters/personajes extras.png (celda 32,32 16×32)
+Sprite Sanjin: assets/characters/sanjin.png
+Fuente UI del combate: assets/ui/PixelOperator8.ttf
+
+================================================================================
