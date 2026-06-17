@@ -114,7 +114,7 @@ func _setup_header() -> void:
 
 func _setup_footer_links() -> void:
 	var link := LinkButton.new()
-	link.text = "Seguinos en Linktree ↗"
+	link.text = "Seguinos en las redes ↗"
 	link.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
 	link.add_theme_font_override("font", FONT)
 	link.add_theme_font_size_override("font_size", 16)
