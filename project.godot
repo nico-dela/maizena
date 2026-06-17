@@ -33,6 +33,7 @@ WorldState="*res://autoload/world_state.gd"
 MaizenaMeta="*res://autoload/maizena_meta.gd"
 WorldMetrics="*res://autoload/world_metrics.gd"
 CordobaWeather="*res://autoload/cordoba_weather.gd"
+ViewportLayout="*res://autoload/viewport_layout.gd"
 
 [dialogue_manager]
 
@@ -40,6 +41,8 @@ runtime/balloon_path="res://dialogue balloon//balloon.tscn"
 
 [display]
 
+window/size/viewport_width=1152
+window/size/viewport_height=648
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/main_scene="res://scenes/world.tscn"

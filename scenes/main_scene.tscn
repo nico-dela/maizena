@@ -38,8 +38,7 @@ offset_right = 240.0
 offset_bottom = 36.0
 theme_override_fonts/font = ExtResource("7_c1pb6")
 theme_override_font_sizes/font_size = 24
-text = "◇ Noticias
-"
+text = "Noticias"
 
 [node name="MusicManager" parent="." unique_id=683985731 instance=ExtResource("7_c16ls")]
 

@@ -4,24 +4,29 @@ MUNDO MAIZENA — Props “cosas en el pasto” (world_props)
 
 Qué es esto
 ------------
-Estos sprites son para el sistema de “residuos” del juego: pequeños objetos que
-aparecen repartidos por una zona del mapa (posición semi-aleatoria, escala y
-rotación variables). El motor recorta celdas de 16×16 px desde lo que suban
-aquí.
+Sprites para el sistema de “residuos”: objetos que aparecen repartidos por una
+zona del mapa (posición semi-aleatoria, escala y rotación variables).
 
-Especificación técnica (obligatoria)
------------------------------------
+Especificación técnica
+----------------------
 • Formato: PNG, pixel art.
-• Tamaño de cada celda: 16×16 píxeles EXACTOS (sin bordes extra dentro de la celda).
 • Transparencia: recomendada (fondo alpha 0) para que se vea bien sobre el pasto.
+• Un archivo suelto = UN objeto entero (no un spritesheet, salvo prefijo atlas_).
 
-Dos formas de entregar el arte
-------------------------------
-1) Archivos sueltos: un PNG por objeto, cada archivo 16×16 px.
+Tamaños permitidos (lado × lado, cuadrado)
+-------------------------------------------
+• 16×16 — cosas chicas (monedas, lentes, basura)
+• 24×24 — un poco más legibles
+• 32×32 — objetos medianos
+• 48×48 — tope actual (no usar más grande sin coordinar con código)
 
-2) Spritesheet: una sola imagen cuyo ancho y alto sean MÚLTIPLOS de 16
-   (ej. 96×64 = 6 columnas × 4 filas de props). El juego recorta automáticamente
-   cada celda 16×16 de izquierda a arriba, fila por fila.
+No usar otros tamaños (ej. 80×80): el juego los omite con un aviso.
+
+Spritesheet opcional (muchos props chicos en un solo PNG)
+-------------------------------------------------------
+• Nombre del archivo debe empezar por: atlas_
+• Ancho y alto múltiplos de 16 (ej. atlas_props.png 96×64 = 6×4 celdas de 16 px).
+• Cada celda 16×16 cuenta como un prop distinto.
 
 Cantidad sugerida
 -----------------
@@ -29,28 +34,25 @@ Entre 8 y 24 props distintos ayuda a que el mundo no se repita visualmente.
 
 Cómo se verá en pantalla
 ------------------------
-En juego cada sprite se escala aprox. entre 0.75× y 1.5× respecto a 16 px base
-(≈12–24 px). Diseñar legible a tamaño pequeño.
+Cada prop se escala aleatoriamente según su tamaño base:
+  16 px → ~0.75×–1.5×   |   32 px → ~0.5×–0.9×   |   48 px → ~0.4×–0.75×
+Diseñar legible a tamaño pequeño en pantalla.
 
-Dónde guardar los archivos en el proyecto
------------------------------------------
-Copiar los PNG en esta carpeta:
-
+Dónde guardar los archivos
+--------------------------
     res://assets/world_props/
 
-Solo se cargan archivos .png en esta carpeta (no subcarpetas). Ignorar otros
-tipos de archivo. No usar nombres que empiecen por punto.
+Solo .png en esta carpeta (no subcarpetas). Ignorar otros tipos. Sin nombres
+que empiecen por punto.
 
 Qué NO hace falta
 -----------------
 • No dibujar el mapa completo.
-• No usar 32×32 para este sistema (el código actual solo usa celdas 16×16;
-  otro tamaño requeriría cambiar el código).
+• No entregar un PNG grande como “un solo objeto” si no está en 16/24/32/48 px.
 
 Referencia de estilo en el repo
 --------------------------------
-El tileset de props genéricos actual está en:
     assets/tilesets/Basic Grass Biom things 1.png
-(solo como referencia de escala pixel; vuestro arte puede ser propio de Maizena).
+(solo referencia de escala pixel; el arte puede ser propio de Maizena).
 
 ================================================================================

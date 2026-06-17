@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const SPEED = 100.0
+const BASE_CAMERA_ZOOM := Vector2(4, 4)
 var current_dir = "none"
 var anim_dict = {
 	"right": {"flip_h": false, "walk": "side_walk", "idle": "side_idle"},
@@ -22,6 +23,17 @@ func _ready():
 	$AnimatedSprite2D.play("front_idle")
 	settings_menu = get_tree().get_first_node_in_group("settings_menu")
 	welcome_popup = get_tree().get_first_node_in_group("welcome_popup")
+	_apply_camera_zoom()
+	ViewportLayout.layout_changed.connect(_apply_camera_zoom)
+	call_deferred(func() -> void: ViewportLayout.refresh())
+
+
+func _apply_camera_zoom() -> void:
+	var cam: Camera2D = $Camera2D
+	if cam == null:
+		return
+	var boost := ViewportLayout.camera_boost
+	cam.zoom = BASE_CAMERA_ZOOM * boost
 
 func _input(event):
 	# Solo procesar taps si el menú no está abierto

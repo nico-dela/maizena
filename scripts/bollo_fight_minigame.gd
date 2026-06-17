@@ -47,9 +47,12 @@ const ENEMY_TURN_PAUSE_SEC := 1.1
 @onready var move_grid: GridContainer = $Root/BattleContent/ActionPanel/MoveGrid
 @onready var continue_button: Button = $Root/BattleContent/ActionPanel/ContinueButton
 @onready var tutorial_panel: Panel = $Root/TutorialPanel
+@onready var tutorial_title: Label = $Root/TutorialPanel/Title
+@onready var tutorial_instructions: Label = $Root/TutorialPanel/Instructions
 @onready var btn_start: Button = $Root/TutorialPanel/StartButton
 @onready var btn_exit: Button = $Root/ExitButton
 @onready var confirm_exit_panel: Panel = $Root/ConfirmExitPanel
+@onready var confirm_message: Label = $Root/ConfirmExitPanel/Message
 @onready var btn_confirm_yes: Button = $Root/ConfirmExitPanel/Buttons/ConfirmYes
 @onready var btn_confirm_no: Button = $Root/ConfirmExitPanel/Buttons/ConfirmNo
 
@@ -77,6 +80,75 @@ func _ready() -> void:
 	battle_content.hide()
 	tutorial_panel.show()
 	confirm_exit_panel.hide()
+	_apply_viewport_layout()
+	ViewportLayout.layout_changed.connect(_apply_viewport_layout)
+	call_deferred("_apply_viewport_layout")
+
+
+func _fight_ui_scale() -> float:
+	return minf(ViewportLayout.effective_ui_scale(), 2.5)
+
+
+func _fit_centered_panel(panel: Control, width: float, height: float) -> void:
+	panel.offset_left = -width * 0.5
+	panel.offset_right = width * 0.5
+	panel.offset_top = -height * 0.5
+	panel.offset_bottom = height * 0.5
+
+
+func _apply_viewport_layout() -> void:
+	var s := _fight_ui_scale()
+	var vp := get_viewport().get_visible_rect().size
+	var portrait := ViewportLayout.is_portrait
+
+	var tutorial_w := minf(680.0, vp.x * 0.96)
+	var tutorial_h := minf(400.0, vp.y * (0.58 if portrait else 0.42))
+	_fit_centered_panel(tutorial_panel, tutorial_w, tutorial_h)
+	tutorial_title.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(26))
+	tutorial_instructions.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(15))
+	tutorial_instructions.offset_left = 16.0 * s
+	tutorial_instructions.offset_right = tutorial_w - 16.0 * s
+	btn_start.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(20))
+	btn_start.custom_minimum_size = Vector2(320.0 * s, 48.0 * s)
+
+	var confirm_w := minf(560.0, vp.x * 0.92)
+	var confirm_h := 200.0 * s
+	_fit_centered_panel(confirm_exit_panel, confirm_w, confirm_h)
+	confirm_message.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
+	btn_confirm_yes.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
+	btn_confirm_no.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
+	btn_confirm_yes.custom_minimum_size = Vector2(160.0 * s, 44.0 * s)
+	btn_confirm_no.custom_minimum_size = Vector2(160.0 * s, 44.0 * s)
+
+	var exit_w := maxf(108.0, 96.0 * s)
+	var exit_h := maxf(36.0, 32.0 * s)
+	btn_exit.custom_minimum_size = Vector2(exit_w, exit_h)
+	btn_exit.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
+	btn_exit.offset_left = -12.0 - exit_w
+	btn_exit.offset_top = 12.0
+	btn_exit.offset_right = -12.0
+	btn_exit.offset_bottom = 12.0 + exit_h
+
+	var battle_s := s if not portrait else minf(s * 1.08, 2.5)
+	battle_content.scale = Vector2(battle_s, battle_s)
+	call_deferred("_update_battle_pivot", portrait)
+
+	turn_banner.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
+	message_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
+	continue_button.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
+	player_hp_value.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(14))
+	enemy_hp_value.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(14))
+	for btn in move_buttons:
+		btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
+		btn.custom_minimum_size.y = maxf(56.0, 50.0 * s)
+
+
+func _update_battle_pivot(portrait: bool = ViewportLayout.is_portrait) -> void:
+	if portrait:
+		battle_content.pivot_offset = Vector2(battle_content.size.x * 0.5, battle_content.size.y)
+	else:
+		battle_content.pivot_offset = battle_content.size * 0.5
+
 
 func _collect_move_buttons() -> void:
 	move_buttons.clear()

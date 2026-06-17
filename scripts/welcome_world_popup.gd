@@ -2,6 +2,8 @@ extends CanvasLayer
 
 const FONT: FontFile = preload("res://assets/ui/PixelOperator8.ttf")
 
+const BASE_CARD_MIN := Vector2(160, 168)
+
 const LINKTREE_URL := (
 	"https://linktr.ee/Maizena.ar"
 	+ "?utm_source=linktree_profile_share"
@@ -16,7 +18,9 @@ const COLOR_VALUE := Color(0.98, 0.98, 1.0, 1.0)
 const RESIDUE_MAX := 80
 
 @onready var header_label: RichTextLabel = $CenterRoot/Report/Margin/VBox/HeaderLabel
+@onready var report_panel: PanelContainer = $CenterRoot/Report
 @onready var infographic_root: VBoxContainer = $CenterRoot/Report/Margin/VBox/Scroll/InfographicRoot
+@onready var scroll_container: ScrollContainer = $CenterRoot/Report/Margin/VBox/Scroll
 @onready var close_btn: Button = $CenterRoot/Report/Margin/VBox/CloseButton
 
 var _song_val: Label
@@ -44,6 +48,10 @@ const NPC_DISPLAY_NAMES := {
 
 var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
+var _infographic_grid: GridContainer
+var _footer_link: LinkButton
+var _applied_layout_scale := 1.0
+var _applied_portrait := false
 
 
 func _ready() -> void:
@@ -57,6 +65,10 @@ func _ready() -> void:
 	_setup_footer_links()
 	close_btn.pressed.connect(_on_close_pressed)
 	_build_infographic_ui()
+	_applied_layout_scale = ViewportLayout.effective_ui_scale()
+	_applied_portrait = ViewportLayout.is_portrait
+	_apply_responsive_layout()
+	ViewportLayout.layout_changed.connect(_on_viewport_layout_changed)
 
 	await get_tree().process_frame
 	await get_tree().process_frame
@@ -87,10 +99,14 @@ func _make_card_stylebox() -> StyleBoxFlat:
 	return sb
 
 
-func _lbl(size: int, color: Color, outline := false) -> Label:
+func _font_boost() -> float:
+	return ViewportLayout.effective_ui_scale()
+
+
+func _lbl(base_size: int, color: Color, outline := false) -> Label:
 	var l := Label.new()
 	l.add_theme_font_override("font", FONT)
-	l.add_theme_font_size_override("font_size", size)
+	l.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(base_size))
 	l.add_theme_color_override("font_color", color)
 	if outline:
 		l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.35))
@@ -104,7 +120,7 @@ func _setup_header() -> void:
 	header_label.fit_content = true
 	header_label.scroll_active = false
 	header_label.add_theme_font_override("normal_font", FONT)
-	header_label.add_theme_font_size_override("normal_font_size", 20)
+	header_label.add_theme_font_size_override("normal_font_size", ViewportLayout.scaled_font(20))
 	header_label.text = (
 		"[center][color=#72cce8]Las noticias[/color] "
 		+ "[color=#e85050]/[/color][color=#e8c840]/[/color][color=#5080e8]/[/color] "
@@ -114,14 +130,15 @@ func _setup_header() -> void:
 
 func _setup_footer_links() -> void:
 	var link := LinkButton.new()
-	link.text = "Seguinos en las redes ↗"
+	link.text = "Seguinos en las redes"
 	link.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
 	link.add_theme_font_override("font", FONT)
-	link.add_theme_font_size_override("font_size", 16)
+	link.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
 	link.add_theme_color_override("font_color", Color(0.45, 0.80, 0.91, 1.0))
 	link.add_theme_color_override("font_hover_color", Color(0.65, 0.92, 1.0, 1.0))
 	link.focus_mode = Control.FOCUS_NONE
 	link.pressed.connect(_on_linktree_pressed)
+	_footer_link = link
 
 	var vbox := close_btn.get_parent()
 	vbox.add_child(link)
@@ -141,11 +158,12 @@ func _build_infographic_ui() -> void:
 		return
 
 	var grid := GridContainer.new()
-	grid.columns = 2
+	grid.columns = 2 if not ViewportLayout.is_portrait else 1
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 12)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	infographic_root.add_child(grid)
+	_infographic_grid = grid
 
 	var radio := _add_news_card(
 		grid,
@@ -184,7 +202,7 @@ func _add_news_card(
 ) -> Dictionary:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style.duplicate())
-	panel.custom_minimum_size = Vector2(160, 168)
+	panel.custom_minimum_size = BASE_CARD_MIN * _font_boost()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
@@ -211,7 +229,7 @@ func _add_news_card(
 func _add_saturation_card(grid: GridContainer) -> ProgressBar:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style.duplicate())
-	panel.custom_minimum_size = Vector2(160, 168)
+	panel.custom_minimum_size = BASE_CARD_MIN * _font_boost()
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
@@ -227,7 +245,7 @@ func _add_saturation_card(grid: GridContainer) -> ProgressBar:
 	v.add_child(hint)
 
 	var bar := ProgressBar.new()
-	bar.custom_minimum_size = Vector2(0, 16)
+	bar.custom_minimum_size = Vector2(0, maxi(16, ViewportLayout.scaled_font(16)))
 	bar.max_value = float(RESIDUE_MAX)
 	bar.value = 0.0
 	bar.show_percentage = false
@@ -269,15 +287,81 @@ func _style_close_button() -> void:
 	close_btn.add_theme_stylebox_override("focus", sb_n)
 
 
+	close_btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(22))
+
+
+func _on_viewport_layout_changed() -> void:
+	_apply_responsive_layout()
+	var needs_rebuild := (
+		not is_equal_approx(_applied_layout_scale, ViewportLayout.effective_ui_scale())
+		or _applied_portrait != ViewportLayout.is_portrait
+	)
+	if needs_rebuild:
+		_rebuild_infographic()
+
+
+func _rebuild_infographic() -> void:
+	if infographic_root == null:
+		return
+	for child in infographic_root.get_children():
+		child.queue_free()
+	_infographic_grid = null
+	_song_val = null
+	_radio_footer = null
+	_era_val = null
+	_field_bar = null
+	_field_note = null
+	_saturation_footer = null
+	_npc_val = null
+	_applied_layout_scale = ViewportLayout.effective_ui_scale()
+	_applied_portrait = ViewportLayout.is_portrait
+	_build_infographic_ui()
+	if visible:
+		_refresh_infographic()
+
+
+func _apply_responsive_layout() -> void:
+	if report_panel == null:
+		return
+	var vp := get_viewport().get_visible_rect().size
+	var portrait := ViewportLayout.is_portrait
+	var width_ratio := 0.96 if portrait else 0.94
+	var height_ratio := 0.92 if portrait else 0.88
+	var max_w := 720.0 if not portrait else vp.x
+	var max_h := 600.0 if not portrait else vp.y
+	var panel_w := minf(max_w, vp.x * width_ratio)
+	var panel_h := minf(max_h, vp.y * height_ratio)
+	report_panel.offset_left = -panel_w * 0.5
+	report_panel.offset_right = panel_w * 0.5
+	report_panel.offset_top = -panel_h * 0.5
+	report_panel.offset_bottom = panel_h * 0.5
+	if header_label != null:
+		header_label.add_theme_font_size_override("normal_font_size", ViewportLayout.scaled_font(22 if portrait else 20))
+	if close_btn != null:
+		close_btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(24))
+		close_btn.custom_minimum_size.y = maxf(48.0, 40.0 * _font_boost())
+	if _footer_link != null:
+		_footer_link.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
+	if scroll_container != null:
+		scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	if infographic_root != null:
+		infographic_root.custom_minimum_size.x = 0.0 if portrait else 320.0
+	if _infographic_grid != null:
+		_infographic_grid.columns = 1 if portrait else 2
+
+
 func is_blocking() -> bool:
 	return visible
 
 
 func open_welcome(mark_seen_when_closed: bool) -> void:
 	_mark_seen_on_close = mark_seen_when_closed
+	ViewportLayout.refresh()
+	_apply_responsive_layout()
 	_refresh_infographic()
 	visible = true
 	show()
+	call_deferred("_apply_responsive_layout")
 
 
 func open_from_button() -> void:

@@ -25,6 +25,8 @@ func _ready() -> void:
 	_started_at = _now_sec()
 	tip_label.text = TIPS[randi() % TIPS.size()]
 	_fit_logo_size()
+	_apply_text_scale()
+	ViewportLayout.layout_changed.connect(_on_viewport_layout_changed)
 
 	var err := ResourceLoader.load_threaded_request(MAIN_SCENE)
 	if err != OK:
@@ -77,3 +79,17 @@ func _fit_logo_size() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_SIZE_CHANGED and is_node_ready():
 		_fit_logo_size()
+		_apply_text_scale()
+
+
+func _on_viewport_layout_changed() -> void:
+	_fit_logo_size()
+	_apply_text_scale()
+
+
+func _apply_text_scale() -> void:
+	status_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
+	tip_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(14))
+	var title := get_node_or_null("Margin/VBox/MainBlock/Content/TitleLabel")
+	if title is Label:
+		title.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(34))

@@ -87,6 +87,49 @@ func _ready() -> void:
 			assert(false, DMConstants.get_error_message(DMConstants.ERR_MISSING_RESOURCE_FOR_AUTOSTART))
 		start()
 
+	_apply_viewport_layout()
+	ViewportLayout.layout_changed.connect(_apply_viewport_layout)
+
+
+func _apply_viewport_layout() -> void:
+	var s := ViewportLayout.effective_ui_scale()
+	var vp := get_viewport().get_visible_rect().size
+	var portrait := ViewportLayout.is_portrait
+	var m := int(round((16.0 if portrait else 30.0) * s))
+	var dialogue_bar: MarginContainer = balloon.get_node("MarginContainer")
+	var bar_h := int(round((260.0 if portrait else 219.0) * s))
+	dialogue_bar.offset_top = -bar_h
+	dialogue_bar.add_theme_constant_override("margin_left", m)
+	dialogue_bar.add_theme_constant_override("margin_right", m)
+	dialogue_bar.add_theme_constant_override("margin_top", int(round(15.0 * s)))
+	dialogue_bar.add_theme_constant_override("margin_bottom", int(round(15.0 * s)))
+	character_label.add_theme_font_size_override("normal_font_size", ViewportLayout.scaled_font(20))
+	dialogue_label.add_theme_font_size_override("normal_font_size", ViewportLayout.scaled_font(20))
+
+	var half_w := minf(vp.x * 0.46, 320.0 * s)
+	var choice_h := maxf(80.0, 40.0 * s)
+	var y_shift := vp.y * 0.06 if portrait else 0.0
+	responses_menu.offset_left = -half_w
+	responses_menu.offset_right = half_w
+	responses_menu.offset_top = -choice_h * 0.5 - y_shift
+	responses_menu.offset_bottom = choice_h * 0.5 - y_shift
+	responses_menu.add_theme_constant_override("separation", int(round(8.0 * s)))
+
+	if balloon.theme:
+		var theme := balloon.theme.duplicate()
+		theme.default_font_size = ViewportLayout.scaled_font(20)
+		balloon.theme = theme
+
+	_style_response_buttons()
+
+
+func _style_response_buttons() -> void:
+	var s := ViewportLayout.effective_ui_scale()
+	for child in responses_menu.get_children():
+		if child is Button and child.visible:
+			child.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(20))
+			child.custom_minimum_size.y = maxf(48.0, 40.0 * s)
+
 
 func _process(_delta: float) -> void:
 	if is_instance_valid(dialogue_line):
@@ -157,6 +200,7 @@ func apply_dialogue_line() -> void:
 	elif dialogue_line.responses.size() > 0:
 		balloon.focus_mode = Control.FOCUS_NONE
 		responses_menu.show()
+		call_deferred("_style_response_buttons")
 	elif dialogue_line.time != "":
 		var time: float = dialogue_line.text.length() * 0.02 if dialogue_line.time == "auto" else dialogue_line.time.to_float()
 		await get_tree().create_timer(time).timeout

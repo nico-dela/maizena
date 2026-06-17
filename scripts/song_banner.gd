@@ -2,7 +2,9 @@ extends Control
 
 @export var show_time := 3.0
 @export var slide_distance := 40.0
-@export var title_color := Color.RED  # Puedes cambiarlo desde Inspector
+@export var title_color := Color.RED
+
+const BASE_FONT_SIZE := 38
 
 @onready var label: RichTextLabel = $PanelContainer/RichTextLabel
 
@@ -21,6 +23,13 @@ func _ready():
 	assert(music_manager != null, "No se encontró MusicManager en grupo 'music_manager'")
 
 	music_manager.song_changed.connect(show_song)
+	_apply_viewport_layout()
+	ViewportLayout.layout_changed.connect(_apply_viewport_layout)
+
+
+func _apply_viewport_layout() -> void:
+	label.add_theme_font_size_override("normal_font_size", ViewportLayout.scaled_font(BASE_FONT_SIZE))
+	slide_distance = 40.0 * ViewportLayout.effective_ui_scale()
 
 func show_song(title: String):
 	# Usar BBCode con color personalizado
