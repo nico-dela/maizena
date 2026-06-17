@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://scripts/npc_presence_system.gd" id="1_npcpres"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="1_eo1xk"]
 [ext_resource type="Script" uid="uid://daf7nnw21qel" path="res://scripts/world_residue_system.gd" id="1_resid"]
+[ext_resource type="Script" path="res://scripts/weather_visual_system.gd" id="1_weathervis"]
 [ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://assets/tilesets/templo de los anfibios.png" id="2_osqrk"]
 [ext_resource type="Texture2D" uid="uid://dxs1vsn7urcf5" path="res://assets/tilesets/Grass.png" id="3_hk72v"]
 [ext_resource type="Texture2D" uid="uid://boemw1emdmc8n" path="res://assets/tilesets/OutdoorsTileset.png" id="4_1gr7h"]
@@ -3519,6 +3520,9 @@ y_sort_enabled = true
 script = ExtResource("1_eo1xk")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=77373919]
+
+[node name="WeatherVisualSystem" type="Node2D" parent="."]
+script = ExtResource("1_weathervis")
 
 [node name="ResidueSystem" type="Node2D" parent="." unique_id=1747012205]
 script = ExtResource("1_resid")

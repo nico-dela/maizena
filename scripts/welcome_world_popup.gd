@@ -2,14 +2,29 @@ extends CanvasLayer
 
 const FONT: FontFile = preload("res://assets/ui/PixelOperator8.ttf")
 
+const LINKTREE_URL := (
+	"https://linktr.ee/Maizena.ar"
+	+ "?utm_source=linktree_profile_share"
+	+ "&ltsid=b3b06901-f163-41f8-8a51-02a7c653954e"
+)
+
+const COLOR_YELLOW := Color(0.95, 0.82, 0.28, 1.0)
+const COLOR_ORANGE := Color(0.98, 0.58, 0.22, 1.0)
+const COLOR_GREEN := Color(0.45, 0.9, 0.48, 1.0)
+const COLOR_CORAL := Color(0.96, 0.45, 0.42, 1.0)
+const COLOR_VALUE := Color(0.98, 0.98, 1.0, 1.0)
+const RESIDUE_MAX := 80
+
+@onready var header_label: RichTextLabel = $CenterRoot/Report/Margin/VBox/HeaderLabel
 @onready var infographic_root: VBoxContainer = $CenterRoot/Report/Margin/VBox/Scroll/InfographicRoot
 @onready var close_btn: Button = $CenterRoot/Report/Margin/VBox/CloseButton
 
 var _song_val: Label
-var _plays_val: Label
+var _radio_footer: Label
+var _era_val: Label
 var _field_bar: ProgressBar
 var _field_note: Label
-var _era_val: Label
+var _saturation_footer: Label
 var _npc_val: Label
 
 const NPC_SKIP_PREFIXES := ["cartel_"]
@@ -37,7 +52,9 @@ func _ready() -> void:
 	layer = 128
 	hide()
 	_card_style = _make_card_stylebox()
+	_setup_header()
 	_style_close_button()
+	_setup_footer_links()
 	close_btn.pressed.connect(_on_close_pressed)
 	_build_infographic_ui()
 
@@ -48,7 +65,6 @@ func _ready() -> void:
 
 
 func _promote_if_nested_under_canvas_layer() -> void:
-	# Un CanvasLayer hijo de otro CanvasLayer suele quedar sin tamaño → popup invisible.
 	var p := get_parent()
 	if p is CanvasLayer:
 		var host: Node = p.get_parent()
@@ -60,14 +76,14 @@ func _promote_if_nested_under_canvas_layer() -> void:
 
 func _make_card_stylebox() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.07, 0.11, 0.16, 0.78)
-	sb.set_border_width_all(1)
-	sb.border_color = Color(0.28, 0.55, 0.72, 0.55)
-	sb.set_corner_radius_all(6)
-	sb.content_margin_left = 10
-	sb.content_margin_top = 8
-	sb.content_margin_right = 10
-	sb.content_margin_bottom = 8
+	sb.bg_color = Color(0.04, 0.06, 0.14, 0.98)
+	sb.set_border_width_all(2)
+	sb.border_color = Color(0.35, 0.82, 0.96, 0.82)
+	sb.set_corner_radius_all(8)
+	sb.content_margin_left = 12
+	sb.content_margin_top = 10
+	sb.content_margin_right = 12
+	sb.content_margin_bottom = 10
 	return sb
 
 
@@ -83,171 +99,157 @@ func _lbl(size: int, color: Color, outline := false) -> Label:
 	return l
 
 
+func _setup_header() -> void:
+	header_label.bbcode_enabled = true
+	header_label.fit_content = true
+	header_label.scroll_active = false
+	header_label.add_theme_font_override("normal_font", FONT)
+	header_label.add_theme_font_size_override("normal_font_size", 20)
+	header_label.text = (
+		"[center][color=#72cce8]Las noticias[/color] "
+		+ "[color=#e85050]/[/color][color=#e8c840]/[/color][color=#5080e8]/[/color] "
+		+ "[color=#f07828]Maizena.tv[/color][/center]"
+	)
+
+
+func _setup_footer_links() -> void:
+	var link := LinkButton.new()
+	link.text = "Seguinos en Linktree ↗"
+	link.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
+	link.add_theme_font_override("font", FONT)
+	link.add_theme_font_size_override("font_size", 16)
+	link.add_theme_color_override("font_color", Color(0.45, 0.80, 0.91, 1.0))
+	link.add_theme_color_override("font_hover_color", Color(0.65, 0.92, 1.0, 1.0))
+	link.focus_mode = Control.FOCUS_NONE
+	link.pressed.connect(_on_linktree_pressed)
+
+	var vbox := close_btn.get_parent()
+	vbox.add_child(link)
+	vbox.move_child(link, close_btn.get_index())
+
+
+func _on_linktree_pressed() -> void:
+	_open_external_url(LINKTREE_URL)
+
+
+func _open_external_url(url: String) -> void:
+	OS.shell_open(url)
+
+
 func _build_infographic_ui() -> void:
 	if infographic_root.get_child_count() > 0:
 		return
 
 	var grid := GridContainer.new()
 	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 10)
-	grid.add_theme_constant_override("v_separation", 10)
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	infographic_root.add_child(grid)
 
-	_song_val = _add_stat_card(grid, "♫", "Radio", "Título actual")
-	_plays_val = _add_stat_card(
+	var radio := _add_news_card(
 		grid,
-		"↻",
-		"REPETICIONES",
-		"Veces que sonó la canción de radio (últ. %d eras)" % MaizenaMeta.get_recent_era_window()
+		COLOR_YELLOW,
+		"En la radio ahora está sonando:",
+		"Esta canción ya sonó en el archipiélago 0 veces"
 	)
-	_field_bar = _add_field_card(grid)
-	_era_val = _add_stat_card(grid, "◷", "ERA", "Semanas desde el lanzamiento del disco")
-	_add_npc_full_width_row(infographic_root)
+	_song_val = radio["value"]
+	_radio_footer = radio["footer"]
+
+	var era := _add_news_card(
+		grid,
+		COLOR_ORANGE,
+		"En esta isla el tiempo pasa en Eras",
+		"como la cantidad de semanas desde que lanzamos el disco 'Una banda de cosas tiradas'"
+	)
+	_era_val = era["value"]
+
+	_field_bar = _add_saturation_card(grid)
+
+	var npc := _add_news_card(
+		grid,
+		COLOR_CORAL,
+		"A esta hora están en la isla:",
+		"podés interactuar con ellxs y tratar de entenderlos. Se van y vuelven según el rato del día"
+	)
+	_npc_val = npc["value"]
 
 
-func _add_npc_full_width_row(parent: VBoxContainer) -> void:
-	# Fuera de la grilla 2×2: evita una celda suelta más baja y distinta a las demás.
+func _add_news_card(
+	grid: GridContainer,
+	accent: Color,
+	header_text: String,
+	footer_text: String,
+	value_font_size: int = 24
+) -> Dictionary:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style.duplicate())
-	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	panel.custom_minimum_size = Vector2(0, 96)
-
-	var outer := VBoxContainer.new()
-	outer.add_theme_constant_override("separation", 8)
-	panel.add_child(outer)
-
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	outer.add_child(row)
-
-	var g := _lbl(22, Color(0.45, 0.88, 1.0, 1.0), true)
-	g.text = "◎"
-	g.custom_minimum_size = Vector2(36, 32)
-	g.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	g.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	g.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(g)
-
-	var col := VBoxContainer.new()
-	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	col.add_theme_constant_override("separation", 6)
-	row.add_child(col)
-
-	var tag_l := _lbl(13, Color(0.62, 0.78, 0.9, 1.0))
-	tag_l.text = "NPCs"
-	col.add_child(tag_l)
-
-	var hint_l := _lbl(11, Color(0.45, 0.55, 0.62, 1.0))
-	hint_l.text = "Visibles en el mapa ahora"
-	col.add_child(hint_l)
-
-	var val := _lbl(20, Color(0.95, 0.97, 1.0, 1.0), true)
-	val.text = "—"
-	val.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	val.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	col.add_child(val)
-	_npc_val = val
-
-	parent.add_child(panel)
-
-
-func _add_stat_card(grid: GridContainer, glyph: String, tag: String, hint: String, value_font_size: int = 20) -> Label:
-	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _card_style.duplicate())
-	panel.custom_minimum_size = Vector2(148, 0)
+	panel.custom_minimum_size = Vector2(160, 168)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 6)
+	v.add_theme_constant_override("separation", 8)
 	panel.add_child(v)
 
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	v.add_child(row)
+	var header := _lbl(12, accent)
+	header.text = header_text
+	v.add_child(header)
 
-	var g := _lbl(20, Color(0.45, 0.88, 1.0, 1.0), true)
-	g.text = glyph
-	g.custom_minimum_size = Vector2(32, 28)
-	g.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	g.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	g.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(g)
-
-	var tag_l := _lbl(13, Color(0.62, 0.78, 0.9, 1.0))
-	tag_l.text = tag
-	tag_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	tag_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	row.add_child(tag_l)
-
-	if not hint.is_empty():
-		var hint_l := _lbl(11, Color(0.45, 0.55, 0.62, 1.0))
-		hint_l.text = hint
-		v.add_child(hint_l)
-
-	var val := _lbl(value_font_size, Color(0.95, 0.97, 1.0, 1.0), true)
+	var val := _lbl(value_font_size, COLOR_VALUE, true)
 	val.text = "—"
-	val.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	val.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	val.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(val)
 
+	var footer := _lbl(11, accent)
+	footer.text = footer_text
+	v.add_child(footer)
+
 	grid.add_child(panel)
-	return val
+	return {"value": val, "footer": footer}
 
 
-func _add_field_card(grid: GridContainer) -> ProgressBar:
+func _add_saturation_card(grid: GridContainer) -> ProgressBar:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style.duplicate())
-	panel.custom_minimum_size = Vector2(148, 0)
+	panel.custom_minimum_size = Vector2(160, 168)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 6)
 	panel.add_child(v)
 
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	v.add_child(row)
+	var header := _lbl(12, COLOR_GREEN)
+	header.text = "El indice de saturación de cosas en este momento es:"
+	v.add_child(header)
 
-	var g := _lbl(20, Color(0.45, 0.88, 1.0, 1.0), true)
-	g.text = "▣"
-	g.custom_minimum_size = Vector2(32, 28)
-	g.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	g.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	g.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(g)
-
-	var t := _lbl(13, Color(0.62, 0.78, 0.9, 1.0))
-	t.text = "SATURACIÓN"
-	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	t.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	row.add_child(t)
-
-	var h := _lbl(11, Color(0.45, 0.55, 0.62, 1.0))
-	h.text = "Cosas / tope"
-	h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	v.add_child(h)
+	var hint := _lbl(11, Color(0.72, 0.78, 0.86, 1.0))
+	hint.text = "Cosas / tope"
+	v.add_child(hint)
 
 	var bar := ProgressBar.new()
-	bar.custom_minimum_size = Vector2(0, 14)
-	bar.max_value = 80.0
+	bar.custom_minimum_size = Vector2(0, 16)
+	bar.max_value = float(RESIDUE_MAX)
 	bar.value = 0.0
 	bar.show_percentage = false
 	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color(0.25, 0.75, 0.95, 0.85)
+	fill.bg_color = Color(0.28, 0.78, 0.98, 0.95)
 	fill.set_corner_radius_all(3)
 	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(0.04, 0.07, 0.1, 0.9)
+	bg.bg_color = Color(0.04, 0.07, 0.1, 0.95)
 	bg.set_corner_radius_all(3)
 	bar.add_theme_stylebox_override("fill", fill)
 	bar.add_theme_stylebox_override("background", bg)
 	v.add_child(bar)
 
-	var cap := _lbl(18, Color(0.95, 0.97, 1.0, 1.0), true)
-	cap.text = "0 / 80"
-	cap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var cap := _lbl(22, COLOR_VALUE, true)
+	cap.text = "0 / %d" % RESIDUE_MAX
 	v.add_child(cap)
 	_field_note = cap
+
+	var footer := _lbl(11, COLOR_GREEN)
+	footer.text = _saturation_message(0)
+	v.add_child(footer)
+	_saturation_footer = footer
 
 	grid.add_child(panel)
 	return bar
@@ -338,18 +340,30 @@ func _refresh_infographic() -> void:
 	var era := MaizenaMeta.get_current_era_number()
 
 	_song_val.text = song_title
-	_plays_val.text = "%d veces\n«%s»" % [plays, song_title]
-
-	_field_bar.value = float(things)
-	_field_note.text = "%d / 80" % things
+	_radio_footer.text = "Esta canción ya sonó en el archipiélago %d veces" % plays
 
 	if era < 1:
-		_era_val.text = "Pre-Era"
+		_era_val.text = "Estamos en Pre-Era"
 	else:
-		_era_val.text = "Era %d" % era
+		_era_val.text = "Estamos en la Era %d" % era
+
+	_field_bar.value = float(things)
+	_field_note.text = "%d / %d" % [things, RESIDUE_MAX]
+	_saturation_footer.text = _saturation_message(things)
 
 	if _npc_val != null:
 		_npc_val.text = _get_visible_npc_text()
+
+
+func _saturation_message(things: int) -> String:
+	var ratio := float(things) / float(RESIDUE_MAX)
+	if ratio >= 0.82:
+		return "Al borde de la explosión: el archipiélago está a reventar."
+	if ratio >= 0.6:
+		return "Saturación alta: cada rincón tiene algo tirado."
+	if ratio >= 0.35:
+		return "Saturación media: el paisaje se va llenando."
+	return "Saturación baja: todavía hay aire entre las cosas."
 
 
 func _get_visible_npc_text() -> String:

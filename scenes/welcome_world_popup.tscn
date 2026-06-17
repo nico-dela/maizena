@@ -4,22 +4,20 @@
 [ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_report"]
-content_margin_left = 18.0
-content_margin_top = 14.0
-content_margin_right = 18.0
-content_margin_bottom = 14.0
-bg_color = Color(0.05, 0.08, 0.12, 0.82)
-border_width_left = 6
-border_color = Color(0.4, 0.82, 0.98, 0.95)
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(0.03, 0.05, 0.1, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.82, 0.96, 0.75)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="LabelSettings" id="LabelSettings_header"]
-font = ExtResource("2_font")
-font_size = 19
-font_color = Color(0.72, 0.93, 1, 1)
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="WelcomeWorldPopup" type="CanvasLayer" unique_id=2012209279 groups=["welcome_popup"]]
 script = ExtResource("1_welcome")
@@ -39,43 +37,40 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.03, 0.06, 0.12, 0.35)
+color = Color(0.02, 0.04, 0.08, 0.45)
 
 [node name="Report" type="PanelContainer" parent="CenterRoot" unique_id=25093474]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -300.0
+offset_right = 360.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_report")
 
 [node name="Margin" type="MarginContainer" parent="CenterRoot/Report" unique_id=1203307423]
 layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="CenterRoot/Report/Margin" unique_id=877830581]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
 
-[node name="HeaderLabel" type="Label" parent="CenterRoot/Report/Margin/VBox" unique_id=896386344]
+[node name="HeaderLabel" type="RichTextLabel" parent="CenterRoot/Report/Margin/VBox" unique_id=896386344]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
-text = "◇ Mundo Maizena"
-label_settings = SubResource("LabelSettings_header")
-horizontal_alignment = 1
-
-[node name="AccentLine" type="ColorRect" parent="CenterRoot/Report/Margin/VBox" unique_id=802438307]
-custom_minimum_size = Vector2(0, 3)
-layout_mode = 2
-size_flags_horizontal = 3
-color = Color(0.35, 0.78, 0.95, 0.55)
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
 
 [node name="Scroll" type="ScrollContainer" parent="CenterRoot/Report/Margin/VBox" unique_id=1425746067]
 layout_mode = 2
@@ -83,7 +78,7 @@ size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
 [node name="InfographicRoot" type="VBoxContainer" parent="CenterRoot/Report/Margin/VBox/Scroll" unique_id=1831023627]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10

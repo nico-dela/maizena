@@ -21,6 +21,12 @@ var use_real_time: bool = true
 var _time_poll_accumulator := 0.0
 var world_state: Node = null
 var _last_time_signal_hour: float = -999.0
+var _base_time_color: Color = Color.WHITE
+
+const WEATHER_TINTS := {
+	"rain": {"color": Color(0.68, 0.74, 0.82), "strength": 0.18},
+	"storm": {"color": Color(0.62, 0.68, 0.78), "strength": 0.18},
+}
 
 func _ready():
 	add_to_group("time_system")
@@ -38,7 +44,11 @@ func _ready():
 		current_time = world_state.current_hour
 	else:
 		get_current_system_time()
-	
+
+	var weather := get_node_or_null("/root/CordobaWeather")
+	if weather != null:
+		weather.weather_updated.connect(_on_weather_updated)
+
 	update_time_color()
 	set_process(true)
 
@@ -64,6 +74,10 @@ func _on_world_time_updated(hour: float):
 	update_time_color()
 
 func _on_world_state_changed():
+	update_time_color()
+
+
+func _on_weather_updated(_condition: String, _precipitation_mm: float, _cloud_cover: int) -> void:
 	update_time_color()
 
 func get_current_system_time():
@@ -127,12 +141,26 @@ func update_time_color():
 			var t = current_time / 5.0
 			color = lerp(time_colors["midnight"], time_colors["night"], t)
 	
+	_base_time_color = color
+
 	# Aplicar con suavizado
 	if canvas_modulate:
 		if world_state:
 			var decay_color := Color(0.76, 0.70, 0.64, color.a)
 			color = color.lerp(decay_color, world_state.get_decay_factor())
+		color = _apply_weather_tint(color)
 		canvas_modulate.color = color
+
+
+func _apply_weather_tint(color: Color) -> Color:
+	var weather := get_node_or_null("/root/CordobaWeather")
+	if weather == null or not weather.is_available:
+		return color
+	var cond: String = weather.condition
+	if not WEATHER_TINTS.has(cond):
+		return color
+	var tint: Dictionary = WEATHER_TINTS[cond]
+	return color.lerp(tint["color"], float(tint["strength"]))
 
 # Funciones para cambiar tiempo manualmente
 func set_time(hour: float, minute: float = 0.0):

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/interactive_object.gd" id="1_1fh6r"]
 [ext_resource type="Texture2D" uid="uid://cs3blnr07ntnx" path="res://assets/characters/anim personajes 1.png" id="2_2rou7"]
-[ext_resource type="Resource" uid="uid://be47ucv4gb2od" path="res://dialogues/hi.dialogue" id="3_h2bi8"]
+[ext_resource type="Resource" uid="uid://crkpbmy0vpqv1" path="res://dialogues/hi.dialogue" id="3_h2bi8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
 
