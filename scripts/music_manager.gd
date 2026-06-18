@@ -41,6 +41,7 @@ var playlist: Array = []
 var current_index := -1
 var current_song: int
 var _background_paused := false
+var _paused_playback_position := 0.0
 
 
 func _ready():
@@ -50,8 +51,19 @@ func _ready():
 	player.finished.connect(_play_next)
 	_create_playlist()
 	_play_next()
+	call_deferred("_connect_window_focus")
 	if OS.has_feature("web"):
 		_setup_web_visibility_pause()
+
+
+func _connect_window_focus() -> void:
+	var win := get_window()
+	if win == null:
+		return
+	if not win.focus_entered.is_connected(_resume_from_background):
+		win.focus_entered.connect(_resume_from_background)
+	if not win.focus_exited.is_connected(_pause_for_background):
+		win.focus_exited.connect(_pause_for_background)
 
 
 func _notification(what: int) -> void:
@@ -79,8 +91,13 @@ func _on_web_visibility_changed(hidden: Variant) -> void:
 
 
 func _pause_for_background() -> void:
-	if _background_paused or not player.playing:
+	if _background_paused:
 		return
+	if player.stream == null:
+		return
+	if not player.playing:
+		return
+	_paused_playback_position = player.get_playback_position()
 	_background_paused = true
 	player.stream_paused = true
 
@@ -89,8 +106,12 @@ func _resume_from_background() -> void:
 	if not _background_paused:
 		return
 	_background_paused = false
+	if player.stream == null:
+		return
 	if player.playing:
 		player.stream_paused = false
+	else:
+		player.play(_paused_playback_position)
 
 
 func _create_playlist():
@@ -113,6 +134,7 @@ func _play_next():
 	player.stream = TRACKS[current_song]
 	player.play()
 	_background_paused = false
+	_paused_playback_position = 0.0
 
 	MaizenaMeta.record_song_play(current_song)
 	song_changed.emit(SONG_TITLES[current_song])

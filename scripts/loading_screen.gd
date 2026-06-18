@@ -3,14 +3,19 @@ extends Control
 const MAIN_SCENE := "res://scenes/main_scene.tscn"
 const MIN_DISPLAY_SEC := 1.4
 
-const TIPS: Array[String] = [
-	"Explorá el archipiélago a tu ritmo.",
-	"Algunos personajes solo aparecen a ciertas horas.",
-	"La música cambia sola. Dejala sonar.",
-	"En web, la primera carga puede tardar un poco más.",
+const PHRASES: Array[String] = [
+	"Es que nadie me enseño a vivir",
+	"Todo lo que necesito es pequeño",
+	"El viento sobre mi cara, mientras voy para mi casa",
+	"Toda la gente se quiere ir a dormir",
+	"Podemos hacer sapitos por ahi",
 ]
 
-const PORTRAIT_LOADING_FONT_MUL := 1.45
+const PORTRAIT_LOADING_FONT_MUL := 1.12
+
+const FONT_TITLE := 34
+const FONT_BODY := 16
+const FONT_SMALL := 14
 const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experiencia de juego."
 
 @onready var margin: MarginContainer = $Margin
@@ -24,17 +29,19 @@ const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experi
 @onready var title_label: Label = $Margin/VBox/MainBlock/Content/Title
 @onready var location_label: Label = $Margin/VBox/LocationLabel
 @onready var copyright_label: Label = $Margin/VBox/CopyrightLabel
-@onready var logo_aspect: AspectRatioContainer = $Margin/VBox/MainBlock/Content/LogoWrap/LogoAspect
-@onready var logo: TextureRect = $Margin/VBox/MainBlock/Content/LogoWrap/LogoAspect/Logo
+@onready var map_preview_frame: PanelContainer = $Margin/VBox/MainBlock/Content/MapPreviewWrap/MapPreviewFrame
+@onready var map_preview_aspect: AspectRatioContainer = $Margin/VBox/MainBlock/Content/MapPreviewWrap/MapPreviewFrame/MapPreviewAspect
+@onready var map_preview: TextureRect = $Margin/VBox/MainBlock/Content/MapPreviewWrap/MapPreviewFrame/MapPreviewAspect/MapPreview
 
 var _started_at := 0.0
 var _loaded_scene: PackedScene = null
+var _map_frame_style: StyleBoxFlat
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_started_at = _now_sec()
-	tip_label.text = TIPS[randi() % TIPS.size()]
+	tip_label.text = PHRASES[randi() % PHRASES.size()]
 	ViewportLayout.refresh()
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_apply_responsive_layout)
@@ -85,8 +92,7 @@ func _notification(what: int) -> void:
 		_apply_responsive_layout()
 
 
-func _loading_font(landscape_base: int, portrait_base: int) -> int:
-	var base := portrait_base if ViewportLayout.is_portrait else landscape_base
+func _loading_font(base: int) -> int:
 	var scaled := float(base) * ViewportLayout.effective_ui_scale()
 	if ViewportLayout.is_portrait:
 		scaled *= PORTRAIT_LOADING_FONT_MUL
@@ -105,9 +111,24 @@ func _apply_responsive_layout() -> void:
 	var logo_max := 500.0 if portrait else 280.0
 	var logo_min := 240.0 if portrait else 170.0
 	var logo_side := clampf(layout_size.x * logo_ratio, logo_min, logo_max)
-	logo_aspect.custom_minimum_size = Vector2(logo_side, logo_side)
-	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	if not portrait:
+		logo_side = clampf(floorf(logo_side / 128.0) * 128.0, 128.0, 512.0)
+	map_preview_aspect.custom_minimum_size = Vector2(logo_side, logo_side)
+	map_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	map_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	map_preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	if map_preview_frame != null:
+		var frame_pad := int(round((10.0 if portrait else 8.0) * ui_boost))
+		if _map_frame_style == null:
+			var base := map_preview_frame.get_theme_stylebox("panel") as StyleBoxFlat
+			_map_frame_style = base.duplicate() as StyleBoxFlat if base else StyleBoxFlat.new()
+		_map_frame_style.content_margin_left = frame_pad
+		_map_frame_style.content_margin_top = frame_pad
+		_map_frame_style.content_margin_right = frame_pad
+		_map_frame_style.content_margin_bottom = frame_pad
+		_map_frame_style.set_border_width_all(maxi(2, int(round(3.0 * ui_boost))))
+		_map_frame_style.set_corner_radius_all(maxi(6, int(round(8.0 * ui_boost))))
+		map_preview_frame.add_theme_stylebox_override("panel", _map_frame_style)
 
 	progress_bar.custom_minimum_size.y = maxi(18, int(round((26.0 if portrait else 18.0) * ui_boost)))
 	progress_row.add_theme_constant_override("separation", int(round((12.0 if portrait else 8.0) * ui_boost)))
@@ -121,11 +142,11 @@ func _apply_responsive_layout() -> void:
 	margin.add_theme_constant_override("margin_top", int(round((24.0 if portrait else 40.0) * ui_boost)))
 	margin.add_theme_constant_override("margin_bottom", int(round((18.0 if portrait else 28.0) * ui_boost)))
 
-	title_label.add_theme_font_size_override("font_size", _loading_font(34, 48))
-	status_label.add_theme_font_size_override("font_size", _loading_font(16, 28))
+	title_label.add_theme_font_size_override("font_size", _loading_font(FONT_TITLE))
+	status_label.add_theme_font_size_override("font_size", _loading_font(FONT_BODY))
 	orientation_hint_label.text = ORIENTATION_HINT
 	orientation_hint_label.visible = portrait
-	orientation_hint_label.add_theme_font_size_override("font_size", _loading_font(14, 22))
-	tip_label.add_theme_font_size_override("font_size", _loading_font(14, 24))
-	location_label.add_theme_font_size_override("font_size", _loading_font(14, 20))
-	copyright_label.add_theme_font_size_override("font_size", _loading_font(14, 20))
+	orientation_hint_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
+	tip_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
+	location_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
+	copyright_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))

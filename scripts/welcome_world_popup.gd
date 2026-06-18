@@ -55,6 +55,7 @@ var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
 var _infographic_grid: GridContainer
 var _footer_link: LinkButton
+var _footer_spacer: Control
 var _applied_layout_scale := 1.0
 var _applied_portrait := false
 
@@ -152,9 +153,15 @@ func _setup_footer_links() -> void:
 	link.pressed.connect(_on_linktree_pressed)
 	_footer_link = link
 
+	var spacer := Control.new()
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_footer_spacer = spacer
+
 	var vbox := close_btn.get_parent()
 	vbox.add_child(link)
+	vbox.add_child(spacer)
 	vbox.move_child(link, close_btn.get_index())
+	vbox.move_child(spacer, close_btn.get_index())
 
 
 func _on_linktree_pressed() -> void:
@@ -406,6 +413,8 @@ func _apply_responsive_layout() -> void:
 		close_btn.custom_minimum_size.y = maxf(56.0, 44.0 * boost)
 	if _footer_link != null:
 		_footer_link.add_theme_font_size_override("font_size", _scaled_news_font(20 if portrait else 16))
+	if _footer_spacer != null:
+		_footer_spacer.custom_minimum_size.y = maxf(28.0, (44.0 if portrait else 20.0) * boost)
 	if scroll_container != null:
 		scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	if infographic_root != null:
