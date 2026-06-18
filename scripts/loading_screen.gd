@@ -10,11 +10,16 @@ const TIPS: Array[String] = [
 	"En web, la primera carga puede tardar un poco más.",
 ]
 
+const PORTRAIT_LOADING_FONT_MUL := 1.45
+const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experiencia de juego."
+
 @onready var margin: MarginContainer = $Margin
 @onready var main_vbox: VBoxContainer = $Margin/VBox
 @onready var content: VBoxContainer = $Margin/VBox/MainBlock/Content
+@onready var progress_row: VBoxContainer = $Margin/VBox/MainBlock/Content/ProgressRow
 @onready var progress_bar: ProgressBar = $Margin/VBox/MainBlock/Content/ProgressRow/ProgressBar
 @onready var status_label: Label = $Margin/VBox/MainBlock/Content/ProgressRow/StatusLabel
+@onready var orientation_hint_label: Label = $Margin/VBox/MainBlock/Content/ProgressRow/OrientationHint
 @onready var tip_label: Label = $Margin/VBox/MainBlock/Content/TipLabel
 @onready var title_label: Label = $Margin/VBox/MainBlock/Content/Title
 @onready var location_label: Label = $Margin/VBox/LocationLabel
@@ -80,35 +85,47 @@ func _notification(what: int) -> void:
 		_apply_responsive_layout()
 
 
+func _loading_font(landscape_base: int, portrait_base: int) -> int:
+	var base := portrait_base if ViewportLayout.is_portrait else landscape_base
+	var scaled := float(base) * ViewportLayout.effective_ui_scale()
+	if ViewportLayout.is_portrait:
+		scaled *= PORTRAIT_LOADING_FONT_MUL
+	return maxi(1, int(round(scaled)))
+
+
 func _apply_responsive_layout() -> void:
 	var layout_size: Vector2 = ViewportLayout.visible_layout_size()
 	var portrait := ViewportLayout.is_portrait
 	var ui_boost := ViewportLayout.effective_ui_scale()
 
-	var content_w := minf((520.0 if portrait else 420.0) * ui_boost, layout_size.x * 0.94)
+	var content_w := minf((560.0 if portrait else 420.0) * ui_boost, layout_size.x * 0.96)
 	content.custom_minimum_size.x = content_w
 
-	var logo_ratio := 0.58 if portrait else 0.36
-	var logo_max := 460.0 if portrait else 280.0
-	var logo_min := 220.0 if portrait else 170.0
+	var logo_ratio := 0.62 if portrait else 0.36
+	var logo_max := 500.0 if portrait else 280.0
+	var logo_min := 240.0 if portrait else 170.0
 	var logo_side := clampf(layout_size.x * logo_ratio, logo_min, logo_max)
 	logo_aspect.custom_minimum_size = Vector2(logo_side, logo_side)
 	logo.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	logo.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 
-	progress_bar.custom_minimum_size.y = maxi(16, int(round((22.0 if portrait else 18.0) * ui_boost)))
-	main_vbox.add_theme_constant_override("separation", int(round((14.0 if portrait else 10.0) * ui_boost)))
-	content.add_theme_constant_override("separation", int(round((24.0 if portrait else 18.0) * ui_boost)))
+	progress_bar.custom_minimum_size.y = maxi(18, int(round((26.0 if portrait else 18.0) * ui_boost)))
+	progress_row.add_theme_constant_override("separation", int(round((12.0 if portrait else 8.0) * ui_boost)))
+	main_vbox.add_theme_constant_override("separation", int(round((16.0 if portrait else 10.0) * ui_boost)))
+	content.add_theme_constant_override("separation", int(round((28.0 if portrait else 18.0) * ui_boost)))
 
-	var margin_base := 20.0 if portrait else 32.0
+	var margin_base := 16.0 if portrait else 32.0
 	var margin_scaled := int(round(margin_base * ui_boost))
 	margin.add_theme_constant_override("margin_left", margin_scaled)
 	margin.add_theme_constant_override("margin_right", margin_scaled)
-	margin.add_theme_constant_override("margin_top", int(round((28.0 if portrait else 40.0) * ui_boost)))
-	margin.add_theme_constant_override("margin_bottom", int(round((20.0 if portrait else 28.0) * ui_boost)))
+	margin.add_theme_constant_override("margin_top", int(round((24.0 if portrait else 40.0) * ui_boost)))
+	margin.add_theme_constant_override("margin_bottom", int(round((18.0 if portrait else 28.0) * ui_boost)))
 
-	title_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(40 if portrait else 34))
-	status_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(20 if portrait else 16))
-	tip_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18 if portrait else 14))
-	location_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16 if portrait else 14))
-	copyright_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16 if portrait else 14))
+	title_label.add_theme_font_size_override("font_size", _loading_font(34, 48))
+	status_label.add_theme_font_size_override("font_size", _loading_font(16, 28))
+	orientation_hint_label.text = ORIENTATION_HINT
+	orientation_hint_label.visible = portrait
+	orientation_hint_label.add_theme_font_size_override("font_size", _loading_font(14, 22))
+	tip_label.add_theme_font_size_override("font_size", _loading_font(14, 24))
+	location_label.add_theme_font_size_override("font_size", _loading_font(14, 20))
+	copyright_label.add_theme_font_size_override("font_size", _loading_font(14, 20))

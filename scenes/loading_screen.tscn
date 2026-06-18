@@ -118,6 +118,15 @@ text = "Cargando…"
 label_settings = SubResource("body_settings")
 horizontal_alignment = 1
 
+[node name="OrientationHint" type="Label" parent="Margin/VBox/MainBlock/Content/ProgressRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.176471, 0.129412, 0.223529, 0.78)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+text = "Girá la pantalla en horizontal para una mejor experiencia de juego."
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="TipLabel" type="Label" parent="Margin/VBox/MainBlock/Content"]
 layout_mode = 2
 text = "Explorá el archipiélago a tu ritmo."
