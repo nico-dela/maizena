@@ -5,6 +5,7 @@ const FONT: FontFile = preload("res://assets/ui/PixelOperator8.ttf")
 const BASE_CARD_MIN := Vector2(160, 168)
 const PORTRAIT_FONT_MUL := 1.42
 const PORTRAIT_CARD_MUL := 1.28
+const REBUILD_SCALE_THRESHOLD := 0.18
 
 const LINKTREE_URL := (
 	"https://linktr.ee/Maizena.ar"
@@ -166,9 +167,6 @@ func _open_external_url(url: String) -> void:
 
 
 func _build_infographic_ui() -> void:
-	if infographic_root.get_child_count() > 0:
-		return
-
 	var grid := GridContainer.new()
 	var portrait := ViewportLayout.is_portrait
 	grid.columns = 1 if portrait else 2
@@ -330,19 +328,26 @@ func _style_close_button() -> void:
 
 func _on_viewport_layout_changed() -> void:
 	_apply_responsive_layout()
-	var needs_rebuild := (
-		not is_equal_approx(_applied_layout_scale, ViewportLayout.effective_ui_scale())
-		or _applied_portrait != ViewportLayout.is_portrait
-	)
-	if needs_rebuild:
+	if _needs_infographic_rebuild():
 		_rebuild_infographic()
 
 
-func _rebuild_infographic() -> void:
+func _needs_infographic_rebuild() -> bool:
+	if infographic_root == null:
+		return false
+	if _infographic_grid == null or not is_instance_valid(_infographic_grid):
+		return true
+	if _applied_portrait != ViewportLayout.is_portrait:
+		return true
+	return absf(_applied_layout_scale - ViewportLayout.effective_ui_scale()) >= REBUILD_SCALE_THRESHOLD
+
+
+func _clear_infographic_children() -> void:
 	if infographic_root == null:
 		return
 	for child in infographic_root.get_children():
-		child.queue_free()
+		infographic_root.remove_child(child)
+		child.free()
 	_infographic_grid = null
 	_song_val = null
 	_radio_footer = null
@@ -351,6 +356,12 @@ func _rebuild_infographic() -> void:
 	_field_note = null
 	_saturation_footer = null
 	_npc_val = null
+
+
+func _rebuild_infographic() -> void:
+	if infographic_root == null:
+		return
+	_clear_infographic_children()
 	_applied_layout_scale = ViewportLayout.effective_ui_scale()
 	_applied_portrait = ViewportLayout.is_portrait
 	_build_infographic_ui()
@@ -411,7 +422,10 @@ func is_blocking() -> bool:
 func open_welcome(mark_seen_when_closed: bool) -> void:
 	_mark_seen_on_close = mark_seen_when_closed
 	ViewportLayout.refresh()
-	_rebuild_infographic()
+	if _needs_infographic_rebuild():
+		_rebuild_infographic()
+	elif _song_val == null:
+		_rebuild_infographic()
 	_apply_responsive_layout()
 	_refresh_infographic()
 	visible = true
@@ -462,6 +476,8 @@ func _can_toggle_news() -> bool:
 
 
 func _refresh_infographic() -> void:
+	if _song_val == null:
+		_rebuild_infographic()
 	if _song_val == null:
 		return
 

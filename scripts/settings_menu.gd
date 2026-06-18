@@ -95,8 +95,8 @@ func _on_viewport_layout_changed() -> void:
 
 func _apply_menu_layout() -> void:
 	var s := ViewportLayout.effective_ui_scale()
-	var vp := get_viewport().get_visible_rect().size
-	var panel_w := minf(BASE_PANEL_WIDTH * s, vp.x * 0.9)
+	var layout: Vector2 = ViewportLayout.visible_layout_size()
+	var panel_w := minf(BASE_PANEL_WIDTH * s, layout.x * 0.94)
 	menu_box.custom_minimum_size = Vector2(panel_w, 0)
 	menu_vbox.add_theme_constant_override("separation", int(round(20.0 * s)))
 
@@ -148,10 +148,12 @@ func _on_settings_toggled(pressed: bool) -> void:
 
 
 func _open_menu() -> void:
+	ViewportLayout.refresh()
 	menu_panel.show()
 	settings_button.icon = icon_close
 	is_open = true
 	_apply_menu_layout()
+	call_deferred("_apply_menu_layout")
 
 
 func _close_menu() -> void:
