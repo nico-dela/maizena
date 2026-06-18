@@ -1,5 +1,45 @@
 ~ start
 
-Silueto 1: ¿Qué escondes detrás de tu máscara? ¿No podrás salvarlos a todos?
+if GameState.get_npc_talk_count("silueto_1") >= 1:
+	Silueto 1: Volviste… con la misma máscara.
+	if GameState.silueto1_chose_defend:
+		Sanjin: Sigo intentando salvarlos.
+		Silueto 1: Intentar no alcanza. Tenés que elegir a quién primero.
+	elif GameState.silueto1_chose_silence:
+		Sanjin: …
+		Silueto 1: El silencio también es una respuesta. Una cobarde, pero respuesta.
+	elif GameState.silueto1_chose_ask:
+		Sanjin: Todavía quiero saber qué les pasó.
+		Silueto 1: El enojo les borró la forma. ¿No leíste el cartel de la aldea?
+	else:
+		Sanjin: …
+		Silueto 1: No tenés que hablar. La máscara ya habla por vos.
+	=> END
 
-=> END
+Silueto 1: ¿Qué escondes detrás de tu máscara?
+Sanjin: Lo mismo que vos escondés detrás de esa sombra.
+Silueto 1: Ja. Comparás mal. Nosotros ya perdimos la cara.
+Sanjin: ¿Y por qué seguís acá?
+
+- Defender a los demás
+	do GameState.silueto1_chose_defend = true
+	Sanjin: Voy a salvarlos a todos.
+	Silueto 1: Qué valiente… ¿Podrás, Sanjin? ¿O solo querés creerlo?
+	Sanjin: Alguien tiene que intentarlo.
+	Silueto 1: Entonces empezá por vos. La máscara pesa.
+	=> END
+
+- Guardar silencio
+	do GameState.silueto1_chose_silence = true
+	Sanjin: …
+	Silueto 1: Ah. Esa respuesta la conozco.
+	Silueto 1: El silencio también cansa, ¿sabés?
+	=> END
+
+- Preguntar qué les pasó
+	do GameState.silueto1_chose_ask = true
+	Sanjin: ¿Qué les pasó a los siluetos?
+	Silueto 1: El enojo. Demasiado, por demasiado tiempo.
+	Sanjin: ¿Se puede revertir?
+	Silueto 1: Si supiéramos eso, no seríamos sombras.
+	=> END

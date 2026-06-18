@@ -40,6 +40,8 @@ const SONG_TITLES := {
 var playlist: Array = []
 var current_index := -1
 var current_song: int
+var _background_paused := false
+
 
 func _ready():
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -48,6 +50,48 @@ func _ready():
 	player.finished.connect(_play_next)
 	_create_playlist()
 	_play_next()
+	if OS.has_feature("web"):
+		_setup_web_visibility_pause()
+
+
+func _notification(what: int) -> void:
+	match what:
+		NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+			_pause_for_background()
+		NOTIFICATION_APPLICATION_FOCUS_IN, NOTIFICATION_WM_WINDOW_FOCUS_IN:
+			_resume_from_background()
+
+
+func _setup_web_visibility_pause() -> void:
+	var callback := JavaScriptBridge.create_callback(_on_web_visibility_changed)
+	var js := (
+		"document.addEventListener('visibilitychange', function() { %s(document.hidden); });"
+		% callback
+	)
+	JavaScriptBridge.eval(js, true)
+
+
+func _on_web_visibility_changed(hidden: Variant) -> void:
+	if bool(hidden):
+		_pause_for_background()
+	else:
+		_resume_from_background()
+
+
+func _pause_for_background() -> void:
+	if _background_paused or not player.playing:
+		return
+	_background_paused = true
+	player.stream_paused = true
+
+
+func _resume_from_background() -> void:
+	if not _background_paused:
+		return
+	_background_paused = false
+	if player.playing:
+		player.stream_paused = false
+
 
 func _create_playlist():
 	playlist.clear()
@@ -55,6 +99,7 @@ func _create_playlist():
 		playlist.append(int(value))
 	playlist.shuffle()
 	current_index = -1
+
 
 func _play_next():
 	current_index += 1
@@ -67,6 +112,7 @@ func _play_next():
 
 	player.stream = TRACKS[current_song]
 	player.play()
+	_background_paused = false
 
 	MaizenaMeta.record_song_play(current_song)
 	song_changed.emit(SONG_TITLES[current_song])

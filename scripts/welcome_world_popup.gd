@@ -78,8 +78,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	if not MaizenaMeta.is_welcome_seen():
-		call_deferred("open_welcome", true)
+	call_deferred("open_welcome", false)
 
 
 func _promote_if_nested_under_canvas_layer() -> void:

@@ -1,5 +1,15 @@
 ~ start
 
-Silueto 2: ¡JA, JA! ¿Y ahora dónde está el repollo morado? ¡JA, JA!
+if GameState.get_npc_talk_count("silueto_2") >= 1:
+	Silueto 2: ¡JA, JA! ¿Seguís buscando el repollo?
+	Sanjin: Algún día lo voy a encontrar.
+	Silueto 2: ¡O lo va a encontrar vos! ¡JA, JA! [speed=1.2]
+	=> END
 
-=> END
+Silueto 2: ¡JA, JA! ¿Y ahora dónde está el repollo morado?
+Sanjin: Si supiera, no te lo diría.
+Silueto 2: ¡Qué noble! ¡JA, JA!
+Sanjin: ¿Sabés algo o solo te reís?
+Silueto 2: Las dos cosas. Pero el templo huele a repollo… ¡JA, JA! [speed=1.2]
+Sanjin: Eso sí sirve.
+Silueto 2: Mirá, ayudé sin querer. ¡JA, JA!

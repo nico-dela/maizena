@@ -1,21 +1,38 @@
 ~ start
 
 if GameState.quest_hambre_completed:
-	El viejo: Gracias… ahora puedo seguir. => END
+	El viejo: Gracias… ahora puedo seguir. [speed=0.8]
+	Sanjin: ¿Te sentís mejor?
+	El viejo: Lo bastante como para mirar la isla otra vez.
+	El viejo: No te alejes mucho, Sanjin. Acá todo cambia cuando no mirás.
+	=> END
 
 if GameState.has_item("hongos"):
 	do GameState.completar_comida()
-	El viejo: Gracias… de verdad. => END
+	El viejo: Gracias… de verdad. [speed=0.8]
+	Sanjin: Comé tranquilo.
+	El viejo: Estos hongos huelen a bosque y a otra vida.
+	=> END
 
 if GameState.quest_hambre_active:
-	El viejo: Sigo esperando… tengo hambre. => END
+	El viejo: Sigo esperando… tengo hambre. [speed=0.75]
+	Sanjin: Voy a buscar esos hongos.
+	El viejo: En el bosque o en la playa… creo haberlos visto ahí.
+	=> END
 
-El viejo: … ¿Podrías buscarme algo para comer? Creo haber visto unos hongos en el bosque o en la playa …
+El viejo: … ¿Podrías buscarme algo para comer?
+Sanjin: ¿Qué te pasó?
+El viejo: El tiempo pesa distinto en la isla… y hoy pesa hambre.
+El viejo: Vi unos hongos en el bosque o en la playa…
 
 - Si
 	do GameState.buscar_comida()
 	do HongosSpawner.spawn_hongos()
-	El viejo: Gracias… no tengo fuerzas para salir. => END
+	El viejo: Gracias… no tengo fuerzas para salir. [speed=0.8]
+	Sanjin: Yo los busco.
+	=> END
 
 - No
-	El viejo: Ya veo… entonces seguiré esperando. => END
+	El viejo: Ya veo… entonces seguiré esperando.
+	Sanjin: Perdón. Vuelvo en un rato.
+	=> END

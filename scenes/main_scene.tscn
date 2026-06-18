@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://18542l13jsva"]
 
-[ext_resource type="PackedScene" uid="uid://dtdekra2n1gji" path="res://scenes/world.tscn" id="1_ckrdw"]
+[ext_resource type="PackedScene" path="res://scenes/world.scn" id="1_ckrdw"]
 [ext_resource type="PackedScene" uid="uid://cvsnc1d0y0q4g" path="res://scenes/player.tscn" id="2_p6wng"]
 [ext_resource type="PackedScene" uid="uid://wtbpnf36qq6q" path="res://scenes/settings_menu.tscn" id="3_7mwkq"]
 [ext_resource type="Script" uid="uid://cvfrergq0gq1v" path="res://scenes/era_system.gd" id="6_18nlu"]
@@ -8,10 +8,14 @@
 [ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="7_c1pb6"]
 [ext_resource type="PackedScene" uid="uid://eq0kjkx20xsw" path="res://scenes/music_manager.tscn" id="7_c16ls"]
 [ext_resource type="PackedScene" uid="uid://cfngsm8uld2q5" path="res://scenes/welcome_world_popup.tscn" id="8_welcome"]
+[ext_resource type="Script" path="res://scripts/world_ambient_motion.gd" id="9_ambient"]
 
 [node name="MainScene" type="Node2D" unique_id=910432244]
 
 [node name="World" parent="." unique_id=524533904 instance=ExtResource("1_ckrdw")]
+
+[node name="WorldAmbientMotion" type="Node2D" parent="World"]
+script = ExtResource("9_ambient")
 
 [node name="Player" parent="." unique_id=1271161695 instance=ExtResource("2_p6wng")]
 position = Vector2(-218, -264)

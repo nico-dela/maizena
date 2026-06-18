@@ -1,5 +1,17 @@
 ~ start
 
+if GameState.get_npc_talk_count("ranancio") >= 1:
+	Ranancio: ¡Sigo cuidando el templo! ¡Puff!
+	Sanjin: ¿Alguna novedad del repollo?
+	Ranancio: Solo vigilancia. Y mucho puff. ¡Puff!
+	=> END
+
 Ranancio: ¡Siempre debo cuidar el templo! ¡Puff!
+Sanjin: ¿Qué protegés exactamente?
+Ranancio: El repollo morado… y la paz de los sapos. ¡Puff!
+Sanjin: Boji dice que es urgente.
+Ranancio: Boji siempre dice eso. Igual tiene razón.
+Sanjin: ¿Y la piedra grieta?
+Ranancio: No la toques. Ni con chanclas. ¡Puff!
 
 => END

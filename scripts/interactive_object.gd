@@ -2,12 +2,9 @@ extends StaticBody2D
 
 @export var dialogue: DialogueResource
 @export var start_node := "start"
+@export var npc_id := ""
+@export var idle_bob := true
 
-# Configuración de horarios
-# Cada diccionario puede tener:
-# - start: hora de inicio (ej: 8.5 = 8:30)
-# - end: hora de fin (ej: 17.0 = 17:00)
-# - probability: 0.0 a 1.0 (0% a 100%)
 @export var spawn_schedules: Array[Dictionary] = [
 	{"start": 9.0, "end": 12.0, "probability": 0.75},
 	{"start": 15.0, "end": 19.0, "probability": 0.85},
@@ -22,41 +19,54 @@ var time_system: TimeOfDaySystem
 var rng = RandomNumberGenerator.new()
 var original_modulate: Color
 var _active_schedule_key := ""
+var _idle_base_y := 0.0
+var _bob_tween: Tween
+
 
 func _ready():
 	original_modulate = modulate
-	
-	# Empezar invisible por defecto
+
 	visible = false
 	if collision:
 		collision.disabled = true
-	
-	# Si no tiene diálogo, no aparece nunca y listo
+
+	if animated_sprite:
+		_idle_base_y = animated_sprite.position.y
+
+	if dialogue and not npc_id.is_empty():
+		var dm := Engine.get_singleton("DialogueManager")
+		if dm and not dm.dialogue_ended.is_connected(_on_dialogue_ended):
+			dm.dialogue_ended.connect(_on_dialogue_ended)
+
 	if not dialogue:
-		return  # Ya está invisible, no hacemos más
-	
-	# Buscar el sistema de tiempo
+		return
+
 	await get_tree().process_frame
 	time_system = get_tree().get_first_node_in_group("time_system")
-	
+
 	if time_system:
 		time_system.time_updated.connect(_on_time_updated)
 		if not spawn_schedules.is_empty():
 			add_to_group("world_npc")
-		# Evaluar inmediatamente al iniciar
 		_evaluate_appearance(time_system.current_time)
 	else:
 		print("ERROR: No se encontró TimeOfDaySystem en ", name)
-		# Si no hay sistema de tiempo, aparecer por defecto
 		set_active(true)
-	
+
 	rng.randomize()
+
+
+func _on_dialogue_ended(resource: DialogueResource) -> void:
+	if npc_id.is_empty() or dialogue != resource:
+		return
+	GameState.mark_npc_talked(npc_id)
+
 
 func _on_time_updated(current_hour: float, _is_day: bool):
 	_evaluate_appearance(current_hour)
 
+
 func _evaluate_appearance(current_hour: float):
-	# Si no hay horarios configurados, aparecer siempre
 	if spawn_schedules.is_empty():
 		set_active(true)
 		return
@@ -81,6 +91,7 @@ func _evaluate_appearance(current_hour: float):
 	var adjusted_prob := clampf(prob * presence_multiplier, 0.0, 1.0)
 	set_active(rng.randf() < adjusted_prob)
 
+
 func _find_active_schedule(current_hour: float) -> Dictionary:
 	for schedule in spawn_schedules:
 		var start: float = schedule.get("start", 8.0)
@@ -93,6 +104,7 @@ func _find_active_schedule(current_hour: float) -> Dictionary:
 		if in_schedule:
 			return schedule
 	return {}
+
 
 func _schedule_key(schedule: Dictionary) -> String:
 	return "%s-%s" % [schedule.get("start", 0.0), schedule.get("end", 0.0)]
@@ -116,33 +128,22 @@ func force_present() -> void:
 func set_active(active: bool):
 	if is_active == active:
 		return
-	
+
 	is_active = active
-	
-	# Desaparecer completamente de la escena
 	visible = active
-	
+
 	if collision:
 		collision.disabled = not active
-	
-	# Controlar la animación SOLO si existe
+
 	if animated_sprite and animated_sprite.sprite_frames:
 		if active:
-			# Verificar si hay animaciones disponibles
-			var anim_names = animated_sprite.sprite_frames.get_animation_names()
-			if not anim_names.is_empty():
-				# Usar la primera animación disponible
-				animated_sprite.animation = anim_names[0]
-				animated_sprite.play()
-			else:
-				# Si no hay animaciones, solo mostrar el primer frame
-				animated_sprite.frame = 0
-				animated_sprite.visible = true
+			_play_sprite_animation()
+			_update_idle_bob()
 		else:
+			_stop_idle_bob()
 			animated_sprite.stop()
 			animated_sprite.visible = false
-	
-	# Animación de fade al aparecer/desaparecer
+
 	if active:
 		modulate = Color.TRANSPARENT
 		var tween = create_tween()
@@ -151,6 +152,49 @@ func set_active(active: bool):
 		modulate = original_modulate
 		var tween = create_tween()
 		tween.tween_property(self, "modulate", Color.TRANSPARENT, 0.5)
+
+
+func _play_sprite_animation() -> void:
+	var anim_names: PackedStringArray = animated_sprite.sprite_frames.get_animation_names()
+	if anim_names.is_empty():
+		animated_sprite.frame = 0
+		animated_sprite.visible = true
+		return
+
+	var anim := String(animated_sprite.animation)
+	if anim.is_empty() or not animated_sprite.sprite_frames.has_animation(anim):
+		anim = anim_names[0]
+	animated_sprite.animation = anim
+	animated_sprite.play(anim)
+
+
+func _should_idle_bob() -> bool:
+	if not idle_bob or not animated_sprite or not animated_sprite.sprite_frames:
+		return false
+	var anim := String(animated_sprite.animation)
+	if anim.is_empty() or not animated_sprite.sprite_frames.has_animation(anim):
+		return false
+	return animated_sprite.sprite_frames.get_frame_count(anim) <= 1
+
+
+func _update_idle_bob() -> void:
+	_stop_idle_bob()
+	if not _should_idle_bob():
+		return
+	animated_sprite.position.y = _idle_base_y
+	_bob_tween = create_tween().set_loops()
+	_bob_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bob_tween.tween_property(animated_sprite, "position:y", _idle_base_y - 2.0, 0.85)
+	_bob_tween.tween_property(animated_sprite, "position:y", _idle_base_y + 1.0, 0.85)
+
+
+func _stop_idle_bob() -> void:
+	if _bob_tween:
+		_bob_tween.kill()
+		_bob_tween = null
+	if animated_sprite:
+		animated_sprite.position.y = _idle_base_y
+
 
 func show_dialogue():
 	if is_active and dialogue:

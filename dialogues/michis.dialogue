@@ -1,5 +1,13 @@
 ~ start
 
-Michis: ¡Hey, Sanjin! ¿Me haces un MichiSaludo? Meow
+if GameState.get_npc_talk_count("michis") >= 1:
+	Michis: ¡Sanjin! MichiSaludo rápido. Meow.
+	Sanjin: MichiSaludo recibido.
+	Michis: Escuché que Boji busca el repollo otra vez. Meow.
+	=> END
+
+Michis: ¡Hey, Sanjin! ¿Me haces un MichiSaludo?
+Sanjin: MichiSaludo, Michis.
+Michis: Meow… eso estuvo mortal!
 
 => END

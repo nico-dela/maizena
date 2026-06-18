@@ -1,5 +1,42 @@
 ~ start
 
-Spinetto: ¡Oh, Sanjin! ¿Qué querés ahora?
+if GameState.get_npc_talk_count("spinetto") >= 1:
+	Spinetto: ¿Volviste, Sanjin? Qué sorpresa.
+	if GameState.spinetto_chose_album:
+		Sanjin: Sigo pensando en el álbum.
+		Spinetto: Pensar no arregla nada… pero al menos es honesto.
+	elif GameState.spinetto_chose_island:
+		Sanjin: Todavía no entiendo por qué seguís acá.
+		Spinetto: Porque acá las cosas pasan. Afuera solo se posponen.
+	else:
+		Sanjin: Hola otra vez.
+		Spinetto: Hola, hola. No me aburras demasiado.
+	=> END
 
-=> END
+Spinetto: ¡Oh, Sanjin! ¿Qué querés ahora?
+Sanjin: Solo caminaba.
+Spinetto: En esta isla nadie solo camina. Siempre hay un motivo.
+Sanjin: ¿Y vos cuál es el tuyo?
+
+- Preguntar por el álbum
+	do GameState.spinetto_chose_album = true
+	Sanjin: Vi carteles del álbum por todos lados.
+	Spinetto: Una Banda de Cosas Tiradas… acá hasta el pasto canta los temas.
+	Sanjin: Suena a mucho trabajo.
+	Spinetto: Todo arte es mucho trabajo disfrazado de magia barata.
+	=> END
+
+- Preguntar por qué sigue en la isla
+	do GameState.spinetto_chose_island = true
+	Sanjin: ¿Por qué no te fuiste con los demás?
+	Spinetto: Porque afuera el tiempo corre. Acá al menos respira distinto.
+	Sanjin: Qué poético para alguien tan sarcástico.
+	Spinetto: La poesía también es sarcasmo con buen ritmo.
+	=> END
+
+- Cambiar de tema
+	Sanjin: Dejemos eso. ¿Viste a Boji?
+	Spinetto: Sí. Está obsesionado con el repollo morado otra vez.
+	Sanjin: Parece urgente.
+	Spinetto: En Maizena todo parece urgente hasta que deja de serlo.
+	=> END

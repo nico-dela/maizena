@@ -1,15 +1,28 @@
 ~ start
 
 if GameState.bollo_training_completed:
-	Bollo: Sanjin, gracias por entrenarme. Ahora puedo defenderme un poco mejor. => END
+	Bollo: Sanjin, gracias por entrenarme. Ahora puedo defenderme un poco mejor.
+	Sanjin: No te confíes demasiado.
+	Bollo: No prometo heroísmo… pero prometo no caer al primer golpe.
+	=> END
 
-Bollo: Por favor, Sanjin, enséñame a pelear.
+if GameState.quest_hambre_active and not GameState.quest_hambre_completed:
+	Bollo: El viejo tiene hambre… ¿vos podés ayudarlo?
+	Sanjin: Estoy en eso.
+	Bollo: Entonces después entrenamos. Necesito estar listo.
+	=> END
+
+Bollo: Sanjin… la isla se siente más pesada últimamente.
+Sanjin: ¿Te pasa seguido?
+Bollo: Cuando hay menos gente visible, sí. Por eso quiero aprender a pelear.
+Bollo: Por favor, enséñame.
 
 - Si
 	do GameState.start_bollo_training()
-	Bollo: ¡Vamos! Estoy listo. => END
+	Bollo: ¡Vamos! Estoy listo.
+	=> END
 
 - No
-	Bollo: Bueno... cuando quieras, yo espero. => END
-
-=> END
+	Bollo: Bueno… cuando quieras, yo espero.
+	Sanjin: No tardes mucho. La isla no espera a nadie.
+	=> END

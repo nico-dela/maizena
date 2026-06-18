@@ -6,8 +6,23 @@ var tiene_comida := false
 var inventory := {}
 var bollo_training_active := false
 var bollo_training_completed := false
+var npc_talk_counts := {}
+var boji_chose_pantano := false
+var boji_chose_siluetos := false
+var boji_chose_templo := false
+var spinetto_chose_album := false
+var spinetto_chose_island := false
+var silueto1_chose_defend := false
+var silueto1_chose_silence := false
+var silueto1_chose_ask := false
 
 const BOLLO_FIGHT_SCENE_PATH := "res://scenes/bollo_fight_minigame.tscn"
+
+func get_npc_talk_count(id: String) -> int:
+	return int(npc_talk_counts.get(id, 0))
+
+func mark_npc_talked(id: String) -> void:
+	npc_talk_counts[id] = get_npc_talk_count(id) + 1
 
 func buscar_comida():
 	quest_hambre_active = true

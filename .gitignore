@@ -3,6 +3,9 @@
 .import/
 .export/
 
+# World map: edit world.scn (binary). world.tscn is recreated by the editor if saved as text.
+scenes/world.tscn
+
 # Optional C# build outputs
 mono/
 *.csproj

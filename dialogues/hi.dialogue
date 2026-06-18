@@ -1,5 +1,19 @@
 ~ start
 
-Hi: Hi hihi hi hi  hi!
+if GameState.get_npc_talk_count("hi") >= 1:
+	Hi: Hi hihi hi!
+	Sanjin: Todavía no te entiendo.
+	Hi: Hi hi! [speed=1.3]
+	=> END
+
+Hi: Hi hihi hi hi hi!
+Sanjin: ¿Hi?
+Hi: Hi! [speed=1.4]
+Sanjin: ¿Estás bien?
+Hi: Hihi hi hi! [speed=1.5]
+Sanjin: Creo que es un sí… o un no… o un quizás.
+Hi: Hi! [speed=1.3]
+
+=> END
 
 => END
