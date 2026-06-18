@@ -73,7 +73,8 @@ func _ready() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	call_deferred("open_welcome", false)
+	if not MaizenaMeta.is_welcome_seen():
+		call_deferred("open_welcome", true)
 
 
 func _promote_if_nested_under_canvas_layer() -> void:
@@ -377,6 +378,7 @@ func _on_close_pressed() -> void:
 	if _mark_seen_on_close:
 		MaizenaMeta.mark_welcome_seen()
 	_mark_seen_on_close = false
+	get_tree().paused = false
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -25,7 +25,22 @@ func _ready():
 	welcome_popup = get_tree().get_first_node_in_group("welcome_popup")
 	_apply_camera_zoom()
 	ViewportLayout.layout_changed.connect(_apply_camera_zoom)
-	call_deferred(func() -> void: ViewportLayout.refresh())
+	call_deferred("_refresh_viewport_layout")
+	call_deferred("_ensure_can_move")
+
+
+func _refresh_viewport_layout() -> void:
+	ViewportLayout.refresh()
+
+
+func _ensure_can_move() -> void:
+	if GameState.bollo_training_active:
+		return
+	if DialogueController.input_locked:
+		return
+	if settings_menu != null and settings_menu.is_open:
+		return
+	get_tree().paused = false
 
 
 func _apply_camera_zoom() -> void:

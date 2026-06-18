@@ -85,6 +85,13 @@ func _ready() -> void:
 	call_deferred("_apply_viewport_layout")
 
 
+func _exit_tree() -> void:
+	if GameState.bollo_training_active:
+		GameState.bollo_training_active = false
+		DialogueController.input_locked = false
+		get_tree().paused = false
+
+
 func _fight_ui_scale() -> float:
 	return minf(ViewportLayout.effective_ui_scale(), 2.5)
 

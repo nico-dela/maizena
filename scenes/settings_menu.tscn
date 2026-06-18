@@ -5,20 +5,13 @@
 [ext_resource type="Texture2D" uid="uid://bbm4e102unldq" path="res://assets/ui/close_button.png" id="3_labj1"]
 [ext_resource type="Texture2D" uid="uid://f1j7bvynm5sw" path="res://assets/ui/settings_button.png" id="3_wswnh"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_foakb"]
-font = ExtResource("2_cr101")
-font_size = 38
-
-[sub_resource type="LabelSettings" id="LabelSettings_iks7g"]
-font = ExtResource("2_cr101")
-font_size = 28
-
 [node name="Settings" type="CanvasLayer" unique_id=1182201072 groups=["settings_menu"]]
 script = ExtResource("1_ds00t")
 icon_open = ExtResource("3_wswnh")
 icon_close = ExtResource("3_labj1")
 
 [node name="Menu" type="Control" parent="." unique_id=1079332477]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +19,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Menu" unique_id=1689264033]
+[node name="Dim" type="ColorRect" parent="Menu" unique_id=881228146]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.72)
+
+[node name="CenterContainer" type="CenterContainer" parent="Menu" unique_id=1565064515]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,60 +36,52 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="Menu/MarginContainer" unique_id=881228146]
+[node name="Panel" type="PanelContainer" parent="Menu/CenterContainer" unique_id=484439236]
+custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
-color = Color(0, 0, 0, 0.784314)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Menu/MarginContainer" unique_id=1565064515]
+[node name="Margin" type="MarginContainer" parent="Menu/CenterContainer/Panel" unique_id=1689264033]
 layout_mode = 2
-theme_override_constants/separation = 50
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="VBox" type="VBoxContainer" parent="Menu/CenterContainer/Panel/Margin" unique_id=1901277714]
+layout_mode = 2
+theme_override_constants/separation = 20
 alignment = 1
 
-[node name="Titulo" type="Label" parent="Menu/MarginContainer/VBoxContainer" unique_id=1901277714]
+[node name="Titulo" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=2042519782]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 38
 text = "CONFIGURACIÓN"
-label_settings = SubResource("LabelSettings_foakb")
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="Volume" type="Control" parent="Menu/MarginContainer/VBoxContainer" unique_id=484439236]
+[node name="VolumeLabel" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=149283923]
 layout_mode = 2
-size_flags_vertical = 4
-
-[node name="Label" type="Label" parent="Menu/MarginContainer/VBoxContainer/Volume" unique_id=2042519782]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -175.0
-offset_top = -5.0
-offset_right = -3.0
-offset_bottom = 24.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Volumen"
-label_settings = SubResource("LabelSettings_iks7g")
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 28
+text = "Volumen — 100%"
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="VolumeHSlider" type="HSlider" parent="Menu/MarginContainer/VBoxContainer/Volume" unique_id=149283923]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 16.0
-offset_right = 166.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-min_value = -60.0
+[node name="VolumeHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551595]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -40.0
 max_value = 0.0
 
-[node name="Button" type="Button" parent="." unique_id=375551595]
+[node name="Hint" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=2096876301]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.72, 0.86, 1)
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 14
+text = "Esc · abrir / cerrar"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=375551596]
 modulate = Color(1, 1, 1, 0.666667)
 anchors_preset = 1
 anchor_left = 1.0
@@ -96,7 +90,6 @@ offset_left = -200.0
 offset_right = -150.0
 offset_bottom = 50.0
 grow_horizontal = 0
-scale = Vector2(1, 1)
 flat = true
 expand_icon = true
 icon_alignment = 1

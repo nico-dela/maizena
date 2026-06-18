@@ -34,7 +34,8 @@ script = ExtResource("6_18nlu")
 
 [node name="NewsButton" type="Button" parent="UI/NewsContainer" unique_id=2096876301]
 layout_mode = 1
-offset_right = 240.0
+offset_left = -1.0
+offset_right = 239.0
 offset_bottom = 36.0
 theme_override_fonts/font = ExtResource("7_c1pb6")
 theme_override_font_sizes/font_size = 24

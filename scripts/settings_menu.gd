@@ -1,80 +1,117 @@
 extends CanvasLayer
 
+const FONT: FontFile = preload("res://assets/ui/PixelOperator8.ttf")
+
+const BASE_TITLE_FONT := 38
+const BASE_VOLUME_FONT := 28
+const BASE_HINT_FONT := 14
+const BASE_PANEL_WIDTH := 420.0
+
 @onready var menu_panel: Control = $Menu
+@onready var menu_dim: ColorRect = $Menu/Dim
+@onready var menu_box: PanelContainer = $Menu/CenterContainer/Panel
+@onready var menu_vbox: VBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox
 @onready var settings_button: Button = $Button
-@onready var volume_slider: HSlider = $Menu/MarginContainer/VBoxContainer/Volume/VolumeHSlider
-@onready var title_label: Label = $Menu/MarginContainer/VBoxContainer/Titulo
-@onready var volume_label: Label = $Menu/MarginContainer/VBoxContainer/Volume/Label
-@onready var menu_vbox: VBoxContainer = $Menu/MarginContainer/VBoxContainer
-@onready var volume_row: Control = $Menu/MarginContainer/VBoxContainer/Volume
+@onready var volume_slider: HSlider = $Menu/CenterContainer/Panel/Margin/VBox/VolumeHSlider
+@onready var title_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Titulo
+@onready var volume_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/VolumeLabel
+@onready var hint_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Hint
 
 @export var icon_open: Texture2D
 @export var icon_close: Texture2D
 var is_open := false
 
-const BASE_TITLE_FONT := 38
-const BASE_VOLUME_FONT := 28
+var _panel_style: StyleBoxFlat
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	layer = 20
 	add_to_group("settings_menu")
-	
+
+	_panel_style = _make_panel_style()
+	menu_box.add_theme_stylebox_override("panel", _panel_style)
+
 	menu_panel.hide()
+	is_open = false
+	settings_button.button_pressed = false
 
 	settings_button.toggle_mode = true
-	settings_button.button_pressed = false
 	settings_button.icon = icon_open
 	settings_button.toggled.connect(_on_settings_toggled)
-
 	settings_button.mouse_entered.connect(_on_button_hover_enter)
 	settings_button.mouse_exited.connect(_on_button_hover_exit)
 
 	_remove_button_style(settings_button)
-	_apply_settings_button_layout()
-	_apply_menu_typography()
 
 	volume_slider.min_value = -40
 	volume_slider.max_value = 0
 	volume_slider.step = 1
 	volume_slider.value = 0
 	volume_slider.value_changed.connect(_on_volume_changed)
-
 	_on_volume_changed(volume_slider.value)
+
+	menu_dim.gui_input.connect(_on_dim_gui_input)
+	_style_volume_slider()
+
+	_apply_settings_button_layout()
+	_apply_menu_layout()
 	ViewportLayout.layout_changed.connect(_on_viewport_layout_changed)
-	call_deferred("_on_viewport_layout_changed")
+
+
+func _make_panel_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.04, 0.06, 0.14, 0.98)
+	sb.set_border_width_all(2)
+	sb.border_color = Color(0.35, 0.82, 0.96, 0.82)
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 4
+	sb.content_margin_top = 4
+	sb.content_margin_right = 4
+	sb.content_margin_bottom = 4
+	return sb
+
+
+func _style_volume_slider() -> void:
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.04, 0.07, 0.1, 0.95)
+	track.set_corner_radius_all(4)
+	track.set_content_margin_all(6)
+	var grabber := StyleBoxFlat.new()
+	grabber.bg_color = Color(0.35, 0.82, 0.96, 1)
+	grabber.set_corner_radius_all(5)
+	grabber.set_content_margin_all(5)
+	var grabber_h := grabber.duplicate()
+	grabber_h.bg_color = Color(0.5, 0.9, 1.0, 1)
+	volume_slider.add_theme_stylebox_override("slider", track)
+	volume_slider.add_theme_stylebox_override("grabber", grabber)
+	volume_slider.add_theme_stylebox_override("grabber_highlight", grabber_h)
 
 
 func _on_viewport_layout_changed() -> void:
 	_apply_settings_button_layout()
-	_apply_menu_typography()
+	_apply_menu_layout()
 
 
-func _apply_menu_typography() -> void:
-	var title_size := ViewportLayout.scaled_font(BASE_TITLE_FONT)
-	var volume_size := ViewportLayout.scaled_font(BASE_VOLUME_FONT)
+func _apply_menu_layout() -> void:
 	var s := ViewportLayout.effective_ui_scale()
+	var vp := get_viewport().get_visible_rect().size
+	var panel_w := minf(BASE_PANEL_WIDTH * s, vp.x * 0.9)
+	menu_box.custom_minimum_size = Vector2(panel_w, 0)
+	menu_vbox.add_theme_constant_override("separation", int(round(20.0 * s)))
 
-	if title_label != null:
-		title_label.label_settings = null
-		title_label.add_theme_font_size_override("font_size", title_size)
-	if volume_label != null:
-		volume_label.label_settings = null
-		volume_label.add_theme_font_size_override("font_size", volume_size)
+	_set_label_font(title_label, BASE_TITLE_FONT)
+	title_label.add_theme_color_override("font_color", Color(0.45, 0.85, 0.96, 1))
+	_set_label_font(volume_label, BASE_VOLUME_FONT)
+	_set_label_font(hint_label, BASE_HINT_FONT)
+	volume_slider.custom_minimum_size.y = maxi(28, int(round(24.0 * s)))
 
-	if menu_vbox != null:
-		menu_vbox.add_theme_constant_override("separation", int(round(50.0 * s)))
 
-	if volume_slider != null and volume_row != null:
-		var half_w := 175.0 * s
-		var slider_w := 150.0 * s
-		volume_label.offset_left = -half_w
-		volume_label.offset_right = -8.0
-		volume_label.offset_top = -5.0 * s
-		volume_label.offset_bottom = 24.0 * s
-		volume_slider.offset_left = 16.0 * s
-		volume_slider.offset_right = 16.0 * s + slider_w
-		volume_slider.offset_bottom = 20.0 * s
-		volume_row.custom_minimum_size.y = 48.0 * s
+func _set_label_font(label: Label, base_size: int) -> void:
+	if label == null:
+		return
+	label.add_theme_font_override("font", FONT)
+	label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(base_size))
 
 
 func _apply_settings_button_layout() -> void:
@@ -84,7 +121,7 @@ func _apply_settings_button_layout() -> void:
 	settings_button.expand_icon = true
 	settings_button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var mult := 4.0 if OS.has_feature("mobile") else 2.6
-	mult *= ViewportLayout.effective_ui_scale()
+	mult *= minf(ViewportLayout.effective_ui_scale(), 2.0)
 	var src_w := maxf(float(icon_open.get_width()), float(icon_close.get_width()))
 	var src_h := maxf(float(icon_open.get_height()), float(icon_close.get_height()))
 	var iw := maxi(1, int(round(src_w * mult)))
@@ -99,3 +136,108 @@ func _apply_settings_button_layout() -> void:
 	settings_button.offset_bottom = float(ih)
 	settings_button.offset_left = -SCREEN_MARGIN - float(iw)
 	settings_button.offset_right = -SCREEN_MARGIN
+	settings_button.visible = true
+	settings_button.modulate = Color(1, 1, 1, 1)
+
+
+func _on_settings_toggled(pressed: bool) -> void:
+	if pressed:
+		_open_menu()
+	else:
+		_close_menu()
+
+
+func _open_menu() -> void:
+	menu_panel.show()
+	settings_button.icon = icon_close
+	is_open = true
+	_apply_menu_layout()
+
+
+func _close_menu() -> void:
+	menu_panel.hide()
+	settings_button.icon = icon_open
+	settings_button.button_pressed = false
+	is_open = false
+
+
+func _can_open_menu() -> bool:
+	if GameState.bollo_training_active:
+		return false
+	if DialogueController.input_locked:
+		return false
+	var wp := get_tree().get_first_node_in_group("welcome_popup")
+	if wp != null and wp.has_method("is_blocking") and wp.call("is_blocking"):
+		return false
+	return true
+
+
+func _show_menu() -> void:
+	_open_menu()
+	settings_button.set_pressed_no_signal(true)
+
+
+func _on_dim_gui_input(event: InputEvent) -> void:
+	if not is_open:
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_dismiss_menu()
+
+
+func _dismiss_menu() -> void:
+	_close_menu()
+	settings_button.set_pressed_no_signal(false)
+
+
+func _is_menu_toggle(event: InputEvent) -> bool:
+	return event.is_action_pressed("ui_cancel") or event.is_action_pressed("ui_menu")
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _is_menu_toggle(event):
+		if is_open:
+			_dismiss_menu()
+			get_viewport().set_input_as_handled()
+		elif _can_open_menu():
+			_show_menu()
+			get_viewport().set_input_as_handled()
+		return
+
+	if not menu_panel.visible:
+		return
+
+	if event.is_action_pressed("ui_up"):
+		volume_slider.value += volume_slider.step
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_down"):
+		volume_slider.value -= volume_slider.step
+		get_viewport().set_input_as_handled()
+
+
+func _on_volume_changed(value: float) -> void:
+	var master_bus := AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(master_bus, value)
+	volume_label.text = "Volumen — %d%%" % _volume_percent(value)
+
+
+func _volume_percent(db: float) -> int:
+	var min_db := volume_slider.min_value
+	if db <= min_db:
+		return 0
+	return int(round(inverse_lerp(min_db, volume_slider.max_value, db) * 100.0))
+
+
+func _on_button_hover_enter() -> void:
+	settings_button.modulate = Color(1.15, 1.15, 1.15)
+
+
+func _on_button_hover_exit() -> void:
+	settings_button.modulate = Color(1, 1, 1)
+
+
+func _remove_button_style(button: Button) -> void:
+	var empty_style := StyleBoxEmpty.new()
+	button.add_theme_stylebox_override("normal", empty_style)
+	button.add_theme_stylebox_override("hover", empty_style)
+	button.add_theme_stylebox_override("pressed", empty_style)
+	button.add_theme_stylebox_override("focus", empty_style)
