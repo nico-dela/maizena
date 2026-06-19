@@ -3,7 +3,6 @@ extends Node2D
 const MAX_RESIDUE_NODES := 80
 const CELL := 16
 const ALLOWED_PROP_SIZES := [16, 24, 32, 48]
-const RESIDUE_TEXTURE := preload("res://assets/tilesets/Basic Grass Biom things 1.png")
 const WORLD_PROPS_DIR := "res://assets/world_props"
 
 const SCALE_RANGES := {
@@ -14,7 +13,7 @@ const SCALE_RANGES := {
 }
 
 var world_state: Node = null
-## { texture: Texture2D, base_size: int } — props de `assets/world_props/`. Vacío → tileset legacy.
+## { texture: Texture2D, base_size: int } — props de `assets/world_props/`.
 var _world_prop_variants: Array[Dictionary] = []
 
 
@@ -102,6 +101,10 @@ func _rebuild_residue() -> void:
 	if not world_state:
 		return
 
+	if _world_prop_variants.is_empty():
+		push_warning("WorldResidueSystem: no hay props válidos en %s" % WORLD_PROPS_DIR)
+		return
+
 	var residue_count: int = mini(int(world_state.accumulation_level), MAX_RESIDUE_NODES)
 	for i in range(residue_count):
 		var prop := _pick_prop_variant(i)
@@ -118,17 +121,8 @@ func _rebuild_residue() -> void:
 func _pick_prop_variant(index: int) -> Dictionary:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(world_state.residue_seed) + index * 7919
-
-	if not _world_prop_variants.is_empty():
-		var pick: int = rng.randi_range(0, _world_prop_variants.size() - 1)
-		return _world_prop_variants[pick]
-
-	var atlas := AtlasTexture.new()
-	atlas.atlas = RESIDUE_TEXTURE
-	var cell_x := rng.randi_range(0, 5) * CELL
-	var cell_y := rng.randi_range(0, 3) * CELL
-	atlas.region = Rect2(cell_x, cell_y, CELL, CELL)
-	return {"texture": atlas, "base_size": CELL}
+	var pick: int = rng.randi_range(0, _world_prop_variants.size() - 1)
+	return _world_prop_variants[pick]
 
 
 func _build_residue_position(index: int) -> Vector2:

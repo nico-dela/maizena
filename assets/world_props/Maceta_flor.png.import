@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ck6yn8dhqyiqs"
-path="res://.godot/imported/Kumo_estudio_1.png-fb1bd3a39a2fbb8d287b2647871da465.ctex"
+uid="uid://bqlwp20u34rb"
+path="res://.godot/imported/Maceta_flor.png-cf3d12dd77785a114f6d4ec9d5f0860c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/logos/Kumo_estudio_1.png"
-dest_files=["res://.godot/imported/Kumo_estudio_1.png-fb1bd3a39a2fbb8d287b2647871da465.ctex"]
+source_file="res://assets/world_props/Maceta_flor.png"
+dest_files=["res://.godot/imported/Maceta_flor.png-cf3d12dd77785a114f6d4ec9d5f0860c.ctex"]
 
 [params]
 

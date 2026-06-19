@@ -3,7 +3,7 @@ extends StaticBody2D
 @export var dialogue: DialogueResource
 @export var start_node := "start"
 @export var npc_id := ""
-@export var idle_bob := true
+@export var idle_glow := true
 
 @export var spawn_schedules: Array[Dictionary] = [
 	{"start": 9.0, "end": 12.0, "probability": 0.75},
@@ -19,8 +19,10 @@ var time_system: TimeOfDaySystem
 var rng = RandomNumberGenerator.new()
 var original_modulate: Color
 var _active_schedule_key := ""
-var _idle_base_y := 0.0
-var _bob_tween: Tween
+var _idle_glow_tween: Tween
+
+const IDLE_GLOW_PEAK := Color(1.14, 1.1, 0.98)
+const IDLE_GLOW_CYCLE := 1.8
 
 
 func _ready():
@@ -29,9 +31,6 @@ func _ready():
 	visible = false
 	if collision:
 		collision.disabled = true
-
-	if animated_sprite:
-		_idle_base_y = animated_sprite.position.y
 
 	if dialogue and not npc_id.is_empty():
 		var dm := Engine.get_singleton("DialogueManager")
@@ -138,9 +137,9 @@ func set_active(active: bool):
 	if animated_sprite and animated_sprite.sprite_frames:
 		if active:
 			_play_sprite_animation()
-			_update_idle_bob()
+			_update_idle_glow()
 		else:
-			_stop_idle_bob()
+			_stop_idle_glow()
 			animated_sprite.stop()
 			animated_sprite.visible = false
 
@@ -168,8 +167,8 @@ func _play_sprite_animation() -> void:
 	animated_sprite.play(anim)
 
 
-func _should_idle_bob() -> bool:
-	if not idle_bob or not animated_sprite or not animated_sprite.sprite_frames:
+func _should_idle_glow() -> bool:
+	if not idle_glow or not animated_sprite or not animated_sprite.sprite_frames:
 		return false
 	var anim := String(animated_sprite.animation)
 	if anim.is_empty() or not animated_sprite.sprite_frames.has_animation(anim):
@@ -177,23 +176,23 @@ func _should_idle_bob() -> bool:
 	return animated_sprite.sprite_frames.get_frame_count(anim) <= 1
 
 
-func _update_idle_bob() -> void:
-	_stop_idle_bob()
-	if not _should_idle_bob():
+func _update_idle_glow() -> void:
+	_stop_idle_glow()
+	if not _should_idle_glow():
 		return
-	animated_sprite.position.y = _idle_base_y
-	_bob_tween = create_tween().set_loops()
-	_bob_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_bob_tween.tween_property(animated_sprite, "position:y", _idle_base_y - 2.0, 0.85)
-	_bob_tween.tween_property(animated_sprite, "position:y", _idle_base_y + 1.0, 0.85)
+	animated_sprite.modulate = Color.WHITE
+	_idle_glow_tween = create_tween().set_loops()
+	_idle_glow_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_idle_glow_tween.tween_property(animated_sprite, "modulate", IDLE_GLOW_PEAK, IDLE_GLOW_CYCLE * 0.5)
+	_idle_glow_tween.tween_property(animated_sprite, "modulate", Color.WHITE, IDLE_GLOW_CYCLE * 0.5)
 
 
-func _stop_idle_bob() -> void:
-	if _bob_tween:
-		_bob_tween.kill()
-		_bob_tween = null
+func _stop_idle_glow() -> void:
+	if _idle_glow_tween:
+		_idle_glow_tween.kill()
+		_idle_glow_tween = null
 	if animated_sprite:
-		animated_sprite.position.y = _idle_base_y
+		animated_sprite.modulate = Color.WHITE
 
 
 func show_dialogue():

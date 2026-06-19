@@ -50,9 +50,5 @@ func spawn_hongos():
 
 	hongos_spawned = true
 
-func spawn_cabbage():
-	# Compatibilidad con llamadas antiguas desde diálogo.
-	spawn_hongos()
-
 func _on_hongos_removed():
 	hongos_spawned = false

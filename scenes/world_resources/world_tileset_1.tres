@@ -1,23 +1,23 @@
-[gd_resource type="TileSet" format=3]
+[gd_resource type="TileSet" format=3 uid="uid://i12qr8pppnnn"]
 
-[ext_resource type="Texture2D" path="res://assets/tilesets/aldea de las sombras.png" id="1_wpot7"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Basic Grass Biom things 1.png" id="2_k8ek6"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/laboratorio.png" id="3_y4f1t"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Montaña.png" id="4_gcfec"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/OutdoorsTileset.png" id="5_j7rjs"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/templo de los anfibios.png" id="6_ayrrs"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Tilled Dirt.png" id="7_onxgx"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Water.png" id="8_e1pt3"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Wood Bridge.png" id="9_yngo3"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Wooden House.png" id="10_stasm"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Basic Plants.png" id="11_4hjj0"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/beach-desert.png" id="12_a8ha7"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Bollos house.png" id="13_j0d4n"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Egg item.png" id="14_twfgy"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Fences.png" id="15_msiao"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Free_Chicken_House.png" id="16_17v1w"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Grass.png" id="17_8clvm"]
-[ext_resource type="Texture2D" path="res://assets/tilesets/Hills.png" id="18_gtiqw"]
+[ext_resource type="Texture2D" uid="uid://covbnov3c3yc4" path="res://assets/tilesets/aldea de las sombras.png" id="1_wpot7"]
+[ext_resource type="Texture2D" uid="uid://we6o5wdew5gi" path="res://assets/tilesets/Basic Grass Biom things 1.png" id="2_k8ek6"]
+[ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://assets/tilesets/laboratorio.png" id="3_y4f1t"]
+[ext_resource type="Texture2D" uid="uid://dscj1x67pe7ul" path="res://assets/tilesets/Montaña.png" id="4_gcfec"]
+[ext_resource type="Texture2D" uid="uid://boemw1emdmc8n" path="res://assets/tilesets/OutdoorsTileset.png" id="5_j7rjs"]
+[ext_resource type="Texture2D" uid="uid://pkqub3ypbmga" path="res://assets/tilesets/templo de los anfibios.png" id="6_ayrrs"]
+[ext_resource type="Texture2D" uid="uid://bxrqt8mpq6btq" path="res://assets/tilesets/Tilled Dirt.png" id="7_onxgx"]
+[ext_resource type="Texture2D" uid="uid://b0i807h0o1m6t" path="res://assets/tilesets/Water.png" id="8_e1pt3"]
+[ext_resource type="Texture2D" uid="uid://bo82ry606ks2q" path="res://assets/tilesets/Wood Bridge.png" id="9_yngo3"]
+[ext_resource type="Texture2D" uid="uid://bidaufsco4bw2" path="res://assets/tilesets/Wooden House.png" id="10_stasm"]
+[ext_resource type="Texture2D" uid="uid://dmqebdr5rq2lm" path="res://assets/tilesets/Basic Plants.png" id="11_4hjj0"]
+[ext_resource type="Texture2D" uid="uid://63ouiwj3o8hf" path="res://assets/tilesets/beach-desert.png" id="12_a8ha7"]
+[ext_resource type="Texture2D" uid="uid://gvkwwqj55d1l" path="res://assets/tilesets/Bollos house.png" id="13_j0d4n"]
+[ext_resource type="Texture2D" uid="uid://ci7f3hij8ylt2" path="res://assets/tilesets/Egg item.png" id="14_twfgy"]
+[ext_resource type="Texture2D" uid="uid://cmnsp68w564un" path="res://assets/tilesets/Fences.png" id="15_msiao"]
+[ext_resource type="Texture2D" uid="uid://cct6xc1atpdsk" path="res://assets/tilesets/Free_Chicken_House.png" id="16_17v1w"]
+[ext_resource type="Texture2D" uid="uid://dxs1vsn7urcf5" path="res://assets/tilesets/Grass.png" id="17_8clvm"]
+[ext_resource type="Texture2D" uid="uid://bhafsii3o8ipu" path="res://assets/tilesets/Hills.png" id="18_gtiqw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_munwf"]
 texture = ExtResource("1_wpot7")
@@ -453,13 +453,9 @@ texture = ExtResource("7_onxgx")
 texture = ExtResource("8_e1pt3")
 0:0/animation_speed = 4.0
 0:0/animation_frame_0/duration = 1.0
-0:0/animation_frame_0/atlas_coords = Vector2i(0, 0)
 0:0/animation_frame_1/duration = 1.0
-0:0/animation_frame_1/atlas_coords = Vector2i(1, 0)
 0:0/animation_frame_2/duration = 1.0
-0:0/animation_frame_2/atlas_coords = Vector2i(2, 0)
 0:0/animation_frame_3/duration = 1.0
-0:0/animation_frame_3/atlas_coords = Vector2i(3, 0)
 0:0/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4kbfs"]

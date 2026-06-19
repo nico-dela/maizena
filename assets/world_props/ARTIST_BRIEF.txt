@@ -52,7 +52,6 @@ Qué NO hace falta
 
 Referencia de estilo en el repo
 --------------------------------
-    assets/tilesets/Basic Grass Biom things 1.png
-(solo referencia de escala pixel; el arte puede ser propio de Maizena).
+    assets/world_props/ (props sueltos o atlas_*.png)
 
 ================================================================================

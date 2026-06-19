@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbm4e102unldq"
-path="res://.godot/imported/close_button.png-f65519adc790e82c42030fe8c06fdebf.ctex"
+uid="uid://deldkae47iml2"
+path="res://.godot/imported/ford_sierra.png-e5d7e774d3c821b1fdc68ba7b4e907bb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/close_button.png"
-dest_files=["res://.godot/imported/close_button.png-f65519adc790e82c42030fe8c06fdebf.ctex"]
+source_file="res://assets/world_props/ford_sierra.png"
+dest_files=["res://.godot/imported/ford_sierra.png-e5d7e774d3c821b1fdc68ba7b4e907bb.ctex"]
 
 [params]
 

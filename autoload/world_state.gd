@@ -46,11 +46,21 @@ func _notification(what: int):
 		_save_state()
 
 func _sync_time_from_system():
-	var datetime := Time.get_datetime_dict_from_system()
-	var hour := float(datetime.hour) + float(datetime.minute) / 60.0 + float(datetime.second) / 3600.0
+	var hour := _get_cordoba_hour()
 	if abs(hour - current_hour) >= 1.0 / 120.0:
 		current_hour = hour
 		world_time_updated.emit(current_hour)
+
+
+func _get_cordoba_hour() -> float:
+	var weather := get_node_or_null("/root/CordobaWeather")
+	if weather != null and weather.has_method("get_cordoba_local_hour"):
+		return weather.get_cordoba_local_hour()
+	var unix := int(Time.get_unix_time_from_system()) - 3 * 3600
+	var seconds_in_day: int = unix % 86400
+	if seconds_in_day < 0:
+		seconds_in_day += 86400
+	return float(seconds_in_day) / 3600.0
 
 func _check_day_rollover():
 	var unix_day := _get_unix_day()
@@ -145,7 +155,7 @@ func _initialize_defaults():
 	last_absence_mutation_day = -1
 	_last_seen_unix = int(Time.get_unix_time_from_system())
 	_last_seen_unix_day = _get_unix_day()
-	current_hour = float(Time.get_datetime_dict_from_system().hour)
+	current_hour = _get_cordoba_hour()
 
 func _save_state():
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)

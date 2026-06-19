@@ -3,6 +3,9 @@ extends SceneTree
 const WORLD_SCENE := "res://scenes/world.scn"
 const OUTPUT_PATH := "res://assets/ui/world_map_preview.png"
 const PREVIEW_SIZE := 512
+const FIT_MARGIN := 1.12
+const PAN_OFFSET := Vector2.ZERO
+const WATER_LAYER_AREA_RATIO := 0.82
 
 var _viewport: SubViewport
 
@@ -34,21 +37,21 @@ func _initialize() -> void:
 	_viewport.add_child(holder)
 	holder.add_child(world)
 
-	var margin := 0.88
 	var scale_factor := minf(
 		float(PREVIEW_SIZE) / bounds.size.x,
 		float(PREVIEW_SIZE) / bounds.size.y
-	) * margin
+	) * FIT_MARGIN
 	holder.scale = Vector2(scale_factor, scale_factor)
-	holder.position = Vector2(PREVIEW_SIZE, PREVIEW_SIZE) * 0.5 - bounds.get_center() * scale_factor
+	holder.position = Vector2(PREVIEW_SIZE, PREVIEW_SIZE) * 0.5 - bounds.get_center() * scale_factor + PAN_OFFSET
 
 	var timer := Timer.new()
-	timer.wait_time = 0.25
+	timer.wait_time = 1.0
 	timer.one_shot = true
 	timer.autostart = true
 	timer.timeout.connect(_capture)
 	root.add_child(_viewport)
 	root.add_child(timer)
+	RenderingServer.force_draw(true, 0.0)
 
 
 func _capture() -> void:
@@ -87,8 +90,7 @@ func _prepare_world(node: Node) -> void:
 
 
 func _collect_tilemap_bounds(root: Node) -> Rect2:
-	var merged := Rect2()
-	var has_rect := false
+	var layer_rects: Array[Rect2] = []
 	for layer in _find_tilemap_layers(root):
 		var used := layer.get_used_rect()
 		if used.size == Vector2i.ZERO:
@@ -98,13 +100,35 @@ func _collect_tilemap_bounds(root: Node) -> Rect2:
 			Vector2(used.position) * Vector2(tile_size),
 			Vector2(used.size) * Vector2(tile_size)
 		)
-		var layer_rect := layer.global_transform * local_rect
+		layer_rects.append(layer.global_transform * local_rect)
+
+	if layer_rects.is_empty():
+		return Rect2()
+
+	var max_area := 0.0
+	for rect in layer_rects:
+		max_area = maxf(max_area, rect.size.x * rect.size.y)
+
+	var merged := Rect2()
+	var has_rect := false
+	for rect in layer_rects:
+		var area := rect.size.x * rect.size.y
+		if max_area > 0.0 and area >= max_area * WATER_LAYER_AREA_RATIO:
+			continue
 		if has_rect:
-			merged = merged.merge(layer_rect)
+			merged = merged.merge(rect)
 		else:
-			merged = layer_rect
+			merged = rect
 			has_rect = true
-	return merged if has_rect else Rect2()
+
+	if not has_rect:
+		for rect in layer_rects:
+			if has_rect:
+				merged = merged.merge(rect)
+			else:
+				merged = rect
+				has_rect = true
+	return merged
 
 
 func _find_tilemap_layers(node: Node) -> Array[TileMapLayer]:

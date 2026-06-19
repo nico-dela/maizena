@@ -52,7 +52,7 @@ animations = [{
 [node name="StaticBody2D" type="StaticBody2D" unique_id=1033152148 groups=["dialogue"]]
 script = ExtResource("1_1fh6r")
 npc_id = "hi"
-idle_bob = false
+idle_glow = false
 dialogue = ExtResource("3_h2bi8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
