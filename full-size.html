@@ -18,6 +18,7 @@
       }
 
       body {
+        color: #2d2138;
         background-color: #c44e83;
         overflow: hidden;
         touch-action: none;
@@ -32,132 +33,83 @@
         outline: none;
       }
 
+      #status,
+      #status-splash,
+      #status-progress,
+      #status-label {
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
+
+      #status,
+      #status-splash {
+        top: 0;
+        bottom: 0;
+      }
+
       #status {
-        position: fixed;
-        inset: 0;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem 1.5rem 1.75rem;
-        box-sizing: border-box;
         background-color: #c44e83;
-        color: #2d2138;
-        font-family: system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        visibility: visible;
+        z-index: 1;
       }
 
       #status-splash {
-        display: none;
-      }
-
-      .loader-shell {
-        width: min(420px, 92vw);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.125rem;
-        text-align: center;
-      }
-
-      .map-frame {
-        padding: 10px;
-        border: 3px solid rgba(45, 33, 56, 0.9);
-        border-radius: 8px;
-        background: rgba(31, 23, 46, 0.55);
-        line-height: 0;
-      }
-
-      .map-frame img {
-        display: block;
-        width: min(240px, 62vw);
-        height: min(240px, 62vw);
-        object-fit: contain;
-        image-rendering: pixelated;
-        image-rendering: crisp-edges;
-      }
-
-      #status-title {
-        margin: 0;
-        font-size: clamp(1.45rem, 5vw, 2.05rem);
-        font-weight: 800;
-        letter-spacing: 0.03em;
-        line-height: 1.15;
-      }
-
-      .progress-track {
-        width: 100%;
-        height: 18px;
-        border-radius: 3px;
-        background: rgba(45, 33, 56, 0.35);
-        overflow: hidden;
-      }
-
-      #progress-fill {
-        width: 0%;
-        height: 100%;
-        border-radius: 3px;
-        background: #3b82f6;
-        transition: width 0.15s ease-out;
-      }
-
-      #status-label,
-      #status-tip,
-      .loader-footer p {
-        margin: 0;
+        max-height: 100%;
+        max-width: 100%;
+        margin: auto;
       }
 
       #status-label {
-        font-size: 1rem;
-        opacity: 0.88;
-      }
-
-      #status-tip {
-        font-size: 0.95rem;
-        opacity: 0.88;
-        min-height: 1.25em;
-      }
-
-      .loader-footer {
-        margin-top: 0.5rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        font-size: 0.875rem;
-        opacity: 0.72;
+        top: 58%;
+        text-align: center;
+        font-family: system-ui, sans-serif;
+        font-size: clamp(14px, 3.5vw, 18px);
+        padding: 0 1.5rem;
+        color: #2d2138;
       }
 
       #status-notice {
         display: none;
-        max-width: 32rem;
+      }
+
+      #status-progress {
+        display: block;
+        bottom: 10%;
+        width: min(420px, 72vw);
+        margin: 0 auto;
+        accent-color: #3b82f6;
+      }
+
+      #status-notice {
         background-color: #5b3943;
         border-radius: 0.5rem;
         border: 1px solid #9b3943;
         color: #e0e0e0;
-        line-height: 1.35;
-        padding: 1rem 1.25rem;
+        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
+        line-height: 1.3;
+        margin: 0 2rem;
+        overflow: hidden;
+        padding: 1rem;
+        text-align: center;
+        z-index: 2;
       }
     </style>
     $GODOT_HEAD_INCLUDE
   </head>
   <body>
     <canvas id="canvas"> Your browser does not support the canvas tag. </canvas>
+
     <noscript> Your browser does not support JavaScript. </noscript>
 
     <div id="status">
-      <img id="status-splash" src="$GODOT_SPLASH" alt="" hidden />
-      <div class="loader-shell" id="status-inner">
-        <div class="map-frame">
-          <img src="world_map_preview.png" alt="Mapa del archipiélago" />
-        </div>
-        <h1 id="status-title">ARCHIPIÉLAGO MAIZENA</h1>
-        <div class="progress-track"><div id="progress-fill"></div></div>
-        <p id="status-label">Cargando…</p>
-        <p id="status-tip"></p>
-        <div class="loader-footer">
-          <p>Córdoba, Argentina</p>
-          <p>© 2026 Kumo Estudio</p>
-        </div>
-      </div>
+      <img id="status-splash" src="$GODOT_SPLASH" alt="" />
+      <progress id="status-progress"></progress>
+      <p id="status-label">Cargando Archipiélago Maizena…</p>
       <div id="status-notice"></div>
     </div>
 
@@ -165,31 +117,19 @@
     <script>
       const GODOT_CONFIG = $GODOT_CONFIG;
       const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
-      const LOADER_TIPS = [
-        "Es que nadie me enseño a vivir",
-        "Todo lo que necesito es pequeño",
-        "El viento sobre mi cara, mientras voy para mi casa",
-        "Toda la gente se quiere ir a dormir",
-        "Podemos hacer sapitos por ahi",
-      ];
       const engine = new Engine(GODOT_CONFIG);
 
       (function () {
         const statusOverlay = document.getElementById("status");
-        const statusInner = document.getElementById("status-inner");
-        const progressFill = document.getElementById("progress-fill");
+        const statusProgress = document.getElementById("status-progress");
         const statusNotice = document.getElementById("status-notice");
         const statusLabel = document.getElementById("status-label");
-        const statusTip = document.getElementById("status-tip");
 
         let initializing = true;
         let statusMode = "progress";
-        statusTip.textContent = LOADER_TIPS[Math.floor(Math.random() * LOADER_TIPS.length)];
 
-        function setProgress(ratio) {
-          const pct = Math.max(0, Math.min(100, Math.round(ratio * 100)));
-          progressFill.style.width = pct + "%";
-        }
+        statusOverlay.style.visibility = "visible";
+        statusProgress.style.display = "block";
 
         function setStatusMode(mode) {
           if (statusMode === mode || !initializing) {
@@ -200,10 +140,12 @@
             initializing = false;
             return;
           }
-          if (statusInner) {
-            statusInner.style.display = mode === "notice" ? "none" : "flex";
-          }
+          statusOverlay.style.visibility = "visible";
+          statusProgress.style.display = mode === "progress" ? "block" : "none";
           statusNotice.style.display = mode === "notice" ? "block" : "none";
+          if (statusLabel) {
+            statusLabel.style.display = mode === "notice" ? "none" : "block";
+          }
           statusMode = mode;
         }
 
@@ -211,7 +153,8 @@
           while (statusNotice.lastChild) {
             statusNotice.removeChild(statusNotice.lastChild);
           }
-          text.split("\n").forEach((line) => {
+          const lines = text.split("\n");
+          lines.forEach((line) => {
             statusNotice.appendChild(document.createTextNode(line));
             statusNotice.appendChild(document.createElement("br"));
           });
@@ -232,28 +175,26 @@
 
         function startGame() {
           setStatusMode("progress");
-          statusLabel.textContent = "Cargando…";
           engine
             .startGame({
               onProgress: function (current, total) {
                 if (current > 0 && total > 0) {
-                  const ratio = current / total;
-                  setProgress(ratio * 0.92);
-                  statusLabel.textContent = "Descargando… " + Math.round(ratio * 100) + "%";
+                  statusProgress.value = current;
+                  statusProgress.max = total;
+                  if (statusLabel) {
+                    const pct = Math.round((current / total) * 100);
+                    statusLabel.textContent = "Descargando… " + pct + "%";
+                  }
                 } else {
-                  setProgress(0.05);
-                  statusLabel.textContent = "Preparando…";
+                  statusProgress.removeAttribute("value");
+                  statusProgress.removeAttribute("max");
                 }
               },
             })
             .then(() => {
-              setProgress(0.92);
-              statusLabel.textContent = "Cargando…";
               setStatusMode("hidden");
             }, displayFailureNotice);
         }
-
-        setProgress(0.03);
 
         const missing = Engine.getMissingFeatures({
           threads: GODOT_THREADS_ENABLED,
@@ -274,21 +215,23 @@
                   }
                   return engine.installServiceWorker();
                 }),
-              new Promise((resolve) => setTimeout(resolve, 2000)),
+              new Promise((resolve) => {
+                setTimeout(() => resolve(), 2000);
+              }),
             ])
-              .then(() => window.location.reload())
+              .then(() => {
+                window.location.reload();
+              })
               .catch((err) => {
                 console.error("Error while registering service worker:", err);
-                displayFailureNotice(
-                  "Error\nThe following features required to run Godot projects on the Web are missing:\n" +
-                    missing.join("\n")
-                );
+                const missingMsg =
+                  "Error\nThe following features required to run Godot projects on the Web are missing:\n";
+                displayFailureNotice(missingMsg + missing.join("\n"));
               });
           } else {
-            displayFailureNotice(
-              "Error\nThe following features required to run Godot projects on the Web are missing:\n" +
-                missing.join("\n")
-            );
+            const missingMsg =
+              "Error\nThe following features required to run Godot projects on the Web are missing:\n";
+            displayFailureNotice(missingMsg + missing.join("\n"));
           }
         } else if (GODOT_CONFIG["serviceWorker"] && "serviceWorker" in navigator) {
           engine
