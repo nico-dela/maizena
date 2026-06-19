@@ -88,4 +88,11 @@ sw_path.write_text(text.replace(old, new, 1), encoding="utf-8")
 print("OK patched", sw_path)
 PY
 
+MAP_SRC="$ROOT/assets/ui/world_map_preview.png"
+MAP_DST="$ROOT/web_build/world_map_preview.png"
+if [[ -f "$MAP_SRC" ]]; then
+  cp "$MAP_SRC" "$MAP_DST"
+  echo "OK copied world_map_preview.png"
+fi
+
 echo "Listo. Subí web_build/ a Netlify."

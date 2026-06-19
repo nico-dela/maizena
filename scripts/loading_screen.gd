@@ -2,6 +2,7 @@ extends Control
 
 const MAIN_SCENE := "res://scenes/main_scene.tscn"
 const MIN_DISPLAY_SEC := 1.4
+const WEB_BOOT_PROGRESS := 0.92
 
 const PHRASES: Array[String] = [
 	"Es que nadie me enseño a vivir",
@@ -36,11 +37,15 @@ const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experi
 var _started_at := 0.0
 var _loaded_scene: PackedScene = null
 var _map_frame_style: StyleBoxFlat
+var _web_shell_loader := false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_web_shell_loader = OS.has_feature("web")
 	_started_at = _now_sec()
+	if _web_shell_loader:
+		margin.visible = false
 	tip_label.text = PHRASES[randi() % PHRASES.size()]
 	ViewportLayout.refresh()
 	_apply_responsive_layout()
@@ -69,15 +74,18 @@ func _process(_delta: float) -> void:
 				_loaded_scene = ResourceLoader.load_threaded_get(MAIN_SCENE) as PackedScene
 
 	var elapsed := _now_sec() - _started_at
-	var time_ratio := clampf(elapsed / MIN_DISPLAY_SEC, 0.0, 1.0)
+	var min_display := 0.0 if _web_shell_loader else MIN_DISPLAY_SEC
+	var time_ratio := clampf(elapsed / min_display, 0.0, 1.0) if min_display > 0.0 else 1.0
 	var visual_ratio := load_ratio
-	if _loaded_scene != null:
+	if _web_shell_loader:
+		visual_ratio = WEB_BOOT_PROGRESS + load_ratio * (1.0 - WEB_BOOT_PROGRESS)
+	elif _loaded_scene != null:
 		visual_ratio = maxf(load_ratio, time_ratio)
 
 	progress_bar.value = visual_ratio * 100.0
 	status_label.text = "Cargando…" if visual_ratio < 1.0 else "Listo"
 
-	if _loaded_scene != null and elapsed >= MIN_DISPLAY_SEC:
+	if _loaded_scene != null and elapsed >= min_display:
 		set_process(false)
 		get_tree().change_scene_to_packed(_loaded_scene)
 
