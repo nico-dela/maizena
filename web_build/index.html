@@ -65,12 +65,7 @@
       }
 
       #status-label {
-        top: 58%;
-        text-align: center;
-        font-family: system-ui, sans-serif;
-        font-size: clamp(14px, 3.5vw, 18px);
-        padding: 0 1.5rem;
-        color: #2d2138;
+        display: none;
       }
 
       #status-notice {
@@ -183,10 +178,6 @@
                 if (current > 0 && total > 0) {
                   statusProgress.value = current;
                   statusProgress.max = total;
-                  if (statusLabel) {
-                    const pct = Math.round((current / total) * 100);
-                    statusLabel.textContent = "Descargando… " + pct + "%";
-                  }
                 } else {
                   statusProgress.removeAttribute("value");
                   statusProgress.removeAttribute("max");
