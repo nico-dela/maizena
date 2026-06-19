@@ -83,9 +83,13 @@ new = """\t\tif (isNavigate || isCacheable) {
 \t\t}"""
 
 if old not in text:
-    raise SystemExit("service worker: bloque esperado no encontrado (¿Godot cambió la plantilla?)")
-sw_path.write_text(text.replace(old, new, 1), encoding="utf-8")
-print("OK patched", sw_path)
+    if "preferNetwork" in text:
+        print("OK service worker already patched", sw_path)
+    else:
+        raise SystemExit("service worker: bloque esperado no encontrado (¿Godot cambió la plantilla?)")
+else:
+    sw_path.write_text(text.replace(old, new, 1), encoding="utf-8")
+    print("OK patched", sw_path)
 PY
 
 MAP_SRC="$ROOT/assets/ui/world_map_preview.png"
@@ -94,5 +98,34 @@ if [[ -f "$MAP_SRC" ]]; then
   cp "$MAP_SRC" "$MAP_DST"
   echo "OK copied world_map_preview.png"
 fi
+
+python3 <<'PY'
+from pathlib import Path
+tpl = Path("full-size.html").read_text(encoding="utf-8")
+pck = Path("web_build/index.pck")
+wasm = Path("web_build/index.wasm")
+pck_size = pck.stat().st_size if pck.exists() else 0
+wasm_size = wasm.stat().st_size if wasm.exists() else 0
+config = (
+    '{"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,'
+    '"ensureCrossOriginIsolationHeaders":true,"executable":"index",'
+    '"experimentalVK":false,"fileSizes":{"index.pck":%d,"index.wasm":%d},'
+    '"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4,'
+    '"serviceWorker":"index.service.worker.js"}'
+) % (pck_size, wasm_size)
+out = tpl.replace("$GODOT_PROJECT_NAME", "Archipiélago Maizena")
+out = out.replace("$GODOT_SPLASH", "index.png")
+out = out.replace("$GODOT_URL", "index.js")
+out = out.replace("$GODOT_CONFIG", config)
+out = out.replace("$GODOT_THREADS_ENABLED", "true")
+out = out.replace(
+    "$GODOT_HEAD_INCLUDE",
+    '<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />\n'
+    '<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>\n'
+    '<link rel="manifest" href="index.manifest.json">',
+)
+Path("web_build/index.html").write_text(out, encoding="utf-8")
+print("OK generated web_build/index.html")
+PY
 
 echo "Listo. Subí web_build/ a Netlify."

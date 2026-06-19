@@ -40,13 +40,18 @@ var _map_frame_style: StyleBoxFlat
 var _web_shell_loader := false
 
 
+func _uses_web_shell_loader() -> bool:
+	return ClassDB.class_exists("JavaScriptBridge")
+
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_web_shell_loader = OS.has_feature("web")
+	_web_shell_loader = _uses_web_shell_loader()
 	_started_at = _now_sec()
 	if _web_shell_loader:
-		margin.visible = false
-	tip_label.text = PHRASES[randi() % PHRASES.size()]
+		visible = false
+	else:
+		tip_label.text = PHRASES[randi() % PHRASES.size()]
 	ViewportLayout.refresh()
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_apply_responsive_layout)
@@ -84,9 +89,17 @@ func _process(_delta: float) -> void:
 
 	progress_bar.value = visual_ratio * 100.0
 	status_label.text = "Cargando…" if visual_ratio < 1.0 else "Listo"
+	if _web_shell_loader:
+		var shell_label := "Cargando…"
+		if visual_ratio < WEB_BOOT_PROGRESS:
+			shell_label = "Descargando… " + str(int(round(visual_ratio / WEB_BOOT_PROGRESS * 100.0))) + "%"
+		_update_web_shell_progress(visual_ratio, shell_label)
 
 	if _loaded_scene != null and elapsed >= min_display:
 		set_process(false)
+		if _web_shell_loader:
+			_update_web_shell_progress(1.0, "Listo")
+			_hide_web_shell_loader()
 		get_tree().change_scene_to_packed(_loaded_scene)
 
 
@@ -158,3 +171,13 @@ func _apply_responsive_layout() -> void:
 	tip_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
 	location_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
 	copyright_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
+
+
+func _update_web_shell_progress(ratio: float, label: String) -> void:
+	var clamped := clampf(ratio, 0.0, 1.0)
+	var js_label := JSON.stringify(label)
+	JavaScriptBridge.eval("window.maizenaSetLoaderProgress(%f, %s)" % [clamped, js_label])
+
+
+func _hide_web_shell_loader() -> void:
+	JavaScriptBridge.eval("window.maizenaHideLoader && window.maizenaHideLoader()")

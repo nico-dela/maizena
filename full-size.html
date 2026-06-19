@@ -191,6 +191,17 @@
           progressFill.style.width = pct + "%";
         }
 
+        window.maizenaSetLoaderProgress = function (ratio, label) {
+          setProgress(ratio);
+          if (label) {
+            statusLabel.textContent = label;
+          }
+        };
+
+        window.maizenaHideLoader = function () {
+          setStatusMode("hidden");
+        };
+
         function setStatusMode(mode) {
           if (statusMode === mode || !initializing) {
             return;
@@ -249,7 +260,6 @@
             .then(() => {
               setProgress(0.92);
               statusLabel.textContent = "Cargando…";
-              setStatusMode("hidden");
             }, displayFailureNotice);
         }
 
