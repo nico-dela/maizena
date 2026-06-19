@@ -3,3 +3,39 @@
 
 [functions]
   directory = "netlify/functions"
+
+# COOP/COEP requeridos por Godot Web con threads + PWA.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cross-Origin-Embedder-Policy = "require-corp"
+    Cross-Origin-Opener-Policy = "same-origin"
+
+# HTML y SW siempre frescos: evita que Netlify/navegador sirvan deploy viejo.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/index.service.worker.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+
+# Binarios grandes: revalidar en cada visita (el SW también cachea localmente).
+[[headers]]
+  for = "/index.pck"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.wasm"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

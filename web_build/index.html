@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta
       name="viewport"
       content="width=device-width, user-scalable=no, initial-scale=1.0"
     />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <title>Archipiélago Maizena</title>
     <style>
       html,
@@ -17,14 +18,15 @@
       }
 
       body {
-        color: white;
-        background-color: black;
+        color: #2d2138;
+        background-color: #c44e83;
         overflow: hidden;
         touch-action: none;
       }
 
       #canvas {
         display: block;
+        background-color: #c44e83;
       }
 
       #canvas:focus {
@@ -33,7 +35,8 @@
 
       #status,
       #status-splash,
-      #status-progress {
+      #status-progress,
+      #status-label {
         position: absolute;
         left: 0;
         right: 0;
@@ -51,7 +54,8 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        visibility: hidden;
+        visibility: visible;
+        z-index: 1;
       }
 
       #status-splash {
@@ -60,15 +64,25 @@
         margin: auto;
       }
 
-      #status-progress,
+      #status-label {
+        top: 58%;
+        text-align: center;
+        font-family: system-ui, sans-serif;
+        font-size: clamp(14px, 3.5vw, 18px);
+        padding: 0 1.5rem;
+        color: #2d2138;
+      }
+
       #status-notice {
         display: none;
       }
 
       #status-progress {
+        display: block;
         bottom: 10%;
-        width: 50%;
+        width: min(420px, 72vw);
         margin: 0 auto;
+        accent-color: #3b82f6;
       }
 
       #status-notice {
@@ -82,7 +96,7 @@
         overflow: hidden;
         padding: 1rem;
         text-align: center;
-        z-index: 1;
+        z-index: 2;
       }
     </style>
     <link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
@@ -98,6 +112,7 @@
     <div id="status">
       <img id="status-splash" src="index.png" alt="" />
       <progress id="status-progress"></progress>
+      <p id="status-label">Cargando Archipiélago Maizena…</p>
       <div id="status-notice"></div>
     </div>
 
@@ -111,9 +126,13 @@
         const statusOverlay = document.getElementById("status");
         const statusProgress = document.getElementById("status-progress");
         const statusNotice = document.getElementById("status-notice");
+        const statusLabel = document.getElementById("status-label");
 
         let initializing = true;
-        let statusMode = "";
+        let statusMode = "progress";
+
+        statusOverlay.style.visibility = "visible";
+        statusProgress.style.display = "block";
 
         function setStatusMode(mode) {
           if (statusMode === mode || !initializing) {
@@ -127,6 +146,9 @@
           statusOverlay.style.visibility = "visible";
           statusProgress.style.display = mode === "progress" ? "block" : "none";
           statusNotice.style.display = mode === "notice" ? "block" : "none";
+          if (statusLabel) {
+            statusLabel.style.display = mode === "notice" ? "none" : "block";
+          }
           statusMode = mode;
         }
 
@@ -154,48 +176,7 @@
           initializing = false;
         }
 
-        const missing = Engine.getMissingFeatures({
-          threads: GODOT_THREADS_ENABLED,
-        });
-
-        if (missing.length !== 0) {
-          if (
-            GODOT_CONFIG["serviceWorker"] &&
-            GODOT_CONFIG["ensureCrossOriginIsolationHeaders"] &&
-            "serviceWorker" in navigator
-          ) {
-            // There's a chance that installing the service worker would fix the issue
-            Promise.race([
-              navigator.serviceWorker
-                .getRegistration()
-                .then((registration) => {
-                  if (registration != null) {
-                    return Promise.reject(
-                      new Error("Service worker already exists.")
-                    );
-                  }
-                  return registration;
-                })
-                .then(() => engine.installServiceWorker()),
-              // For some reason, `getRegistration()` can stall
-              new Promise((resolve) => {
-                setTimeout(() => resolve(), 2000);
-              }),
-            ])
-              .then(() => {
-                // Reload if there was no error.
-                window.location.reload();
-              })
-              .catch((err) => {
-                console.error("Error while registering service worker:", err);
-              });
-          } else {
-            // Display the message as usual
-            const missingMsg =
-              "Error\nThe following features required to run Godot projects on the Web are missing:\n";
-            displayFailureNotice(missingMsg + missing.join("\n"));
-          }
-        } else {
+        function startGame() {
           setStatusMode("progress");
           engine
             .startGame({
@@ -203,6 +184,10 @@
                 if (current > 0 && total > 0) {
                   statusProgress.value = current;
                   statusProgress.max = total;
+                  if (statusLabel) {
+                    const pct = Math.round((current / total) * 100);
+                    statusLabel.textContent = "Descargando… " + pct + "%";
+                  }
                 } else {
                   statusProgress.removeAttribute("value");
                   statusProgress.removeAttribute("max");
@@ -213,8 +198,56 @@
               setStatusMode("hidden");
             }, displayFailureNotice);
         }
+
+        const missing = Engine.getMissingFeatures({
+          threads: GODOT_THREADS_ENABLED,
+        });
+
+        if (missing.length !== 0) {
+          if (
+            GODOT_CONFIG["serviceWorker"] &&
+            GODOT_CONFIG["ensureCrossOriginIsolationHeaders"] &&
+            "serviceWorker" in navigator
+          ) {
+            Promise.race([
+              navigator.serviceWorker
+                .getRegistration()
+                .then((registration) => {
+                  if (registration != null) {
+                    return registration.update().then(() => registration);
+                  }
+                  return engine.installServiceWorker();
+                }),
+              new Promise((resolve) => {
+                setTimeout(() => resolve(), 2000);
+              }),
+            ])
+              .then(() => {
+                window.location.reload();
+              })
+              .catch((err) => {
+                console.error("Error while registering service worker:", err);
+                const missingMsg =
+                  "Error\nThe following features required to run Godot projects on the Web are missing:\n";
+                displayFailureNotice(missingMsg + missing.join("\n"));
+              });
+          } else {
+            const missingMsg =
+              "Error\nThe following features required to run Godot projects on the Web are missing:\n";
+            displayFailureNotice(missingMsg + missing.join("\n"));
+          }
+        } else if (GODOT_CONFIG["serviceWorker"] && "serviceWorker" in navigator) {
+          engine
+            .installServiceWorker()
+            .then(startGame)
+            .catch((err) => {
+              console.warn("Service worker optional install failed:", err);
+              startGame();
+            });
+        } else {
+          startGame();
+        }
       })();
     </script>
   </body>
 </html>
-

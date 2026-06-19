@@ -21,6 +21,14 @@ Juego 2D en Godot con export Web/PWA.
 ## Export Web
 El preset Web se define en `export_presets.cfg` y la salida apunta a `web_build/index.html`.
 
+Después de cada export desde Godot, ejecutar:
+
+```bash
+./tools/patch_web_build.sh
+```
+
+Eso ajusta el service worker para priorizar red sobre caché en `index.html`, `.pck` y `.wasm` (evita que los usuarios vean builds viejos). Netlify despliega automáticamente desde `web_build/`; los headers de caché están en `netlify.toml`.
+
 ## Smoke test recomendado (manual)
 1. Iniciar partida y confirmar que el jugador se mueve con teclado/tap.
 2. Hablar con `el_viejo` y aceptar la quest de comida.
