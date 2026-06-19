@@ -2,7 +2,6 @@ extends Control
 
 const MAIN_SCENE := "res://scenes/main_scene.tscn"
 const MIN_DISPLAY_SEC := 1.4
-const WEB_BOOT_PROGRESS := 0.92
 
 const PHRASES: Array[String] = [
 	"Es que nadie me enseño a vivir",
@@ -37,24 +36,21 @@ const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experi
 var _started_at := 0.0
 var _loaded_scene: PackedScene = null
 var _map_frame_style: StyleBoxFlat
-var _web_shell_loader := false
-
-
-func _uses_web_shell_loader() -> bool:
-	return ClassDB.class_exists("JavaScriptBridge")
+var _is_web := false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_web_shell_loader = _uses_web_shell_loader()
 	_started_at = _now_sec()
-	if _web_shell_loader:
-		visible = false
-	else:
-		tip_label.text = PHRASES[randi() % PHRASES.size()]
+	_is_web = ClassDB.class_exists("JavaScriptBridge")
+	tip_label.text = PHRASES[randi() % PHRASES.size()]
 	ViewportLayout.refresh()
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_apply_responsive_layout)
+
+	if _is_web:
+		call_deferred("_load_main_on_web")
+		return
 
 	var err := ResourceLoader.load_threaded_request(MAIN_SCENE)
 	if err != OK:
@@ -62,7 +58,19 @@ func _ready() -> void:
 		get_tree().change_scene_to_file(MAIN_SCENE)
 
 
+func _load_main_on_web() -> void:
+	# En Web, load_threaded_request puede quedar colgado en THREAD_LOAD_IN_PROGRESS.
+	_loaded_scene = ResourceLoader.load(MAIN_SCENE) as PackedScene
+	if _loaded_scene == null:
+		push_error("LoadingScreen: falló la carga web de %s" % MAIN_SCENE)
+		get_tree().change_scene_to_file(MAIN_SCENE)
+
+
 func _process(_delta: float) -> void:
+	if _is_web:
+		_process_web_display()
+		return
+
 	var progress_array: Array = []
 	var status := ResourceLoader.load_threaded_get_status(MAIN_SCENE, progress_array)
 	var load_ratio := float(progress_array[0]) if progress_array.size() > 0 else 0.0
@@ -79,27 +87,32 @@ func _process(_delta: float) -> void:
 				_loaded_scene = ResourceLoader.load_threaded_get(MAIN_SCENE) as PackedScene
 
 	var elapsed := _now_sec() - _started_at
-	var min_display := 0.0 if _web_shell_loader else MIN_DISPLAY_SEC
-	var time_ratio := clampf(elapsed / min_display, 0.0, 1.0) if min_display > 0.0 else 1.0
+	var time_ratio := clampf(elapsed / MIN_DISPLAY_SEC, 0.0, 1.0)
 	var visual_ratio := load_ratio
-	if _web_shell_loader:
-		visual_ratio = WEB_BOOT_PROGRESS + load_ratio * (1.0 - WEB_BOOT_PROGRESS)
-	elif _loaded_scene != null:
+	if _loaded_scene != null:
 		visual_ratio = maxf(load_ratio, time_ratio)
 
 	progress_bar.value = visual_ratio * 100.0
 	status_label.text = "Cargando…" if visual_ratio < 1.0 else "Listo"
-	if _web_shell_loader:
-		var shell_label := "Cargando…"
-		if visual_ratio < WEB_BOOT_PROGRESS:
-			shell_label = "Descargando… " + str(int(round(visual_ratio / WEB_BOOT_PROGRESS * 100.0))) + "%"
-		_update_web_shell_progress(visual_ratio, shell_label)
 
-	if _loaded_scene != null and elapsed >= min_display:
+	if _loaded_scene != null and elapsed >= MIN_DISPLAY_SEC:
 		set_process(false)
-		if _web_shell_loader:
-			_update_web_shell_progress(1.0, "Listo")
-			_hide_web_shell_loader()
+		get_tree().change_scene_to_packed(_loaded_scene)
+
+
+func _process_web_display() -> void:
+	if _loaded_scene == null:
+		progress_bar.value = 5.0
+		status_label.text = "Cargando…"
+		return
+
+	var elapsed := _now_sec() - _started_at
+	var time_ratio := clampf(elapsed / MIN_DISPLAY_SEC, 0.0, 1.0)
+	progress_bar.value = time_ratio * 100.0
+	status_label.text = "Cargando…" if time_ratio < 1.0 else "Listo"
+
+	if elapsed >= MIN_DISPLAY_SEC:
+		set_process(false)
 		get_tree().change_scene_to_packed(_loaded_scene)
 
 
@@ -171,13 +184,3 @@ func _apply_responsive_layout() -> void:
 	tip_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
 	location_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
 	copyright_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))
-
-
-func _update_web_shell_progress(ratio: float, label: String) -> void:
-	var clamped := clampf(ratio, 0.0, 1.0)
-	var js_label := JSON.stringify(label)
-	JavaScriptBridge.eval("window.maizenaSetLoaderProgress(%f, %s)" % [clamped, js_label])
-
-
-func _hide_web_shell_loader() -> void:
-	JavaScriptBridge.eval("window.maizenaHideLoader && window.maizenaHideLoader()")
