@@ -59,22 +59,54 @@
         box-sizing: border-box;
       }
 
-      #status-splash {
-        max-height: min(36vh, 220px);
-        max-width: min(48vw, 220px);
+      #status-godot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: min(62vw, 420px);
+        max-width: calc(100vw - 2rem);
         margin: 0 auto 1.25rem;
-        image-rendering: pixelated;
       }
 
-      #status-label {
+      #status-godot svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      #status-godot-wordmark {
+        margin: 0.75rem 0 0;
+        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
+        font-size: clamp(1.35rem, 5vw, 2rem);
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-align: center;
+        color: #ffffff;
+      }
+
+      #status-godot-tagline {
+        margin: 0.35rem 0 0;
+        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
+        font-size: clamp(0.85rem, 2.8vw, 1rem);
+        letter-spacing: 0.08em;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      #status-splash {
         display: none;
       }
 
       #status-progress {
         display: block;
-        width: min(420px, 72vw);
+        width: min(560px, 92vw);
+        height: clamp(18px, 2.8vh, 26px);
         margin: 0 auto;
         accent-color: #3b82f6;
+      }
+
+      #status-label {
+        display: none;
       }
 
       #status-notice {
@@ -103,6 +135,14 @@
 
     <div id="status">
       <img id="status-splash" src="index.png" alt="" />
+      <div id="status-godot" aria-hidden="true">
+        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Godot Engine">
+          <rect width="256" height="256" rx="48" fill="#478CBF"/>
+          <path fill="#FFF" d="M128 56c-28 0-52 18-60 44l-8 28c-2 8 4 16 12 16h8l6 24c2 8 10 14 18 14h8c8 0 14-6 16-14l6-24h8c8 0 14-8 12-16l-8-28c-8-26-32-44-60-44zm-28 44c4-10 14-18 28-18s24 8 28 18l4 14h-64l4-14zm20 38h16l-4 16h-8l-4-16z"/>
+        </svg>
+        <p id="status-godot-wordmark">GODOT</p>
+        <p id="status-godot-tagline">Game engine</p>
+      </div>
       <progress id="status-progress"></progress>
       <p id="status-label">Cargando…</p>
       <div id="status-notice"></div>
@@ -145,13 +185,24 @@
           window.dispatchEvent(new Event("resize"));
         }
 
-        if (window.visualViewport) {
-          window.visualViewport.addEventListener("resize", notifyGodotResize);
-          window.visualViewport.addEventListener("scroll", notifyGodotResize);
+        function prepareCanvasForBoot() {
+          const canvas = document.getElementById("canvas");
+          if (!canvas) {
+            return;
+          }
+          const dpr = window.devicePixelRatio || 1;
+          const layoutW = window.visualViewport?.width ?? window.innerWidth;
+          const layoutH = window.visualViewport?.height ?? window.innerHeight;
+          const w = Math.max(1, Math.floor(layoutW * dpr));
+          const h = Math.max(1, Math.floor(layoutH * dpr));
+          canvas.width = w;
+          canvas.height = h;
+          canvas.style.width = Math.floor(layoutW) + "px";
+          canvas.style.height = Math.floor(layoutH) + "px";
         }
-        window.addEventListener("orientationchange", function () {
-          setTimeout(notifyGodotResize, 100);
-        });
+
+        prepareCanvasForBoot();
+        window.addEventListener("resize", prepareCanvasForBoot);
 
         function setStatusMode(mode) {
           if (statusMode === mode || !initializing) {
@@ -194,7 +245,22 @@
           initializing = false;
         }
 
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener("resize", function () {
+            prepareCanvasForBoot();
+            notifyGodotResize();
+          });
+          window.visualViewport.addEventListener("scroll", notifyGodotResize);
+        }
+        window.addEventListener("orientationchange", function () {
+          setTimeout(function () {
+            prepareCanvasForBoot();
+            notifyGodotResize();
+          }, 100);
+        });
+
         function startGame() {
+          prepareCanvasForBoot();
           setStatusMode("progress");
           engine
             .startGame({
@@ -208,8 +274,7 @@
                 }
               },
             })
-            .then(() => {
-              setStatusMode("hidden");
+            .then(function () {
               notifyGodotResize();
             }, displayFailureNotice);
         }
