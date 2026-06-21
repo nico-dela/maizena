@@ -47,16 +47,24 @@ func _ready() -> void:
 	ViewportLayout.refresh()
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_apply_responsive_layout)
+	set_process(true)
 
 	if _is_web:
-		call_deferred("_hide_html_loader")
-		call_deferred("_load_main_on_web")
+		call_deferred("_begin_web_loading")
 		return
 
 	var err := ResourceLoader.load_threaded_request(MAIN_SCENE)
 	if err != OK:
 		push_error("LoadingScreen: no se pudo iniciar la carga (%s)" % err)
 		get_tree().change_scene_to_file(MAIN_SCENE)
+
+
+func _begin_web_loading() -> void:
+	_hide_html_loader()
+	_apply_responsive_layout()
+	await get_tree().process_frame
+	_started_at = _now_sec()
+	_load_main_on_web()
 
 
 func _load_main_on_web() -> void:
@@ -122,7 +130,13 @@ func _process_web_display() -> void:
 
 	if elapsed >= MIN_DISPLAY_SEC:
 		set_process(false)
-		get_tree().change_scene_to_packed(_loaded_scene)
+		call_deferred("_finish_loading")
+
+
+func _finish_loading() -> void:
+	if _loaded_scene == null:
+		return
+	get_tree().change_scene_to_packed(_loaded_scene)
 
 
 func _now_sec() -> float:

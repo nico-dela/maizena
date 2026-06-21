@@ -102,21 +102,21 @@ self.addEventListener(
 		const isCacheable = FULL_CACHE.some((v) => v === local) || (base === referrer && base.endsWith(CACHED_FILES[0]));
 		if (isNavigate || isCacheable) {
 			event.respondWith((async () => {
-				// Try to use cache first
 				const cache = await caches.open(CACHE_NAME);
-				if (isNavigate) {
-					// Check if we have full cache during HTML page request.
-					/** @type {Response[]} */
-					const fullCache = await Promise.all(FULL_CACHE.map((name) => cache.match(name)));
-					const missing = fullCache.some((v) => v === undefined);
-					if (missing) {
-						try {
-							// Try network if some cached file is missing (so we can display offline page in case).
-							const response = await fetchAndCache(event, cache, isCacheable);
-							return response;
-						} catch (e) {
-							// And return the hopefully always cached offline page in case of network failure.
-							console.error('Network error: ', e); // eslint-disable-line no-console
+				const preferNetwork = isNavigate || local === 'index.pck' || local === 'index.wasm' || local === 'index.js' || local === 'index.service.worker.js';
+				if (preferNetwork) {
+					try {
+						return await fetchAndCache(event, cache, isCacheable);
+					} catch (e) {
+						console.error('Network error: ', e); // eslint-disable-line no-console
+						if (isNavigate) {
+							let cached = await cache.match(event.request);
+							if (cached != null) {
+								if (ENSURE_CROSSORIGIN_ISOLATION_HEADERS) {
+									cached = ensureCrossOriginIsolationHeaders(cached);
+								}
+								return cached;
+							}
 							return caches.match(OFFLINE_URL);
 						}
 					}
@@ -128,9 +128,7 @@ self.addEventListener(
 					}
 					return cached;
 				}
-				// Try network if don't have it in cache.
-				const response = await fetchAndCache(event, cache, isCacheable);
-				return response;
+				return await fetchAndCache(event, cache, isCacheable);
 			})());
 		} else if (ENSURE_CROSSORIGIN_ISOLATION_HEADERS) {
 			event.respondWith((async () => {
