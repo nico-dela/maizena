@@ -82,8 +82,15 @@ func _on_bollo_training_finished(victory: bool):
 	bollo_training_active = false
 	DialogueController.input_locked = false
 	get_tree().paused = false
+	_reset_player_movement()
 	if victory:
 		bollo_training_completed = true
+
+
+func _reset_player_movement() -> void:
+	var player := get_tree().get_first_node_in_group("player")
+	if player != null and player.has_method("reset_movement"):
+		player.reset_movement()
 
 func _dismiss_active_dialogue_balloons():
 	var root := get_tree().root

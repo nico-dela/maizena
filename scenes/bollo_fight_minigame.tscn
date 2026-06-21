@@ -355,12 +355,18 @@ theme_override_font_sizes/font_size = 26
 text = "ENTRENAMIENTO"
 horizontal_alignment = 1
 
-[node name="Instructions" type="Label" parent="Root/TutorialPanel"]
+[node name="InstructionsScroll" type="ScrollContainer" parent="Root/TutorialPanel"]
 layout_mode = 1
 offset_left = 24.0
 offset_top = 52.0
 offset_right = 656.0
 offset_bottom = 200.0
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="Instructions" type="Label" parent="Root/TutorialPanel/InstructionsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 15
 text = "Objetivo: baja la vida de Bollo antes que la tuya.
 En tu turno, elige un movimiento.

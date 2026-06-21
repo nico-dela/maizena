@@ -4,6 +4,8 @@ const RAIN_AMOUNT := 120.0
 const STORM_AMOUNT := 220.0
 const NIGHT_OPACITY_FACTOR := 0.6
 const FOG_HAZE_ALPHA := 0.30
+const RAIN_HAZE_ALPHA := 0.20
+const STORM_HAZE_ALPHA := 0.28
 const FOG_HAZE_PULSE := 0.06
 const DEBUG_CYCLE := ["clear", "fog", "rain", "storm"]
 
@@ -157,14 +159,16 @@ func _resize_overlay() -> void:
 	_rain.emission_rect_extents = Vector2(vp.x * 0.5 + margin, margin)
 
 
+func refresh_backdrop() -> void:
+	_update_fog_haze(0.0)
+
+
 func _on_weather_updated(cond: String, _precipitation_mm: float, _cloud_cover: int) -> void:
 	_current_condition = cond
 	var is_fog := cond == "fog"
 	var is_rain := cond == "rain" or cond == "storm"
 
 	_fog.emitting = is_fog
-	if not is_fog:
-		_fog_haze.color.a = 0.0
 
 	var is_rain_emitting := is_rain
 	_rain.emitting = is_rain_emitting
@@ -190,14 +194,33 @@ func _is_night() -> bool:
 
 
 func _update_fog_haze(delta: float) -> void:
-	if _current_condition != "fog":
+	if _news_popup_visible():
 		return
-	_fog_pulse_time += delta
-	var pulse := sin(_fog_pulse_time * 0.55) * FOG_HAZE_PULSE
-	var alpha := FOG_HAZE_ALPHA + pulse
+
+	var is_fog := _current_condition == "fog"
+	var is_rain := _current_condition == "rain" or _current_condition == "storm"
+	if not is_fog and not is_rain:
+		_fog_haze.color.a = 0.0
+		return
+
+	var pulse := 0.0
+	if is_fog:
+		_fog_pulse_time += delta
+		pulse = sin(_fog_pulse_time * 0.55) * FOG_HAZE_PULSE
+
+	var alpha: float
+	if is_fog:
+		alpha = FOG_HAZE_ALPHA + pulse
+	elif _current_condition == "storm":
+		alpha = STORM_HAZE_ALPHA
+	else:
+		alpha = RAIN_HAZE_ALPHA
+
 	if _is_night():
 		alpha *= NIGHT_OPACITY_FACTOR
 		_fog_haze.color = Color(0.72, 0.76, 0.84, alpha)
+	elif is_rain and not is_fog:
+		_fog_haze.color = Color(0.80, 0.84, 0.90, alpha)
 	else:
 		_fog_haze.color = Color(0.88, 0.90, 0.93, alpha)
 
@@ -236,3 +259,8 @@ func _on_storm_flash() -> void:
 	var tween := create_tween()
 	tween.tween_property(_flash, "color:a", 0.0, 0.08)
 	tween.finished.connect(_schedule_storm_flash)
+
+
+func _news_popup_visible() -> bool:
+	var wp := get_tree().get_first_node_in_group("welcome_popup")
+	return wp != null and wp.visible

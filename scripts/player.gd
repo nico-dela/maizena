@@ -43,6 +43,14 @@ func _ensure_can_move() -> void:
 	get_tree().paused = false
 
 
+func reset_movement() -> void:
+	velocity = Vector2.ZERO
+	is_moving_to_tap = false
+	tap_position = null
+	Input.flush_buffered_events()
+	play_anim(0)
+
+
 func _apply_camera_zoom() -> void:
 	var cam: Camera2D = $Camera2D
 	if cam == null:
@@ -87,6 +95,14 @@ func _physics_process(_delta):
 	
 	if DialogueController.input_locked:
 		velocity = Vector2.ZERO
+		play_anim(0)
+		move_and_slide()
+		return
+
+	if GameState.bollo_training_active:
+		velocity = Vector2.ZERO
+		is_moving_to_tap = false
+		tap_position = null
 		play_anim(0)
 		move_and_slide()
 		return

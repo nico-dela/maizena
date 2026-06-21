@@ -23,6 +23,9 @@ const COLOR_CORAL := Color(0.96, 0.45, 0.42, 1.0)
 const COLOR_VALUE := Color(0.98, 0.98, 1.0, 1.0)
 const RESIDUE_MAX := 80
 
+const BACKDROP_WAIT_MS := 2500
+
+@onready var dim_overlay: ColorRect = $CenterRoot/Dim
 @onready var header_label: RichTextLabel = $CenterRoot/Report/Margin/VBox/HeaderLabel
 @onready var report_panel: PanelContainer = $CenterRoot/Report
 @onready var report_margin: MarginContainer = $CenterRoot/Report/Margin
@@ -79,10 +82,28 @@ func _ready() -> void:
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_on_viewport_layout_changed)
 
-	await get_tree().process_frame
-	await get_tree().process_frame
+	call_deferred("_auto_open_when_backdrop_ready")
 
-	call_deferred("open_welcome", false)
+
+func _auto_open_when_backdrop_ready() -> void:
+	await _wait_for_stable_backdrop()
+	open_welcome(false)
+
+
+func _wait_for_stable_backdrop() -> void:
+	var weather := get_node_or_null("/root/CordobaWeather")
+	var deadline := Time.get_ticks_msec() + BACKDROP_WAIT_MS
+	while weather != null and not weather.is_available:
+		if Time.get_ticks_msec() >= deadline:
+			break
+		await get_tree().process_frame
+
+	var time_system := get_tree().get_first_node_in_group("time_system")
+	if time_system != null and time_system.has_method("update_time_color"):
+		time_system.update_time_color()
+
+	await get_tree().process_frame
+	await get_tree().process_frame
 
 
 func _promote_if_nested_under_canvas_layer() -> void:
@@ -453,6 +474,8 @@ func is_blocking() -> bool:
 
 func open_welcome(mark_seen_when_closed: bool) -> void:
 	_mark_seen_on_close = mark_seen_when_closed
+	if dim_overlay != null:
+		dim_overlay.color = Color(0.02, 0.04, 0.08, 0.52)
 	ViewportLayout.refresh()
 	if _needs_infographic_rebuild():
 		_rebuild_infographic()
@@ -460,9 +483,19 @@ func open_welcome(mark_seen_when_closed: bool) -> void:
 		_rebuild_infographic()
 	_apply_responsive_layout()
 	_refresh_infographic()
+	_sync_backdrop_before_show()
 	visible = true
 	show()
 	call_deferred("_apply_responsive_layout")
+
+
+func _sync_backdrop_before_show() -> void:
+	var time_system := get_tree().get_first_node_in_group("time_system")
+	if time_system != null and time_system.has_method("update_time_color"):
+		time_system.update_time_color()
+	var weather_visual := get_tree().get_first_node_in_group("weather_visual_system")
+	if weather_visual != null and weather_visual.has_method("refresh_backdrop"):
+		weather_visual.refresh_backdrop()
 
 
 func open_from_button() -> void:

@@ -80,6 +80,9 @@ func _sync_current_time() -> void:
 
 
 func update_time_color() -> void:
+	if _news_popup_visible():
+		return
+
 	_sync_current_time()
 
 	var hour_changed := absf(current_time - _last_time_signal_hour) >= 1.0 / 60.0
@@ -97,10 +100,6 @@ func update_time_color() -> void:
 
 
 func _compute_time_color() -> Color:
-	if _weather != null and _weather.has_method("get_effective_is_day"):
-		if not _weather.get_effective_is_day():
-			return time_colors["night"]
-
 	var sunrise := 7.5
 	var sunset := 19.0
 	if _weather != null:
@@ -159,3 +158,8 @@ func is_daytime() -> bool:
 
 func is_nighttime() -> bool:
 	return not is_daytime()
+
+
+func _news_popup_visible() -> bool:
+	var wp := get_tree().get_first_node_in_group("welcome_popup")
+	return wp != null and wp.visible

@@ -34,12 +34,7 @@ const ENEMY_MOVES: Array[Dictionary] = [
 const INTRO_PAUSE_SEC := 1.0
 const PLAYER_ACTION_PAUSE_SEC := 0.75
 const ENEMY_TURN_PAUSE_SEC := 1.1
-const BATTLE_DESIGN_LANDSCAPE := Vector2(800.0, 300.0)
-const BATTLE_DESIGN_PORTRAIT := Vector2(640.0, 300.0)
-const ACTION_PANEL_BASE_H := 196.0
 
-@onready var battle_field: Control = $Root/BattleContent/BattleField
-@onready var action_panel: Control = $Root/BattleContent/ActionPanel
 @onready var battle_content: Control = $Root/BattleContent
 @onready var player_sprite: CanvasItem = $Root/BattleContent/BattleField/PlayerSprite
 @onready var enemy_sprite: CanvasItem = $Root/BattleContent/BattleField/EnemySprite
@@ -53,7 +48,8 @@ const ACTION_PANEL_BASE_H := 196.0
 @onready var continue_button: Button = $Root/BattleContent/ActionPanel/ContinueButton
 @onready var tutorial_panel: Panel = $Root/TutorialPanel
 @onready var tutorial_title: Label = $Root/TutorialPanel/Title
-@onready var tutorial_instructions: Label = $Root/TutorialPanel/Instructions
+@onready var tutorial_instructions_scroll: ScrollContainer = $Root/TutorialPanel/InstructionsScroll
+@onready var tutorial_instructions: Label = $Root/TutorialPanel/InstructionsScroll/Instructions
 @onready var btn_start: Button = $Root/TutorialPanel/StartButton
 @onready var btn_exit: Button = $Root/ExitButton
 @onready var confirm_exit_panel: Panel = $Root/ConfirmExitPanel
@@ -95,6 +91,7 @@ func _exit_tree() -> void:
 		GameState.bollo_training_active = false
 		DialogueController.input_locked = false
 		get_tree().paused = false
+		GameState._reset_player_movement()
 
 
 func _fight_ui_scale() -> float:
@@ -109,21 +106,32 @@ func _fit_centered_panel(panel: Control, width: float, height: float) -> void:
 
 
 func _apply_viewport_layout() -> void:
-	ViewportLayout.refresh()
 	var s := _fight_ui_scale()
 	var vp := get_viewport().get_visible_rect().size
 	var portrait := ViewportLayout.is_portrait
-	var battle_design := BATTLE_DESIGN_PORTRAIT if portrait else BATTLE_DESIGN_LANDSCAPE
 
 	var tutorial_w := minf(680.0, vp.x * 0.96)
-	var tutorial_h := minf(400.0, vp.y * (0.58 if portrait else 0.42))
+	var tutorial_h := minf(520.0, vp.y * (0.78 if portrait else 0.86))
 	_fit_centered_panel(tutorial_panel, tutorial_w, tutorial_h)
 	tutorial_title.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(26))
 	tutorial_instructions.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(15))
-	tutorial_instructions.offset_left = 16.0 * s
-	tutorial_instructions.offset_right = -16.0 * s
+	var tutorial_pad := 16.0 * s
+	var title_bottom := 52.0 * s
+	var btn_h := maxf(48.0, 44.0 * s)
+	var btn_w := minf(320.0 * s, tutorial_w - 32.0 * s)
+	var btn_margin_bottom := 12.0 * s
+	var btn_gap := 10.0 * s
 	btn_start.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(20))
-	btn_start.custom_minimum_size = Vector2(minf(320.0 * s, tutorial_w - 32.0 * s), maxf(48.0, 44.0 * s))
+	btn_start.custom_minimum_size = Vector2(btn_w, btn_h)
+	btn_start.offset_left = -btn_w * 0.5
+	btn_start.offset_right = btn_w * 0.5
+	btn_start.offset_top = -btn_h - btn_margin_bottom
+	btn_start.offset_bottom = -btn_margin_bottom
+	tutorial_instructions_scroll.offset_left = tutorial_pad
+	tutorial_instructions_scroll.offset_right = tutorial_w - tutorial_pad
+	tutorial_instructions_scroll.offset_top = title_bottom
+	tutorial_instructions_scroll.offset_bottom = tutorial_h - btn_h - btn_margin_bottom - btn_gap
+	call_deferred("_fit_tutorial_instructions")
 
 	var confirm_w := minf(560.0, vp.x * 0.92)
 	var confirm_h := 200.0 * s
@@ -145,34 +153,12 @@ func _apply_viewport_layout() -> void:
 	btn_exit.offset_right = -exit_margin_right
 	btn_exit.offset_bottom = exit_margin_top + exit_h
 
+	battle_content.scale = Vector2.ONE
+	battle_content.pivot_offset = Vector2.ZERO
 	battle_content.offset_top = ViewportLayout.screen_margin_top(maxf(52.0, 40.0 * s))
+	move_grid.columns = 2
 
-	var action_panel_h := vp.y * (0.30 if portrait else 0.22)
-	action_panel_h = maxf(ACTION_PANEL_BASE_H * s * 0.85, action_panel_h)
-	var action_side := 8.0 if portrait else 12.0
-	action_panel.offset_left = action_side
-	action_panel.offset_right = -action_side
-	action_panel.offset_top = -action_panel_h
-	action_panel.offset_bottom = -ViewportLayout.screen_margin_bottom(8.0 if portrait else 12.0)
-	move_grid.columns = 1 if portrait else 2
-
-	if portrait:
-		battle_field.offset_left = -battle_design.x * 0.5
-		battle_field.offset_right = battle_design.x * 0.5
-		battle_field.offset_top = -280.0
-		battle_field.offset_bottom = 40.0
-	else:
-		battle_field.offset_left = -400.0
-		battle_field.offset_right = 400.0
-		battle_field.offset_top = -220.0
-		battle_field.offset_bottom = 80.0
-
-	var avail_h: float = vp.y - battle_content.offset_top - (exit_margin_top + exit_h) - action_panel_h * 0.5
-	avail_h = maxf(avail_h, battle_design.y * 0.55)
-	var battle_s := minf(vp.x * 0.96 / battle_design.x, avail_h / battle_design.y)
-	if portrait:
-		battle_s *= 1.12
-	battle_s = clampf(battle_s, 0.55, 2.8)
+	var battle_s := s if not portrait else minf(s * 1.08, 2.5)
 	battle_content.scale = Vector2(battle_s, battle_s)
 	call_deferred("_update_battle_pivot", portrait)
 
@@ -186,11 +172,28 @@ func _apply_viewport_layout() -> void:
 		btn.custom_minimum_size.y = maxf(56.0, 50.0 * s)
 
 
-func _update_battle_pivot(portrait: bool = ViewportLayout.is_portrait) -> void:
-	if portrait:
-		battle_content.pivot_offset = Vector2(battle_content.size.x * 0.5, battle_content.size.y)
-	else:
-		battle_content.pivot_offset = battle_content.size * 0.5
+func _update_battle_pivot(_portrait: bool = ViewportLayout.is_portrait) -> void:
+	battle_content.pivot_offset = battle_content.size * 0.5
+
+
+func _fit_tutorial_instructions() -> void:
+	if tutorial_instructions_scroll == null or tutorial_instructions == null:
+		return
+	var scroll_w := tutorial_instructions_scroll.size.x
+	if scroll_w <= 1.0:
+		return
+	tutorial_instructions.custom_minimum_size.x = scroll_w
+	var font := tutorial_instructions.get_theme_font("font")
+	var font_size := tutorial_instructions.get_theme_font_size("font_size")
+	if font == null:
+		return
+	var text_size := font.get_multiline_string_size(
+		tutorial_instructions.text,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		scroll_w,
+		font_size
+	)
+	tutorial_instructions.custom_minimum_size.y = ceili(text_size.y)
 
 
 func _collect_move_buttons() -> void:
