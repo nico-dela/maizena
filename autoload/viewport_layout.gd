@@ -21,6 +21,8 @@ var _connected := false
 
 
 func _ready() -> void:
+	if OS.has_feature("web"):
+		RenderingServer.set_default_clear_color(Color(0.0392157, 0.0588235, 0.141176, 1))
 	call_deferred("refresh")
 	call_deferred("_connect_root")
 

@@ -126,6 +126,14 @@ out = out.replace(
 )
 Path("web_build/index.html").write_text(out, encoding="utf-8")
 print("OK generated web_build/index.html")
+
+manifest_path = Path("web_build/index.manifest.json")
+if manifest_path.exists():
+    import json
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["background_color"] = "#0a0f24"
+    manifest_path.write_text(json.dumps(manifest, separators=(",", ":")), encoding="utf-8")
+    print("OK patched web_build/index.manifest.json")
 PY
 
 echo "Listo. Subí web_build/ a Netlify."
