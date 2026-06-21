@@ -38,7 +38,7 @@
       #canvas {
         display: block;
         outline: none;
-        background-color: var(--maizena-game-bleed);
+        background-color: var(--maizena-loader-bg);
       }
 
       #status {
@@ -59,42 +59,17 @@
         box-sizing: border-box;
       }
 
-      #status-godot {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: min(62vw, 420px);
-        max-width: calc(100vw - 2rem);
-        margin: 0 auto 1.25rem;
-      }
-
-      #status-godot svg {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      #status-godot-wordmark {
-        margin: 0.75rem 0 0;
-        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
-        font-size: clamp(1.35rem, 5vw, 2rem);
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        text-align: center;
-        color: #ffffff;
-      }
-
-      #status-godot-tagline {
-        margin: 0.35rem 0 0;
-        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
-        font-size: clamp(0.85rem, 2.8vw, 1rem);
-        letter-spacing: 0.08em;
-        text-align: center;
-        color: rgba(255, 255, 255, 0.82);
-      }
-
       #status-splash {
         display: none;
+      }
+
+      #status-phase {
+        margin: 0 1.25rem 1.25rem;
+        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
+        font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+        letter-spacing: 0.04em;
+        text-align: center;
+        color: rgba(45, 33, 56, 0.9);
       }
 
       #status-progress {
@@ -133,14 +108,7 @@
 
     <div id="status">
       <img id="status-splash" src="$GODOT_SPLASH" alt="" />
-      <div id="status-godot" aria-hidden="true">
-        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Godot Engine">
-          <rect width="256" height="256" rx="48" fill="#478CBF"/>
-          <path fill="#FFF" d="M128 56c-28 0-52 18-60 44l-8 28c-2 8 4 16 12 16h8l6 24c2 8 10 14 18 14h8c8 0 14-6 16-14l6-24h8c8 0 14-8 12-16l-8-28c-8-26-32-44-60-44zm-28 44c4-10 14-18 28-18s24 8 28 18l4 14h-64l4-14zm20 38h16l-4 16h-8l-4-16z"/>
-        </svg>
-        <p id="status-godot-wordmark">GODOT</p>
-        <p id="status-godot-tagline">Game engine</p>
-      </div>
+      <p id="status-phase">Descargando juego…</p>
       <progress id="status-progress"></progress>
       <p id="status-label">Cargando…</p>
       <div id="status-notice"></div>
@@ -157,6 +125,7 @@
         const statusProgress = document.getElementById("status-progress");
         const statusNotice = document.getElementById("status-notice");
         const statusLabel = document.getElementById("status-label");
+        const statusPhase = document.getElementById("status-phase");
 
         let initializing = true;
         let statusMode = "progress";
@@ -216,6 +185,9 @@
           if (statusLabel) {
             statusLabel.style.display = mode === "notice" ? "none" : "block";
           }
+          if (statusPhase) {
+            statusPhase.style.display = mode === "notice" ? "none" : "block";
+          }
           statusMode = mode;
         }
 
@@ -273,6 +245,10 @@
               },
             })
             .then(function () {
+              if (statusPhase) {
+                statusPhase.textContent = "Iniciando motor…";
+              }
+              setStatusMode("hidden");
               notifyGodotResize();
             }, displayFailureNotice);
         }

@@ -11,7 +11,7 @@ const PHRASES: Array[String] = [
 	"Podemos hacer sapitos por ahi",
 ]
 
-const PORTRAIT_LOADING_FONT_MUL := 1.12
+const PORTRAIT_LOADING_FONT_MUL := 1.22
 
 const FONT_TITLE := 34
 const FONT_BODY := 16
@@ -20,6 +20,9 @@ const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experi
 
 @onready var margin: MarginContainer = $Margin
 @onready var main_vbox: VBoxContainer = $Margin/VBox
+@onready var main_block: VBoxContainer = $Margin/VBox/MainBlock
+@onready var top_spacer: Control = $Margin/VBox/MainBlock/TopSpacer
+@onready var bottom_spacer: Control = $Margin/VBox/MainBlock/BottomSpacer
 @onready var content: VBoxContainer = $Margin/VBox/MainBlock/Content
 @onready var progress_row: VBoxContainer = $Margin/VBox/MainBlock/Content/ProgressRow
 @onready var progress_bar: ProgressBar = $Margin/VBox/MainBlock/Content/ProgressRow/ProgressBar
@@ -160,22 +163,30 @@ func _apply_responsive_layout() -> void:
 	var layout_size: Vector2 = ViewportLayout.visible_layout_size()
 	var portrait := ViewportLayout.is_portrait
 	var ui_boost := ViewportLayout.effective_ui_scale()
+	var viewport_h := get_viewport().get_visible_rect().size.y
 
-	var content_w := minf((560.0 if portrait else 420.0) * ui_boost, layout_size.x * 0.96)
+	var content_w := minf((layout_size.x * (0.92 if portrait else 0.84)) * ui_boost, layout_size.x * 0.96)
 	content.custom_minimum_size.x = content_w
 
-	var logo_ratio := 0.62 if portrait else 0.36
-	var logo_max := 500.0 if portrait else 280.0
-	var logo_min := 240.0 if portrait else 170.0
-	var logo_side := clampf(layout_size.x * logo_ratio, logo_min, logo_max)
-	if not portrait:
+	var logo_side := 0.0
+	if portrait:
+		logo_side = clampf(
+			minf(layout_size.x * 0.9, viewport_h * 0.34),
+			280.0,
+			560.0
+		)
+	else:
+		var logo_ratio := 0.36
+		var logo_max := 280.0
+		var logo_min := 170.0
+		logo_side = clampf(layout_size.x * logo_ratio, logo_min, logo_max)
 		logo_side = clampf(floorf(logo_side / 128.0) * 128.0, 128.0, 512.0)
 	map_preview_aspect.custom_minimum_size = Vector2(logo_side, logo_side)
 	map_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	map_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	map_preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if map_preview_frame != null:
-		var frame_pad := int(round((10.0 if portrait else 8.0) * ui_boost))
+		var frame_pad := int(round((12.0 if portrait else 8.0) * ui_boost))
 		if _map_frame_style == null:
 			var base := map_preview_frame.get_theme_stylebox("panel") as StyleBoxFlat
 			_map_frame_style = base.duplicate() as StyleBoxFlat if base else StyleBoxFlat.new()
@@ -187,20 +198,33 @@ func _apply_responsive_layout() -> void:
 		_map_frame_style.set_corner_radius_all(maxi(6, int(round(8.0 * ui_boost))))
 		map_preview_frame.add_theme_stylebox_override("panel", _map_frame_style)
 
-	progress_bar.custom_minimum_size.y = maxi(18, int(round((26.0 if portrait else 18.0) * ui_boost)))
-	progress_row.add_theme_constant_override("separation", int(round((12.0 if portrait else 8.0) * ui_boost)))
-	main_vbox.add_theme_constant_override("separation", int(round((16.0 if portrait else 10.0) * ui_boost)))
-	content.add_theme_constant_override("separation", int(round((28.0 if portrait else 18.0) * ui_boost)))
+	progress_bar.custom_minimum_size.y = maxi(22, int(round((30.0 if portrait else 18.0) * ui_boost)))
+	progress_row.add_theme_constant_override("separation", int(round((14.0 if portrait else 8.0) * ui_boost)))
+	main_vbox.add_theme_constant_override("separation", int(round((12.0 if portrait else 10.0) * ui_boost)))
+	content.add_theme_constant_override("separation", int(round((22.0 if portrait else 18.0) * ui_boost)))
 
-	var margin_base := 16.0 if portrait else 32.0
+	if top_spacer != null:
+		top_spacer.custom_minimum_size.y = 0.0
+		top_spacer.size_flags_stretch_ratio = 1.0
+	if bottom_spacer != null:
+		bottom_spacer.custom_minimum_size.y = 0.0
+		bottom_spacer.size_flags_stretch_ratio = 1.0 if portrait else 1.4
+
+	var margin_base := 12.0 if portrait else 32.0
 	var margin_scaled := int(round(margin_base * ui_boost))
 	margin.add_theme_constant_override("margin_left", int(round(ViewportLayout.screen_margin_left(float(margin_scaled)))))
 	margin.add_theme_constant_override("margin_right", int(round(ViewportLayout.screen_margin_right(float(margin_scaled)))))
-	margin.add_theme_constant_override("margin_top", int(round(ViewportLayout.screen_margin_top((24.0 if portrait else 40.0) * ui_boost))))
-	margin.add_theme_constant_override("margin_bottom", int(round(ViewportLayout.screen_margin_bottom((18.0 if portrait else 28.0) * ui_boost))))
+	margin.add_theme_constant_override(
+		"margin_top",
+		int(round(ViewportLayout.screen_margin_top((14.0 if portrait else 40.0) * ui_boost)))
+	)
+	margin.add_theme_constant_override(
+		"margin_bottom",
+		int(round(ViewportLayout.screen_margin_bottom((10.0 if portrait else 28.0) * ui_boost)))
+	)
 
-	title_label.add_theme_font_size_override("font_size", _loading_font(FONT_TITLE))
-	status_label.add_theme_font_size_override("font_size", _loading_font(FONT_BODY))
+	title_label.add_theme_font_size_override("font_size", _loading_font(FONT_TITLE + (6 if portrait else 0)))
+	status_label.add_theme_font_size_override("font_size", _loading_font(FONT_BODY + (2 if portrait else 0)))
 	orientation_hint_label.text = ORIENTATION_HINT
 	orientation_hint_label.visible = portrait
 	orientation_hint_label.add_theme_font_size_override("font_size", _loading_font(FONT_SMALL))

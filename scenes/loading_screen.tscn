@@ -84,7 +84,12 @@ theme_override_constants/margin_bottom = 28
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="MainBlock" type="CenterContainer" parent="Margin/VBox"]
+[node name="MainBlock" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="TopSpacer" type="Control" parent="Margin/VBox/MainBlock"]
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -92,6 +97,10 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 theme_override_constants/separation = 18
+
+[node name="BottomSpacer" type="Control" parent="Margin/VBox/MainBlock"]
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="MapPreviewWrap" type="CenterContainer" parent="Margin/VBox/MainBlock/Content"]
 layout_mode = 2
