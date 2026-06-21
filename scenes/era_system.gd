@@ -17,13 +17,20 @@ func _ready() -> void:
 
 
 func _apply_layout() -> void:
+	ViewportLayout.refresh()
 	var s := ViewportLayout.effective_ui_scale()
+	var layout := ViewportLayout.visible_layout_size()
+	var margin_left: float = ViewportLayout.screen_margin_left(SCREEN_MARGIN)
+	var margin_top: float = ViewportLayout.screen_margin_top(SCREEN_MARGIN)
+
 	news_button.text = "Noticias"
 	news_button.icon = null
 	news_button.expand_icon = false
 	news_button.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_FONT_SIZE))
 
 	var btn_w := maxf(BASE_BUTTON_SIZE.x * s, 160.0 * s)
+	var max_w: float = layout.x - margin_left - ViewportLayout.screen_margin_right(SCREEN_MARGIN) - 8.0
+	btn_w = minf(btn_w, maxf(120.0, max_w))
 	var btn_h := maxf(BASE_BUTTON_SIZE.y * s, 44.0)
 	var btn_size := Vector2(btn_w, btn_h)
 	news_button.custom_minimum_size = btn_size
@@ -33,10 +40,10 @@ func _apply_layout() -> void:
 	anchor_top = 0.0
 	anchor_right = 0.0
 	anchor_bottom = 0.0
-	offset_left = SCREEN_MARGIN
-	offset_top = SCREEN_MARGIN
-	offset_right = SCREEN_MARGIN + btn_size.x
-	offset_bottom = SCREEN_MARGIN + btn_size.y
+	offset_left = margin_left
+	offset_top = margin_top
+	offset_right = margin_left + btn_size.x
+	offset_bottom = margin_top + btn_size.y
 
 
 func _style_button() -> void:

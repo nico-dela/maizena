@@ -12,6 +12,10 @@ var ui_scale := 1.0
 var camera_boost := 1.0
 var is_portrait := false
 var visible_layout := Vector2(1152.0, 648.0)
+var safe_margin_top := 0.0
+var safe_margin_left := 0.0
+var safe_margin_right := 0.0
+var safe_margin_bottom := 0.0
 
 var _connected := false
 
@@ -61,6 +65,26 @@ func visible_layout_size() -> Vector2:
 	return visible_layout
 
 
+func screen_margin(base: float) -> float:
+	return base
+
+
+func screen_margin_top(base: float) -> float:
+	return base + safe_margin_top
+
+
+func screen_margin_left(base: float) -> float:
+	return base + safe_margin_left
+
+
+func screen_margin_right(base: float) -> float:
+	return base + safe_margin_right
+
+
+func screen_margin_bottom(base: float) -> float:
+	return base + safe_margin_bottom
+
+
 func _stretch_scale(design: Vector2, window: Vector2i) -> float:
 	var aspect := int(ProjectSettings.get_setting("display/window/stretch/aspect", 1))
 	match aspect:
@@ -104,11 +128,21 @@ func _recalculate() -> void:
 		new_ui_scale = maxf(new_ui_scale, letterbox_boost * 0.88)
 		new_camera_boost = maxf(new_camera_boost, clampf(letterbox_boost * 0.55, 1.0, MAX_CAMERA_BOOST))
 
+	var safe_area := DisplayServer.get_display_safe_area()
+	var new_safe_top := float(safe_area.position.y)
+	var new_safe_left := float(safe_area.position.x)
+	var new_safe_right := maxf(0.0, float(window.x - safe_area.end.x))
+	var new_safe_bottom := maxf(0.0, float(window.y - safe_area.end.y))
+
 	if (
 		is_equal_approx(new_ui_scale, ui_scale)
 		and is_equal_approx(new_camera_boost, camera_boost)
 		and new_portrait == is_portrait
 		and visible.is_equal_approx(visible_layout)
+		and is_equal_approx(new_safe_top, safe_margin_top)
+		and is_equal_approx(new_safe_left, safe_margin_left)
+		and is_equal_approx(new_safe_right, safe_margin_right)
+		and is_equal_approx(new_safe_bottom, safe_margin_bottom)
 	):
 		return
 
@@ -116,4 +150,8 @@ func _recalculate() -> void:
 	camera_boost = new_camera_boost
 	is_portrait = new_portrait
 	visible_layout = visible
+	safe_margin_top = new_safe_top
+	safe_margin_left = new_safe_left
+	safe_margin_right = new_safe_right
+	safe_margin_bottom = new_safe_bottom
 	layout_changed.emit()

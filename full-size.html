@@ -4,28 +4,38 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, viewport-fit=cover"
     />
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <title>$GODOT_PROJECT_NAME</title>
     <style>
       html,
-      body,
-      #canvas {
+      body {
         margin: 0;
         padding: 0;
         border: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
       }
 
       body {
         color: #2d2138;
         background-color: #c44e83;
-        overflow: hidden;
         touch-action: none;
       }
 
       #canvas {
         display: block;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        width: 100dvw;
+        height: 100dvh;
         background-color: #c44e83;
       }
 
@@ -33,22 +43,9 @@
         outline: none;
       }
 
-      #status,
-      #status-splash,
-      #status-progress,
-      #status-label {
-        position: absolute;
-        left: 0;
-        right: 0;
-      }
-
-      #status,
-      #status-splash {
-        top: 0;
-        bottom: 0;
-      }
-
       #status {
+        position: fixed;
+        inset: 0;
         background-color: #c44e83;
         display: flex;
         flex-direction: column;
@@ -56,38 +53,56 @@
         align-items: center;
         visibility: visible;
         z-index: 1;
+        padding:
+          env(safe-area-inset-top, 0px)
+          env(safe-area-inset-right, 0px)
+          env(safe-area-inset-bottom, 0px)
+          env(safe-area-inset-left, 0px);
+        box-sizing: border-box;
       }
 
       #status-splash {
-        max-height: 100%;
-        max-width: 100%;
-        margin: auto;
+        max-height: min(42vh, 280px);
+        max-width: min(62vw, 320px);
+        margin: 0 auto 1rem;
+        image-rendering: pixelated;
+      }
+
+      #status-title {
+        margin: 0 1rem 0.75rem;
+        font-family: "Courier New", Courier, monospace;
+        font-size: clamp(1rem, 4.5vw, 1.6rem);
+        font-weight: bold;
+        letter-spacing: 0.08em;
+        text-align: center;
+        color: #2d2138;
+        text-transform: uppercase;
       }
 
       #status-label {
-        display: none;
-      }
-
-      #status-notice {
-        display: none;
+        margin: 0 1rem 1rem;
+        font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
+        font-size: clamp(0.85rem, 3.2vw, 1rem);
+        text-align: center;
+        color: rgba(45, 33, 56, 0.88);
       }
 
       #status-progress {
         display: block;
-        bottom: 10%;
         width: min(420px, 72vw);
         margin: 0 auto;
         accent-color: #3b82f6;
       }
 
       #status-notice {
+        display: none;
         background-color: #5b3943;
         border-radius: 0.5rem;
         border: 1px solid #9b3943;
         color: #e0e0e0;
         font-family: "Noto Sans", "Droid Sans", Arial, sans-serif;
         line-height: 1.3;
-        margin: 0 2rem;
+        margin: 1rem 2rem 0;
         overflow: hidden;
         padding: 1rem;
         text-align: center;
@@ -103,8 +118,9 @@
 
     <div id="status">
       <img id="status-splash" src="$GODOT_SPLASH" alt="" />
-      <progress id="status-progress"></progress>
+      <h1 id="status-title">Archipiélago Maizena</h1>
       <p id="status-label">Cargando Archipiélago Maizena…</p>
+      <progress id="status-progress"></progress>
       <div id="status-notice"></div>
     </div>
 
@@ -119,20 +135,31 @@
         const statusProgress = document.getElementById("status-progress");
         const statusNotice = document.getElementById("status-notice");
         const statusLabel = document.getElementById("status-label");
+        const statusTitle = document.getElementById("status-title");
 
         let initializing = true;
         let statusMode = "progress";
+        const loaderStartedAt = Date.now();
+        const MIN_LOADER_MS = 1200;
 
         statusOverlay.style.visibility = "visible";
         statusProgress.style.display = "block";
+
+        window.maizenaHideLoader = function () {
+          if (!initializing) {
+            return;
+          }
+          statusOverlay.remove();
+          initializing = false;
+          statusMode = "hidden";
+        };
 
         function setStatusMode(mode) {
           if (statusMode === mode || !initializing) {
             return;
           }
           if (mode === "hidden") {
-            statusOverlay.remove();
-            initializing = false;
+            window.maizenaHideLoader();
             return;
           }
           statusOverlay.style.visibility = "visible";
@@ -140,6 +167,9 @@
           statusNotice.style.display = mode === "notice" ? "block" : "none";
           if (statusLabel) {
             statusLabel.style.display = mode === "notice" ? "none" : "block";
+          }
+          if (statusTitle) {
+            statusTitle.style.display = mode === "notice" ? "none" : "block";
           }
           statusMode = mode;
         }
@@ -183,7 +213,15 @@
               },
             })
             .then(() => {
-              setStatusMode("hidden");
+              const elapsed = Date.now() - loaderStartedAt;
+              const remaining = Math.max(0, MIN_LOADER_MS - elapsed);
+              if (remaining > 0) {
+                setTimeout(function () {
+                  if (initializing) {
+                    statusLabel.textContent = "Preparando mundo…";
+                  }
+                }, remaining);
+              }
             }, displayFailureNotice);
         }
 

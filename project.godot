@@ -16,9 +16,10 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="Archipiélago Maizena"
 run/main_scene="res://scenes/loading_screen.tscn"
-config/features=PackedStringArray("4.6", "GL Compatibility")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 run/max_fps=20
 boot_splash/bg_color=Color(0.768627, 0.305882, 0.513726, 1)
+boot_splash/fullsize=false
 boot_splash/show_image=false
 boot_splash/stretch_mode=0
 config/icon="res://assets/ui/logos/Mascara.svg"
@@ -41,6 +42,8 @@ runtime/balloon_path="res://dialogue balloon//balloon.tscn"
 
 [display]
 
+window/size/viewport_width=1152
+window/size/viewport_height=648
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/main_scene="res://scenes/world.scn"

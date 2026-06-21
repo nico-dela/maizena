@@ -34,7 +34,12 @@ const ENEMY_MOVES: Array[Dictionary] = [
 const INTRO_PAUSE_SEC := 1.0
 const PLAYER_ACTION_PAUSE_SEC := 0.75
 const ENEMY_TURN_PAUSE_SEC := 1.1
+const BATTLE_DESIGN_LANDSCAPE := Vector2(800.0, 300.0)
+const BATTLE_DESIGN_PORTRAIT := Vector2(640.0, 300.0)
+const ACTION_PANEL_BASE_H := 196.0
 
+@onready var battle_field: Control = $Root/BattleContent/BattleField
+@onready var action_panel: Control = $Root/BattleContent/ActionPanel
 @onready var battle_content: Control = $Root/BattleContent
 @onready var player_sprite: CanvasItem = $Root/BattleContent/BattleField/PlayerSprite
 @onready var enemy_sprite: CanvasItem = $Root/BattleContent/BattleField/EnemySprite
@@ -104,9 +109,11 @@ func _fit_centered_panel(panel: Control, width: float, height: float) -> void:
 
 
 func _apply_viewport_layout() -> void:
+	ViewportLayout.refresh()
 	var s := _fight_ui_scale()
 	var vp := get_viewport().get_visible_rect().size
 	var portrait := ViewportLayout.is_portrait
+	var battle_design := BATTLE_DESIGN_PORTRAIT if portrait else BATTLE_DESIGN_LANDSCAPE
 
 	var tutorial_w := minf(680.0, vp.x * 0.96)
 	var tutorial_h := minf(400.0, vp.y * (0.58 if portrait else 0.42))
@@ -114,9 +121,9 @@ func _apply_viewport_layout() -> void:
 	tutorial_title.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(26))
 	tutorial_instructions.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(15))
 	tutorial_instructions.offset_left = 16.0 * s
-	tutorial_instructions.offset_right = tutorial_w - 16.0 * s
+	tutorial_instructions.offset_right = -16.0 * s
 	btn_start.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(20))
-	btn_start.custom_minimum_size = Vector2(320.0 * s, 48.0 * s)
+	btn_start.custom_minimum_size = Vector2(minf(320.0 * s, tutorial_w - 32.0 * s), maxf(48.0, 44.0 * s))
 
 	var confirm_w := minf(560.0, vp.x * 0.92)
 	var confirm_h := 200.0 * s
@@ -131,12 +138,41 @@ func _apply_viewport_layout() -> void:
 	var exit_h := maxf(36.0, 32.0 * s)
 	btn_exit.custom_minimum_size = Vector2(exit_w, exit_h)
 	btn_exit.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
-	btn_exit.offset_left = -12.0 - exit_w
-	btn_exit.offset_top = 12.0
-	btn_exit.offset_right = -12.0
-	btn_exit.offset_bottom = 12.0 + exit_h
+	var exit_margin_top: float = ViewportLayout.screen_margin_top(12.0)
+	var exit_margin_right: float = ViewportLayout.screen_margin_right(12.0)
+	btn_exit.offset_left = -exit_margin_right - exit_w
+	btn_exit.offset_top = exit_margin_top
+	btn_exit.offset_right = -exit_margin_right
+	btn_exit.offset_bottom = exit_margin_top + exit_h
 
-	var battle_s := s if not portrait else minf(s * 1.08, 2.5)
+	battle_content.offset_top = ViewportLayout.screen_margin_top(maxf(52.0, 40.0 * s))
+
+	var action_panel_h := vp.y * (0.30 if portrait else 0.22)
+	action_panel_h = maxf(ACTION_PANEL_BASE_H * s * 0.85, action_panel_h)
+	var action_side := 8.0 if portrait else 12.0
+	action_panel.offset_left = action_side
+	action_panel.offset_right = -action_side
+	action_panel.offset_top = -action_panel_h
+	action_panel.offset_bottom = -ViewportLayout.screen_margin_bottom(8.0 if portrait else 12.0)
+	move_grid.columns = 1 if portrait else 2
+
+	if portrait:
+		battle_field.offset_left = -battle_design.x * 0.5
+		battle_field.offset_right = battle_design.x * 0.5
+		battle_field.offset_top = -280.0
+		battle_field.offset_bottom = 40.0
+	else:
+		battle_field.offset_left = -400.0
+		battle_field.offset_right = 400.0
+		battle_field.offset_top = -220.0
+		battle_field.offset_bottom = 80.0
+
+	var avail_h: float = vp.y - battle_content.offset_top - (exit_margin_top + exit_h) - action_panel_h * 0.5
+	avail_h = maxf(avail_h, battle_design.y * 0.55)
+	var battle_s := minf(vp.x * 0.96 / battle_design.x, avail_h / battle_design.y)
+	if portrait:
+		battle_s *= 1.12
+	battle_s = clampf(battle_s, 0.55, 2.8)
 	battle_content.scale = Vector2(battle_s, battle_s)
 	call_deferred("_update_battle_pivot", portrait)
 

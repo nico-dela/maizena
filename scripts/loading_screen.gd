@@ -49,6 +49,7 @@ func _ready() -> void:
 	ViewportLayout.layout_changed.connect(_apply_responsive_layout)
 
 	if _is_web:
+		call_deferred("_hide_html_loader")
 		call_deferred("_load_main_on_web")
 		return
 
@@ -64,6 +65,14 @@ func _load_main_on_web() -> void:
 	if _loaded_scene == null:
 		push_error("LoadingScreen: falló la carga web de %s" % MAIN_SCENE)
 		get_tree().change_scene_to_file(MAIN_SCENE)
+
+
+func _hide_html_loader() -> void:
+	if not _is_web:
+		return
+	JavaScriptBridge.eval(
+		"if (typeof window.maizenaHideLoader === 'function') { window.maizenaHideLoader(); }"
+	)
 
 
 func _process(_delta: float) -> void:
@@ -171,10 +180,10 @@ func _apply_responsive_layout() -> void:
 
 	var margin_base := 16.0 if portrait else 32.0
 	var margin_scaled := int(round(margin_base * ui_boost))
-	margin.add_theme_constant_override("margin_left", margin_scaled)
-	margin.add_theme_constant_override("margin_right", margin_scaled)
-	margin.add_theme_constant_override("margin_top", int(round((24.0 if portrait else 40.0) * ui_boost)))
-	margin.add_theme_constant_override("margin_bottom", int(round((18.0 if portrait else 28.0) * ui_boost)))
+	margin.add_theme_constant_override("margin_left", int(round(ViewportLayout.screen_margin_left(float(margin_scaled)))))
+	margin.add_theme_constant_override("margin_right", int(round(ViewportLayout.screen_margin_right(float(margin_scaled)))))
+	margin.add_theme_constant_override("margin_top", int(round(ViewportLayout.screen_margin_top((24.0 if portrait else 40.0) * ui_boost))))
+	margin.add_theme_constant_override("margin_bottom", int(round(ViewportLayout.screen_margin_bottom((18.0 if portrait else 28.0) * ui_boost))))
 
 	title_label.add_theme_font_size_override("font_size", _loading_font(FONT_TITLE))
 	status_label.add_theme_font_size_override("font_size", _loading_font(FONT_BODY))

@@ -138,20 +138,22 @@ func _apply_settings_button_layout() -> void:
 	settings_button.scale = Vector2.ONE
 	settings_button.expand_icon = true
 	settings_button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var mult := 4.0 if OS.has_feature("mobile") else 2.6
+	var mult := 2.9 if OS.has_feature("mobile") else 2.6
 	mult *= minf(ViewportLayout.effective_ui_scale(), 2.0)
 	var iw := maxi(1, int(round(float(icon_open.get_width()) * mult)))
 	var ih := maxi(1, int(round(float(icon_open.get_height()) * mult)))
 	const SCREEN_MARGIN := 20.0
+	var margin_top: float = ViewportLayout.screen_margin_top(8.0)
+	var margin_right: float = ViewportLayout.screen_margin_right(SCREEN_MARGIN)
 	settings_button.custom_minimum_size = Vector2(iw, ih)
 	settings_button.anchor_left = 1.0
 	settings_button.anchor_right = 1.0
 	settings_button.anchor_top = 0.0
 	settings_button.anchor_bottom = 0.0
-	settings_button.offset_top = 0.0
-	settings_button.offset_bottom = float(ih)
-	settings_button.offset_left = -SCREEN_MARGIN - float(iw)
-	settings_button.offset_right = -SCREEN_MARGIN
+	settings_button.offset_top = margin_top
+	settings_button.offset_bottom = margin_top + float(ih)
+	settings_button.offset_left = -margin_right - float(iw)
+	settings_button.offset_right = -margin_right
 	settings_button.visible = true
 	settings_button.modulate = Color(1, 1, 1, 1)
 

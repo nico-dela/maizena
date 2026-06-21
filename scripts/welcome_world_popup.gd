@@ -5,6 +5,9 @@ const FONT: FontFile = preload("res://assets/ui/PixelOperator8.ttf")
 const BASE_CARD_MIN := Vector2(160, 168)
 const PORTRAIT_FONT_MUL := 1.42
 const PORTRAIT_CARD_MUL := 1.28
+const LANDSCAPE_FONT_MUL := 1.2
+const LANDSCAPE_CARD_MUL := 1.18
+const PHONE_LANDSCAPE_HEIGHT := 500.0
 const REBUILD_SCALE_THRESHOLD := 0.18
 
 const LINKTREE_URL := (
@@ -109,10 +112,28 @@ func _font_boost() -> float:
 	return ViewportLayout.effective_ui_scale()
 
 
-func _scaled_news_font(base: int) -> int:
-	var size := float(base) * _font_boost()
+func _is_phone_landscape() -> bool:
+	return not ViewportLayout.is_portrait and ViewportLayout.visible_layout_size().y < PHONE_LANDSCAPE_HEIGHT
+
+
+func _layout_font_mul() -> float:
 	if ViewportLayout.is_portrait:
-		size *= PORTRAIT_FONT_MUL
+		return PORTRAIT_FONT_MUL
+	if _is_phone_landscape():
+		return LANDSCAPE_FONT_MUL
+	return 1.0
+
+
+func _layout_card_mul() -> float:
+	if ViewportLayout.is_portrait:
+		return PORTRAIT_CARD_MUL
+	if _is_phone_landscape():
+		return LANDSCAPE_CARD_MUL
+	return 1.0
+
+
+func _scaled_news_font(base: int) -> int:
+	var size := float(base) * _font_boost() * _layout_font_mul()
 	return maxi(1, int(round(size)))
 
 
@@ -238,9 +259,7 @@ func _add_news_card(
 
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
-	var card_scale := _font_boost()
-	if ViewportLayout.is_portrait:
-		card_scale *= PORTRAIT_CARD_MUL
+	var card_scale := _font_boost() * _layout_card_mul()
 	panel.custom_minimum_size = BASE_CARD_MIN * card_scale
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -268,9 +287,7 @@ func _add_news_card(
 func _add_saturation_card(grid: GridContainer) -> ProgressBar:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
-	var card_scale := _font_boost()
-	if ViewportLayout.is_portrait:
-		card_scale *= PORTRAIT_CARD_MUL
+	var card_scale := _font_boost() * _layout_card_mul()
 	panel.custom_minimum_size = BASE_CARD_MIN * card_scale
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -390,6 +407,13 @@ func _apply_responsive_layout() -> void:
 		report_panel.offset_right = panel_w * 0.5
 		report_panel.offset_top = -panel_h * 0.5
 		report_panel.offset_bottom = panel_h * 0.5
+	elif _is_phone_landscape():
+		var panel_w := layout.x * 0.92
+		var panel_h := layout.y * 0.85
+		report_panel.offset_left = -panel_w * 0.5
+		report_panel.offset_right = panel_w * 0.5
+		report_panel.offset_top = -panel_h * 0.5
+		report_panel.offset_bottom = panel_h * 0.5
 	else:
 		var panel_w := minf(720.0, layout.x * 0.94)
 		var panel_h := minf(600.0, layout.y * 0.88)
@@ -398,7 +422,7 @@ func _apply_responsive_layout() -> void:
 		report_panel.offset_top = -panel_h * 0.5
 		report_panel.offset_bottom = panel_h * 0.5
 
-	var outer_m := int(round((12.0 if portrait else 6.0) * boost))
+	var outer_m := int(round((12.0 if portrait else (10.0 if _is_phone_landscape() else 6.0)) * boost))
 	report_margin.add_theme_constant_override("margin_left", outer_m)
 	report_margin.add_theme_constant_override("margin_right", outer_m)
 	report_margin.add_theme_constant_override("margin_top", int(round((8.0 if portrait else 4.0) * boost)))
