@@ -1,20 +1,28 @@
-# AGENTS.md
+# AGENTS.md — Archipiélago Maizena
 
 ## Purpose
 
-This document defines the mandatory quality standards for any code generated fully or partially by Large Language Models (LLMs — Cursor, Copilot, ChatGPT, or similar) within my Godot projects.
+This document is the single source of truth for LLM-assisted work (Cursor, Copilot, ChatGPT, or similar) in this repository.
+
+**Project:** Archipiélago Maizena — 2D top-down exploration game, Web/PWA export.
+
+**Stack:** Godot **4.7**, GL Compatibility, 20 FPS cap, GDScript, Dialogue Manager 3.10.0.
+
+**Team:** Solo-dev — there is no second reviewer, no CI/CD, and no automated test gates. Every "human reviewer" requirement means **me, reviewing my own diffs before accepting them**.
+
+**Deploy:** Netlify publishes from `web_build/` (`netlify.toml`: `publish = "web_build"`). Production updates when `web_build/` is committed and pushed.
 
 This policy applies to:
 - Code generated via Cursor (Tab, Cmd+K, Agent/Composer mode)
 - Code produced by autonomous coding agents
 - Refactors or modifications suggested by LLMs
-- GDScript, shaders, and `.tres`/`.tscn` structural edits suggested by LLMs
+- GDScript, shaders, `.dialogue`, and `.tres`/`.tscn` structural edits suggested by LLMs
 
 LLM-generated code is **not trusted by default** and must satisfy the validation rules below before it is considered done.
 
-This is a solo-developer project: there is no second reviewer and no CI pipeline. Every "human reviewer" requirement below is satisfied by **me, reviewing my own diffs before accepting them** — not skipped.
-
 ---
+
+# Part I — LLM Quality Policy
 
 # 1. Mandatory Self-Review
 
@@ -27,17 +35,21 @@ This is a solo-developer project: there is no second reviewer and no CI pipeline
    - Architectural consistency
 4. If I cannot explain what the generated code does, it MUST NOT be accepted. Rewrite the prompt or rewrite the code by hand instead.
 
+There is no PR workflow or automatic merge — I am the only gate.
+
 ---
 
 # 2. Test Coverage Requirements
 
-Automated test coverage thresholds (90%/80%/95% style) do not apply here — there is no test suite by default in this kind of project, and chasing coverage on gameplay code produces theater, not safety.
+There is **no automated test suite** and no coverage thresholds. Chasing 90%/80%/95% coverage on gameplay code produces theater, not safety.
 
 Instead:
 
-- Any non-trivial system (combat, inventory, save/load, dialogue state, anything touching persistent player data) SHOULD have at least a manual test checklist (a comment block or a `tests/` notes file) describing what was verified by hand in the editor.
-- If/when GUT (Godot Unit Test) or another framework is introduced for a specific project, that project's own AGENTS.md should declare it and define real thresholds — this generic baseline does not assume one exists.
-- LLM-generated code that silently breaks previously-working behavior (a scene that loaded fine now errors, a signal that used to fire no longer does) MUST be rejected and fixed before moving on, regardless of whether a formal test exists.
+- Any non-trivial system (combat, inventory, save/load, dialogue state, anything touching persistent player data) SHOULD have at least a manual test checklist describing what was verified by hand in the editor.
+- **Maizena smoke test** (Part II §G) is the acceptance gate for changes touching quest, dialogue, combat, or input.
+- LLM-generated code that silently breaks previously-working behavior (a scene that loaded fine now errors, a signal that used to fire no longer does) MUST be rejected and fixed before moving on.
+
+There is no GUT or other test framework in this project.
 
 ---
 
@@ -60,17 +72,18 @@ Refactor by:
 
 # 4. Godot/Cursor-Specific Correctness Requirements
 
-LLM-generated GDScript MUST undergo explicit correctness validation before being accepted — this replaces generic "security review" as the highest-priority gate for this kind of project:
+LLM-generated GDScript MUST undergo explicit correctness validation before being accepted:
 
 Review MUST verify:
 
 - No Godot 3.x syntax leaked in (`yield()`, `onready` without `@`, `export(TYPE)` without `@`, string-based `connect()`, `.instance()` instead of `.instantiate()`)
-- No invented/hallucinated nodes, methods, or properties — if Cursor wasn't certain an API exists in the project's Godot version, it should have flagged that, not asserted it confidently
-- No reference to Autoloads, signals, or groups that don't actually exist in the project
-- Proper input validation on anything that touches save data, user-entered text, or external files (avoid trusting malformed save files crashing the game)
-- No hardcoded secrets if the project ever talks to a backend/API (API keys, leaderboard tokens, analytics keys) — these belong in environment-specific config excluded from version control, never inline in a script
-- Safe error handling around file I/O (save/load) — a corrupted or missing save file must not crash the game on boot
-- No sensitive data (player emails, device IDs, anything personally identifying) written into `print()`/log output
+- No invented/hallucinated nodes, methods, or properties — if Cursor wasn't certain an API exists in Godot 4.7, it should have flagged that, not asserted it confidently
+- No reference to Autoloads, signals, or groups that don't actually exist in this project (see Part II)
+- Proper input validation on anything that touches save data or external files — corrupted or missing JSON must not crash the game on boot (`WorldState`, `MaizenaMeta`, `WorldMetrics`)
+- No hardcoded secrets — metrics endpoint URLs and Open-Meteo are public; anything requiring a token belongs outside version control
+- No sensitive data (emails, device IDs, anything personally identifying) written into `print()`/log output
+- **Web export correctness:** do not assume desktop-only APIs without verifying Web export behavior
+- **`JavaScriptBridge`** only where already used (e.g. `scripts/music_manager.gd` for visibility pause) — do not spread without justification
 
 If correctness is unclear, the code MUST be rejected and re-prompted with more context rather than accepted "to see if it works."
 
@@ -80,9 +93,9 @@ If correctness is unclear, the code MUST be rejected and re-prompted with more c
 
 LLM-generated code MUST:
 
-- Respect the project's existing scene/script structure (see each project's own AGENTS.md for its specific folder layout)
+- Respect the project's scene/script structure (see **Part II** of this file)
 - Not introduce circular dependencies between Autoloads
-- Not bypass the project's data layer — e.g. reaching into another scene's internal nodes via fragile `get_node("../../X")` paths instead of using signals, exported references, or unique names (`%Node`)
+- Not bypass the data layer — e.g. reaching into another scene's internal nodes via fragile `get_node("../../X")` paths instead of using signals, exported references, or unique names (`%Node`)
 - Not introduce unnecessary new Autoloads when a local node or a passed reference would do
 - Not duplicate logic that already exists as a component/resource elsewhere in the project
 
@@ -96,9 +109,12 @@ LLM-generated code MUST NOT:
 
 - Add Godot Asset Library plugins/addons without explicit justification (what it solves, why hand-rolling it isn't simpler)
 - Upgrade the Godot minor/major version, or bump addon versions, on its own initiative
-- Introduce unmaintained or abandoned addons (check last-updated date before suggesting one)
+- Introduce unmaintained or abandoned addons
+- Propose GitHub Actions, CI pipelines, or pre-commit hooks unless explicitly requested
 
 All new dependencies require my explicit approval before being added to `addons/` or `project.godot`.
+
+The only addon in this project is **Dialogue Manager 3.10.0**. Do not edit `addons/dialogue_manager/` except for approved upgrades.
 
 ---
 
@@ -106,11 +122,11 @@ All new dependencies require my explicit approval before being added to `addons/
 
 Generated code MUST:
 
-- Be readable and maintainable — favor clarity over cleverness, this is GDScript, not a code-golf exercise
+- Be readable and maintainable — favor clarity over cleverness
 - Use descriptive naming (`snake_case` functions/variables, `PascalCase` classes/nodes, `CONSTANT_CASE` constants)
 - Use static typing wherever possible (`var health: int`, `func heal(amount: int) -> void:`)
 - Avoid dead code and unused imports/preloads
-- Follow whatever formatting the project already uses (consistent indentation, consistent comment language within a file)
+- Follow project naming conventions (Part II §D): Spanish for `GameState` gameplay API, English for system scripts
 
 Generated code MUST NOT:
 
@@ -130,7 +146,7 @@ LLM-generated code MUST:
 - Avoid N+1-style patterns (e.g. looping over all nodes in a group every frame when a signal-based approach would do)
 - Avoid unnecessary heavy lookups in hot paths (`get_node()` with long paths called every frame instead of cached `@onready` references)
 
-Performance-sensitive systems (large TileMaps, many simultaneous AI agents, particle-heavy effects) SHOULD be profiled in the Godot profiler if a slowdown is suspected, not guessed at.
+This project runs at **20 FPS** with GL Compatibility on Web — profile in the Godot profiler if a slowdown is suspected, not guessed at.
 
 ---
 
@@ -140,20 +156,22 @@ For any non-trivial LLM-assisted change (multi-file Agent/Composer edits, anythi
 
 - Note in a commit message that the change was LLM-assisted
 - Keep the prompt for non-trivial generations if it required real back-and-forth, in case the same bug pattern shows up again
-- Briefly note how it was validated (played through manually, checked X scene in editor, etc.)
+- Briefly note how it was validated (played through manually, checked X scene in editor, exported web build, etc.)
 
-This is for my own future debugging, not for external audit — but skipping it is how "why did I write this" debt builds up.
+This is for my own future debugging — skipping it is how "why did I write this" debt builds up.
 
 ---
 
-# 10. Local Enforcement (no CI)
+# 10. Local Enforcement (no CI/CD)
 
-There is no CI pipeline for most of these solo projects. In its place:
+There is **no CI/CD pipeline**. Validation is entirely manual:
 
-- Before considering a change "done," open the project in the Godot editor and actually run the affected scene(s) — a script with no syntax errors is not the same as a script that works.
-- Check the Godot **Output** and **Debugger** panels for new warnings/errors after any Cursor Agent change, not just the scene you were focused on — multi-file edits can silently break an unrelated scene.
-- If a project later adds CI (e.g. headless Godot export checks, GUT tests in GitHub Actions), that project's own AGENTS.md should document it — this baseline assumes none exists.
-- No bypassing whatever local checks *do* exist (linter, `gdformat`, export validation) just because no one else will see the diff.
+1. Open the project in Godot and run the affected scene(s) — a script with no syntax errors is not the same as a script that works. Boot from F5 or `loading_screen.tscn`, not isolated `world.scn`.
+2. Check the Godot **Output** and **Debugger** panels for new warnings/errors after any Agent change — multi-file edits can silently break unrelated scenes.
+3. Run the **smoke test** (Part II §G) for gameplay changes.
+4. For changes that must reach web users: export Web → `./tools/patch_web_build.sh` → test in browser **before** committing `web_build/`.
+
+Do not bypass whatever local checks exist (linter, `gdformat`) just because no one else will see the diff.
 
 ---
 
@@ -180,3 +198,192 @@ LLM-generated code is acceptable only when it:
 - Maintains system integrity (doesn't quietly break what already worked)
 - Does not introduce technical debt I won't recognize in three months
 - Meets or exceeds what I'd write by hand, given the same time
+
+---
+
+# Part II — Maizena Project Guide
+
+## A. Scene Boot Flow
+
+Runtime boot sequence:
+
+```
+loading_screen.tscn  →  main_scene.tscn  →  world.scn + player + UI
+```
+
+- `run/main_scene` in `project.godot` = `res://scenes/loading_screen.tscn`
+- `display/window/main_scene` = `world.scn` — editor preview only, **not** runtime boot
+- **LLM rule:** Always test from F5 or `loading_screen.tscn`. Do not run `world.scn` in isolation — it lacks nodes from `main_scene`.
+
+---
+
+## B. Autoload Contract
+
+| Autoload | File | Persists | Responsibility |
+|----------|------|----------|----------------|
+| `GameState` | `autoload/game_state.gd` | No (session) | Quest flags, inventory, NPC talk counts, minigame launcher |
+| `WorldState` | `autoload/world_state.gd` | `user://world_state.json` | World time, decay, accumulation, visit timestamps |
+| `MaizenaMeta` | `autoload/maizena_meta.gd` | `user://maizena_meta.json` | Eras, song play log, welcome flag |
+| `DialogueController` | `autoload/dialogue_controller.gd` | No | Input lock during dialogue |
+| `HongosSpawner` | `autoload/hongos_spawner.gd` | No | Quest mushroom spawn |
+| `CordobaWeather` | `autoload/cordoba_weather.gd` | No | Open-Meteo API (no API key) |
+| `ViewportLayout` | `autoload/viewport_layout.gd` | No | Responsive UI/camera scaling |
+| `WorldMetrics` | `autoload/world_metrics.gd` | `user://metrics_client_id` | Optional anonymous telemetry |
+| `DialogueManager` | addon | — | Dialogue Manager runtime |
+
+**LLM rules:**
+- Do not move quest flags from `GameState` to persisted autoloads without explicit approval
+- Do not create new autoloads for scene-local state
+- Dialogue mutations must call **existing** autoload methods (`do GameState.buscar_comida()`), not invented APIs
+- Session state (`GameState`) vs persistent state (`WorldState`, `MaizenaMeta`) — keep the boundary
+
+---
+
+## C. World Systems (embedded in `world.scn`)
+
+Nodes managed by `tools/merge_world_systems.gd`:
+
+- `CanvasModulate` + `TimeOfDaySystem` (`scripts/time_day_system.gd` — the only project `class_name`)
+- `WeatherVisualSystem`, `ResidueSystem`, `WorldAutonomySystem`, `NpcPresenceSystem`
+- `InteractiveObjects/` (`scenes/interactive_objects/` — NPCs and signs)
+
+**LLM rule:** After editing the tilemap in `world.scn`, run the merge CLI tool. Do not manually rearrange system nodes without understanding the tool.
+
+---
+
+## D. Coding Conventions
+
+**Naming (mixed, intentional):**
+- Gameplay/quest API in **Spanish**: `buscar_comida()`, `completar_comida()`, `quest_hambre_active`
+- System scripts in **English**: `get_presence_multiplier()`, `_apply_viewport_layout()`
+- New public `GameState` methods → Spanish; new system scripts → English
+
+**Base classes:**
+- NPCs/signs extend `scripts/interactive_object.gd` (StaticBody2D + dialogue + schedules)
+- Exception: `scenes/interactive_objects/hongos.gd` (Area2D pickup)
+- Minigame: `scripts/bollo_fight_minigame.gd` — `enum UiPhase` + signal `finished(victory: bool)`
+
+**Existing groups (do not invent):** `player`, `dialogue`, `time_system`, `world_npc`, `settings_menu`, `welcome_popup`, `music_manager`, `weather_visual_system`
+
+**Responsive UI:** New UI must use `ViewportLayout` (`effective_ui_scale()`, signal `layout_changed`) — see `scripts/song_banner.gd` as reference.
+
+**Input gating:** Respect `DialogueController.input_locked`, `GameState.bollo_training_active`, and pause state from settings/welcome popups.
+
+**Comments:** Spanish for gameplay intent; English acceptable in system headers. Stay consistent within a file.
+
+---
+
+## E. Dialogue (first-class code)
+
+- Dialogue files live in `dialogues/` (`.dialogue` format)
+- Custom balloon: `dialogue balloon/balloon.tscn`
+- Quest changes go through `.dialogue` mutations + autoload methods — do not duplicate quest logic in NPC scripts
+- Do not edit `addons/dialogue_manager/` except for approved upgrades
+
+Example mutation pattern:
+
+```
+do GameState.buscar_comida()
+do HongosSpawner.spawn_hongos()
+```
+
+---
+
+## F. Folder Layout
+
+```
+autoload/     → project singletons
+scripts/      → gameplay/UI (not autoload)
+scenes/       → scenes + interactive_objects/ + world_resources/
+dialogues/    → .dialogue resources
+assets/       → art/audio (soundtrack/, battle/, world_props/, etc.)
+tools/        → editor CLI (merge, export, web patch)
+web_build/    → Netlify deploy artifact (regenerate via export; see §J)
+netlify/      → serverless functions (metrics); netlify.toml = COOP/COEP + cache headers
+addons/       → dialogue_manager only
+```
+
+---
+
+## G. Manual Validation (no CI)
+
+**Base smoke test** — run after gameplay changes:
+
+1. Start game; confirm player moves with keyboard/tap
+2. Talk to `el_viejo`, accept food quest
+3. Confirm mushroom spawns at a valid position
+4. Pick up mushroom; confirm quest state changes
+5. Return to `el_viejo`; complete quest without errors
+6. Open/close Settings; confirm volume and input blocking
+
+**Extend as needed** for the area touched: bollo minigame, Noticias popup, music/web visibility pause, weather/residue systems.
+
+Reject any change that breaks scenes or signals that previously worked.
+
+---
+
+## H. Dependencies and Limits
+
+- **Only addon:** Dialogue Manager 3.10.0 — no new plugins without approval
+- **External services:** Open-Meteo (`CordobaWeather`), optional metrics via Netlify function (`netlify/functions/`) — no secrets in repo
+- **No GUT** — manual testing only
+- **No CI/CD** — do not propose GitHub Actions or automated pipelines unless explicitly requested
+
+---
+
+## I. Reference Files for LLM
+
+When implementing a feature, read these first:
+
+| Task | Reference file |
+|------|----------------|
+| Quest/inventory | `autoload/game_state.gd` |
+| Interactive NPC | `scripts/interactive_object.gd` |
+| Persistence | `autoload/world_state.gd`, `autoload/maizena_meta.gd` |
+| Minigame | `scripts/bollo_fight_minigame.gd` |
+| Player/input | `scripts/player.gd` |
+| Music | `scripts/music_manager.gd` |
+| Responsive UI | `autoload/viewport_layout.gd` |
+| World time/weather | `scripts/time_day_system.gd`, `autoload/cordoba_weather.gd` |
+
+---
+
+## J. Netlify Deploy
+
+Production flow:
+
+```
+1. Develop and validate in Godot (F5 / loading_screen.tscn)
+2. Export Web (preset in export_presets.cfg) → web_build/
+3. ./tools/patch_web_build.sh
+4. Test web_build/ locally or via Netlify preview
+5. Commit + push web_build/  →  Netlify deploys automatically
+```
+
+**LLM rules for `web_build/`:**
+- Do **not** hand-edit `index.pck`, `.wasm`, `.js`, or other export binaries
+- Do **not** commit `web_build/` without running the patch script after export
+- Source changes (`.gd`, `.tscn`, `assets/`, `dialogues/`) are **not live** until re-exported and pushed
+- COOP/COEP and cache headers live in `netlify.toml` — do not duplicate without reason
+
+**Re-export when:** Any change in `scripts/`, `scenes/`, `autoload/`, `dialogues/`, or `assets/` must reach web users.
+
+---
+
+## K. LLM Do / Don't Summary
+
+**Do:**
+- Read reference files (§I) before implementing
+- Use existing groups, signals, and autoload APIs
+- Extend `interactive_object.gd` for new NPCs/signs
+- Use `ViewportLayout` for new UI
+- Run smoke test after gameplay changes
+- Re-export web build when shipping to production
+
+**Don't:**
+- Invent autoloads, groups, or signals
+- Edit `addons/dialogue_manager/` or `web_build/` binaries
+- Run `world.scn` in isolation for testing
+- Move session quest state into persisted JSON autoloads
+- Propose CI/CD, coverage thresholds, or new addons without approval
+- Duplicate quest logic outside `.dialogue` + `GameState`
