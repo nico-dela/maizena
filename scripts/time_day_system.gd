@@ -80,16 +80,21 @@ func _sync_current_time() -> void:
 
 
 func update_time_color() -> void:
-	if _news_popup_visible():
-		return
+	_sync_time_and_emit()
+	_apply_canvas_tint()
 
+
+func _sync_time_and_emit() -> void:
 	_sync_current_time()
-
 	var hour_changed := absf(current_time - _last_time_signal_hour) >= 1.0 / 60.0
 	if hour_changed:
 		_last_time_signal_hour = current_time
 		emit_signal("time_updated", current_time, is_daytime())
 
+
+func _apply_canvas_tint() -> void:
+	if _news_popup_visible():
+		return
 	var color := _compute_time_color()
 	if canvas_modulate:
 		if world_state:

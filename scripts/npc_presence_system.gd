@@ -9,11 +9,20 @@ func _ready() -> void:
 		return
 	if not time_system.time_updated.is_connected(_on_time_updated):
 		time_system.time_updated.connect(_on_time_updated)
-	call_deferred("_ensure_presence", time_system.current_time)
+	_ensure_presence(time_system.current_time)
+	await get_tree().process_frame
+	_ensure_presence(time_system.current_time)
 
 
 func _on_time_updated(hour: float, _is_day: bool) -> void:
 	call_deferred("_ensure_presence", hour)
+
+
+func refresh_presence() -> void:
+	var time_system := get_tree().get_first_node_in_group("time_system")
+	if time_system == null:
+		return
+	call_deferred("_ensure_presence", time_system.current_time)
 
 
 func _ensure_presence(hour: float) -> void:

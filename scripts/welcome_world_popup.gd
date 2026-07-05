@@ -513,6 +513,7 @@ func _on_close_pressed() -> void:
 		MaizenaMeta.mark_welcome_seen()
 	_mark_seen_on_close = false
 	get_tree().paused = false
+	_notify_presence_refresh()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -588,14 +589,31 @@ func _saturation_message(things: int) -> String:
 	return "Saturación baja: todavía hay aire entre las cosas."
 
 
+func _get_interactive_objects() -> Node:
+	var root := get_tree().current_scene
+	if root == null:
+		return null
+	var world := root.get_node_or_null("NewWorld")
+	if world == null:
+		return null
+	return world.get_node_or_null("InteractiveObjects")
+
+
+func _notify_presence_refresh() -> void:
+	var root := get_tree().current_scene
+	if root == null:
+		return
+	var world := root.get_node_or_null("NewWorld")
+	if world == null:
+		return
+	var presence := world.get_node_or_null("NpcPresenceSystem")
+	if presence != null and presence.has_method("refresh_presence"):
+		presence.call("refresh_presence")
+
+
 func _get_visible_npc_text() -> String:
 	var names: Array[String] = []
-	var world := get_tree().root.get_node_or_null("MainScene/World")
-	if world == null:
-		world = get_tree().get_first_node_in_group("world")
-	var objects: Node = null
-	if world != null:
-		objects = world.get_node_or_null("InteractiveObjects")
+	var objects := _get_interactive_objects()
 
 	if objects != null:
 		for child in objects.get_children():

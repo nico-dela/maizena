@@ -41,7 +41,8 @@ func _ready():
 		return
 
 	await get_tree().process_frame
-	time_system = get_tree().get_first_node_in_group("time_system")
+	time_system = _resolve_time_system()
+	rng.randomize()
 
 	if time_system:
 		time_system.time_updated.connect(_on_time_updated)
@@ -49,10 +50,8 @@ func _ready():
 			add_to_group("world_npc")
 		_evaluate_appearance(time_system.current_time)
 	else:
-		print("ERROR: No se encontró TimeOfDaySystem en ", name)
+		push_warning("No se encontró nodo en grupo time_system: %s" % name)
 		set_active(true)
-
-	rng.randomize()
 
 
 func _on_dialogue_ended(resource: DialogueResource) -> void:
@@ -78,7 +77,7 @@ func _evaluate_appearance(current_hour: float):
 		return
 
 	var schedule_key := _schedule_key(schedule)
-	if schedule_key == _active_schedule_key:
+	if schedule_key == _active_schedule_key and is_active:
 		return
 
 	_active_schedule_key = schedule_key
@@ -89,6 +88,18 @@ func _evaluate_appearance(current_hour: float):
 		presence_multiplier = world_state.get_presence_multiplier()
 	var adjusted_prob := clampf(prob * presence_multiplier, 0.0, 1.0)
 	set_active(rng.randf() < adjusted_prob)
+
+
+func _resolve_time_system() -> TimeOfDaySystem:
+	var ts := get_tree().get_first_node_in_group("time_system") as TimeOfDaySystem
+	if ts != null:
+		return ts
+	var ancestor: Node = self
+	while ancestor != null:
+		if ancestor.is_in_group("time_system"):
+			return ancestor as TimeOfDaySystem
+		ancestor = ancestor.get_parent()
+	return null
 
 
 func _find_active_schedule(current_hour: float) -> Dictionary:
