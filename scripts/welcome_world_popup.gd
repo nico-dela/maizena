@@ -43,7 +43,7 @@ var _saturation_footer: Label
 var _npc_val: Label
 
 const NPC_SKIP_PREFIXES := ["cartel_"]
-const NPC_SKIP_NAMES := ["laboratorio", "templo_sapos", "orbe_electrico", "piedra_grieta", "bicicleta"]
+const NPC_SKIP_NAMES := ["laboratorio", "templo_sapos", "piedra_grieta", "bicicleta"]
 const NPC_DISPLAY_NAMES := {
 	"bollo": "Bollo",
 	"boji": "Boji",
@@ -55,6 +55,7 @@ const NPC_DISPLAY_NAMES := {
 	"kaeru": "Kaeru",
 	"ranancio": "Ranancio",
 	"el_viejo": "El Viejo",
+	"orbe_electrico": "Orbe",
 }
 
 var _mark_seen_on_close := false
