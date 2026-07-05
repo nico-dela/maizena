@@ -168,7 +168,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_b8idu")
 }],
-"loop": true,
+"loop": 1,
 "name": &"back_idle",
 "speed": 5.0
 }, {
@@ -191,7 +191,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_x23w6")
 }],
-"loop": true,
+"loop": 1,
 "name": &"back_walk",
 "speed": 5.0
 }, {
@@ -214,7 +214,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_0yvql")
 }],
-"loop": true,
+"loop": 1,
 "name": &"front_idle",
 "speed": 5.0
 }, {
@@ -237,7 +237,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_h4vjc")
 }],
-"loop": true,
+"loop": 1,
 "name": &"front_walk",
 "speed": 5.0
 }, {
@@ -260,7 +260,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_h2cj7")
 }],
-"loop": true,
+"loop": 1,
 "name": &"side_idle",
 "speed": 5.0
 }, {
@@ -283,7 +283,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_n84yw")
 }],
-"loop": true,
+"loop": 1,
 "name": &"side_walk",
 "speed": 5.0
 }]
@@ -320,5 +320,5 @@ position = Vector2(0, -2)
 scale = Vector2(0.61, 0.61)
 shape = SubResource("CircleShape2D_x6vw2")
 
-[connection signal="body_entered" from="detection_area" to="." method="_on_detection_area_body_entered"]
 [connection signal="area_entered" from="detection_area" to="." method="_on_detection_area_area_entered"]
+[connection signal="body_entered" from="detection_area" to="." method="_on_detection_area_body_entered"]

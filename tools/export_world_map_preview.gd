@@ -1,6 +1,6 @@
 extends SceneTree
 
-const WORLD_SCENE := "res://scenes/world.scn"
+const WORLD_SCENE := "res://scenes/new_world.tscn"
 const OUTPUT_PATH := "res://assets/ui/world_map_preview.png"
 const PREVIEW_SIZE := 512
 const FIT_MARGIN := 1.12
@@ -20,9 +20,11 @@ func _initialize() -> void:
 	var world := packed.instantiate()
 	_prepare_world(world)
 
-	var bounds := _collect_tilemap_bounds(world)
+	var boceto := world.get_node_or_null("BOCETO")
+	var bounds_root: Node = boceto if boceto != null else world
+	var bounds := _collect_tilemap_bounds(bounds_root)
 	if bounds.size.x <= 0.0 or bounds.size.y <= 0.0:
-		push_error("No se encontraron tiles en el mapa")
+		push_error("No se encontraron tiles en %s" % WORLD_SCENE)
 		world.free()
 		quit(1)
 		return
@@ -73,7 +75,7 @@ func _capture() -> void:
 		quit(1)
 		return
 
-	print("OK preview=%s size=%s" % [OUTPUT_PATH, str(img.get_size())])
+	print("OK preview=%s size=%s source=%s" % [OUTPUT_PATH, str(img.get_size()), WORLD_SCENE])
 	quit()
 
 
@@ -82,6 +84,10 @@ func _prepare_world(node: Node) -> void:
 		if child is TileMapLayer:
 			(child as CanvasItem).visible = true
 			child.process_mode = Node.PROCESS_MODE_DISABLED
+		elif child.name == "BOCETO":
+			(child as CanvasItem).visible = true
+			child.process_mode = Node.PROCESS_MODE_DISABLED
+			_prepare_world(child)
 		else:
 			if child is CanvasItem:
 				(child as CanvasItem).visible = false
