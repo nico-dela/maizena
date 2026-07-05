@@ -4,14 +4,15 @@ signal finished(victory: bool)
 
 enum UiPhase { TUTORIAL, PLAYER_TURN, ENEMY_TURN, CONFIRM_EXIT, ENDED }
 
-const MAX_HP := 100
-const BLOCK_DAMAGE_FACTOR := 0.35
-const REST_HEAL := 12
-const PUNCH_MISS_CHANCE := 0.18
-const KICK_MISS_CHANCE := 0.28
+const PLAYER_MAX_HP := 100
+const ENEMY_MAX_HP := 100
+const BLOCK_DAMAGE_FACTOR := 0.42
+const REST_HEAL := 10
+const PUNCH_MISS_CHANCE := 0.20
+const KICK_MISS_CHANCE := 0.30
 const CRIT_CHANCE := 0.12
 const CRIT_MULTIPLIER := 1.5
-const ENEMY_MISS_CHANCE := 0.14
+const ENEMY_MISS_CHANCE := 0.10
 const DISTRACTED_MISS_BONUS := 0.22
 
 const MOVES: Array[Dictionary] = [
@@ -22,12 +23,12 @@ const MOVES: Array[Dictionary] = [
 ]
 
 const ENEMY_MOVES: Array[Dictionary] = [
-	{"kind": "attack", "name": "Golpe", "damage_min": 8, "damage_max": 10, "weight": 4},
-	{"kind": "attack", "name": "Patada", "damage_min": 12, "damage_max": 14, "weight": 3},
-	{"kind": "attack", "name": "Embestida", "damage_min": 6, "damage_max": 8, "weight": 2},
-	{"kind": "heavy", "name": "Golpe fuerte", "damage_min": 16, "damage_max": 20, "weight": 2},
+	{"kind": "attack", "name": "Golpe", "damage_min": 9, "damage_max": 12, "weight": 4},
+	{"kind": "attack", "name": "Patada", "damage_min": 14, "damage_max": 17, "weight": 4},
+	{"kind": "attack", "name": "Embestida", "damage_min": 8, "damage_max": 11, "weight": 2},
+	{"kind": "heavy", "name": "Golpe fuerte", "damage_min": 18, "damage_max": 24, "weight": 3},
 	{"kind": "dodge", "name": "Esquiva", "weight": 2},
-	{"kind": "trip", "name": "Tropiezo", "self_damage": 5, "weight": 2},
+	{"kind": "trip", "name": "Tropiezo", "self_damage": 5, "weight": 1},
 	{"kind": "taunt", "name": "Provocación", "weight": 2},
 ]
 
@@ -36,6 +37,8 @@ const PLAYER_ACTION_PAUSE_SEC := 0.75
 const ENEMY_TURN_PAUSE_SEC := 1.1
 
 @onready var battle_content: Control = $Root/BattleContent
+@onready var battle_field: Control = $Root/BattleContent/BattleField
+@onready var action_panel: Panel = $Root/BattleContent/ActionPanel
 @onready var player_sprite: CanvasItem = $Root/BattleContent/BattleField/PlayerSprite
 @onready var enemy_sprite: CanvasItem = $Root/BattleContent/BattleField/EnemySprite
 @onready var player_hp_bar: ProgressBar = $Root/BattleContent/BattleField/PlayerHUD/HPBar
@@ -59,8 +62,8 @@ const ENEMY_TURN_PAUSE_SEC := 1.1
 
 var move_buttons: Array[Button] = []
 var ui_phase := UiPhase.TUTORIAL
-var player_hp := MAX_HP
-var enemy_hp := MAX_HP
+var player_hp := PLAYER_MAX_HP
+var enemy_hp := ENEMY_MAX_HP
 var player_blocking := false
 var bollo_dodging := false
 var player_distracted := false
@@ -72,8 +75,8 @@ var _focused_move_index := 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	player_hp_bar.max_value = MAX_HP
-	enemy_hp_bar.max_value = MAX_HP
+	player_hp_bar.max_value = PLAYER_MAX_HP
+	enemy_hp_bar.max_value = ENEMY_MAX_HP
 	_collect_move_buttons()
 	_bind_actions()
 	_update_hp_bars()
@@ -158,9 +161,30 @@ func _apply_viewport_layout() -> void:
 	battle_content.offset_top = ViewportLayout.screen_margin_top(maxf(52.0, 40.0 * s))
 	move_grid.columns = 2
 
-	var battle_s := s if not portrait else minf(s * 1.08, 2.5)
-	battle_content.scale = Vector2(battle_s, battle_s)
-	call_deferred("_update_battle_pivot", portrait)
+	var field_anchor_y := 0.38 if portrait else 0.5
+	battle_field.anchor_left = 0.5
+	battle_field.anchor_top = field_anchor_y
+	battle_field.anchor_right = 0.5
+	battle_field.anchor_bottom = field_anchor_y
+	battle_field.offset_left = -400.0
+	battle_field.offset_top = -220.0
+	battle_field.offset_right = 400.0
+	battle_field.offset_bottom = 80.0
+	battle_field.scale = Vector2.ONE
+
+	var move_btn_h := maxf(44.0, 50.0 * s)
+	var grid_h := move_btn_h * 2.0 + 8.0
+	var header_h := 64.0 * s
+	var bottom := ViewportLayout.screen_margin_bottom(12.0)
+	var panel_h := header_h + grid_h + bottom
+	var side_margin := 12.0
+
+	action_panel.offset_left = side_margin
+	action_panel.offset_right = -side_margin
+	action_panel.offset_top = -panel_h
+	action_panel.offset_bottom = -bottom
+	move_grid.offset_top = -(grid_h + 8.0)
+	move_grid.offset_bottom = -8.0
 
 	turn_banner.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
 	message_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
@@ -169,11 +193,7 @@ func _apply_viewport_layout() -> void:
 	enemy_hp_value.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(14))
 	for btn in move_buttons:
 		btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
-		btn.custom_minimum_size.y = maxf(56.0, 50.0 * s)
-
-
-func _update_battle_pivot(_portrait: bool = ViewportLayout.is_portrait) -> void:
-	battle_content.pivot_offset = battle_content.size * 0.5
+		btn.custom_minimum_size.y = move_btn_h
 
 
 func _fit_tutorial_instructions() -> void:
@@ -375,8 +395,8 @@ func _on_start_pressed() -> void:
 	_begin_battle()
 
 func _begin_battle() -> void:
-	player_hp = MAX_HP
-	enemy_hp = MAX_HP
+	player_hp = PLAYER_MAX_HP
+	enemy_hp = ENEMY_MAX_HP
 	player_blocking = false
 	bollo_dodging = false
 	player_distracted = false
@@ -408,8 +428,8 @@ func _resolve_player_move(move: Dictionary) -> void:
 		message_label.text = "¡Sanjin se prepara para bloquear!"
 	elif move["id"] == "rest":
 		rest_used = true
-		var healed: int = mini(move.get("heal", REST_HEAL), MAX_HP - player_hp)
-		player_hp = mini(player_hp + healed, MAX_HP)
+		var healed: int = mini(move.get("heal", REST_HEAL), PLAYER_MAX_HP - player_hp)
+		player_hp = mini(player_hp + healed, PLAYER_MAX_HP)
 		message_label.text = "¡Sanjin descansó! +%d HP." % healed
 		_update_hp_bars(true, false)
 	else:
@@ -544,8 +564,8 @@ func _end_fight(victory: bool, msg: String) -> void:
 	queue_free()
 
 func _update_hp_bars(animate_player: bool = false, animate_enemy: bool = false) -> void:
-	player_hp_value.text = "%d/%d" % [player_hp, MAX_HP]
-	enemy_hp_value.text = "%d/%d" % [enemy_hp, MAX_HP]
+	player_hp_value.text = "%d/%d" % [player_hp, PLAYER_MAX_HP]
+	enemy_hp_value.text = "%d/%d" % [enemy_hp, ENEMY_MAX_HP]
 	if animate_player:
 		_tween_hp_bar(player_hp_bar, player_hp)
 	else:
@@ -554,15 +574,15 @@ func _update_hp_bars(animate_player: bool = false, animate_enemy: bool = false) 
 		_tween_hp_bar(enemy_hp_bar, enemy_hp)
 	else:
 		enemy_hp_bar.value = enemy_hp
-	_apply_hp_bar_color(player_hp_bar, player_hp)
-	_apply_hp_bar_color(enemy_hp_bar, enemy_hp)
+	_apply_hp_bar_color(player_hp_bar, player_hp, PLAYER_MAX_HP)
+	_apply_hp_bar_color(enemy_hp_bar, enemy_hp, ENEMY_MAX_HP)
 
 func _tween_hp_bar(bar: ProgressBar, target_hp: int) -> void:
 	var tween := create_tween()
 	tween.tween_property(bar, "value", float(target_hp), 0.45)
 
-func _apply_hp_bar_color(bar: ProgressBar, hp: int) -> void:
-	var ratio := float(hp) / float(MAX_HP)
+func _apply_hp_bar_color(bar: ProgressBar, hp: int, max_hp: int) -> void:
+	var ratio := float(hp) / float(max_hp)
 	var fill := StyleBoxFlat.new()
 	fill.corner_radius_top_left = 2
 	fill.corner_radius_top_right = 2

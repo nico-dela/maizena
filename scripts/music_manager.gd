@@ -12,7 +12,8 @@ enum SONGS {
 	REPOLLO,
 	RESAKA,
 	TODO,
-	MEDIAS
+	MEDIAS,
+	MATAR
 }
 
 const TRACKS := {
@@ -23,7 +24,8 @@ const TRACKS := {
 	SONGS.REPOLLO: preload("res://assets/soundtrack/Repollo_Morado.ogg"),
 	SONGS.RESAKA: preload("res://assets/soundtrack/Resaka.ogg"),
 	SONGS.TODO: preload("res://assets/soundtrack/Todo_lo_que_necesito.ogg"),
-	SONGS.MEDIAS: preload("res://assets/soundtrack/Tus_medias.ogg")
+	SONGS.MEDIAS: preload("res://assets/soundtrack/Tus_medias.ogg"),
+	SONGS.MATAR: preload("res://assets/soundtrack/Matar_al_sol.ogg")
 }
 
 const SONG_TITLES := {
@@ -34,7 +36,8 @@ const SONG_TITLES := {
 	SONGS.REPOLLO: "Repollo Morado",
 	SONGS.RESAKA: "Resaka",
 	SONGS.TODO: "Todo lo que necesito",
-	SONGS.MEDIAS: "Tus medias"
+	SONGS.MEDIAS: "Tus medias",
+	SONGS.MATAR: "Matar al sol"
 }
 
 var playlist: Array = []
