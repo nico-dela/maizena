@@ -17,7 +17,7 @@ layout_mode = 0
 mouse_filter = 2
 
 [node name="MapStack" type="Control" parent="Frame"]
-custom_minimum_size = Vector2(132, 132)
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 mouse_filter = 2
 
@@ -33,7 +33,7 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Frame/MapStack/ViewportBox"]
 handle_input_locally = false
-size = Vector2i(132, 132)
+size = Vector2i(200, 200)
 render_target_update_mode = 4
 
 [node name="PlayerDot" type="ColorRect" parent="Frame/MapStack"]

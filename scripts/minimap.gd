@@ -1,10 +1,11 @@
 extends Control
 
-const BASE_MAP_SIZE := 132.0
 const SCREEN_MARGIN := 14.0
 const FIT_MARGIN := 1.12
 const WATER_LAYER_AREA_RATIO := 0.82
-const BASE_DOT_SIZE := 6.0
+const BASE_DOT_SIZE := 7.0
+const MIN_MAP_SIDE := 180.0
+const MAX_MAP_SIDE := 360.0
 const BOCETO_NAME := "BOCETO"
 const NEW_WORLD_NAME := "NewWorld"
 
@@ -127,11 +128,11 @@ func _apply_layout() -> void:
 	var layout := ViewportLayout.visible_layout_size()
 	var margin_right := ViewportLayout.screen_margin_right(SCREEN_MARGIN)
 	var margin_bottom := ViewportLayout.screen_margin_bottom(SCREEN_MARGIN)
-	var map_side := maxf(BASE_MAP_SIZE * s, 96.0 * s)
-	var frame_pad := int(round(6.0 * s))
+	var map_side := _compute_map_side(s, layout)
+	var frame_pad := int(round(8.0 * s))
 
 	_map_stack.custom_minimum_size = Vector2(map_side, map_side)
-	var dot_size := clampf(BASE_DOT_SIZE * s, 4.0, 10.0)
+	var dot_size := clampf(BASE_DOT_SIZE * s, 6.0, 14.0)
 	_player_dot.custom_minimum_size = Vector2.ZERO
 	_player_dot.size = Vector2(dot_size, dot_size)
 
@@ -169,6 +170,32 @@ func _apply_layout() -> void:
 
 	if _map_ready:
 		_configure_camera()
+
+
+func _compute_map_side(s: float, layout: Vector2) -> float:
+	var portrait := ViewportLayout.is_portrait
+	var layout_min := minf(layout.x, layout.y)
+	var narrow := layout_min < 760.0
+
+	if portrait:
+		return clampf(
+			layout.x * 0.46,
+			MIN_MAP_SIDE * s,
+			minf(layout.x * 0.58, MAX_MAP_SIDE * s)
+		)
+
+	if narrow:
+		return clampf(
+			maxf(layout.y * 0.36, layout.x * 0.28),
+			MIN_MAP_SIDE * s,
+			minf(minf(layout.x, layout.y) * 0.42, MAX_MAP_SIDE * s)
+		)
+
+	return clampf(
+		layout.y * 0.24,
+		190.0 * s,
+		280.0 * s
+	)
 
 
 func _style_frame() -> void:
