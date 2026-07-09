@@ -69,19 +69,33 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="MuteButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow" unique_id=375551601]
-custom_minimum_size = Vector2(52, 0)
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_cr101")
-theme_override_font_sizes/font_size = 18
-text = "Sil."
-
 [node name="VolumeHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow" unique_id=375551595]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -40.0
 max_value = 0.0
+
+[node name="MuteRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551602]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="MuteLabel" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551603]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 22
+text = "Silenciar audio"
+horizontal_alignment = 1
+
+[node name="MuteToggle" type="CheckButton" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551604]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 22
+button_pressed = false
+text = ""
+flat = true
 
 [node name="MusicRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551597]
 layout_mode = 2
@@ -93,15 +107,17 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_cr101")
 theme_override_font_sizes/font_size = 22
-text = "Música de fondo"
-horizontal_alignment = 2
+text = "Reproducir en segundo plano"
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="MusicToggle" type="CheckButton" parent="Menu/CenterContainer/Panel/Margin/VBox/MusicRow" unique_id=375551599]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_cr101")
 theme_override_font_sizes/font_size = 22
 button_pressed = false
-text = "Seguir sonando"
+text = ""
+flat = true
 
 [node name="Hint" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=2096876301]
 layout_mode = 2

@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" uid="uid://bm3511735icgx" path="res://scenes/interactive_objects/cartel_aldea.tscn" id="26_85sbw"]
 [ext_resource type="PackedScene" uid="uid://hsr2jst4mrr" path="res://scenes/interactive_objects/cartel_playa_sur.tscn" id="27_13e4m"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="28_time"]
+[ext_resource type="PackedScene" uid="uid://cs57utksr13oy" path="res://assets/tilesets/yati/mapa 09072026005313/boceto de mapa/MAPA MAIZENA 2.tmx" id="29_5jrns"]
 
 [node name="NewWorld" type="Node2D" unique_id=1636943568]
 script = ExtResource("28_time")
@@ -97,7 +98,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="bollo" parent="InteractiveObjects" unique_id=665304462 instance=ExtResource("9_pfsnn")]
 z_index = -1
-position = Vector2(-600, -328)
+position = Vector2(677, -154)
 spawn_schedules = Array[Dictionary]([{
 "end": 12.0,
 "probability": 0.65,
@@ -131,7 +132,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="silueto_1" parent="InteractiveObjects" unique_id=320360083 instance=ExtResource("11_5rb60")]
 z_index = -1
-position = Vector2(67, -1147)
+position = Vector2(-19, -604)
 spawn_schedules = Array[Dictionary]([{
 "end": 6.5,
 "probability": 0.35,
@@ -148,7 +149,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="silueto_2" parent="InteractiveObjects" unique_id=1542832816 instance=ExtResource("12_br1hn")]
 z_index = -1
-position = Vector2(554, -1147)
+position = Vector2(377, -296)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.0,
 "probability": 0.35,
@@ -165,7 +166,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="michis" parent="InteractiveObjects" unique_id=1887856624 instance=ExtResource("13_kksiw")]
 z_index = -1
-position = Vector2(-253, -1059)
+position = Vector2(-85, -411)
 spawn_schedules = Array[Dictionary]([{
 "end": 8.5,
 "probability": 0.85,
@@ -182,7 +183,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="kaeru" parent="InteractiveObjects" unique_id=1471275273 instance=ExtResource("14_xkyxe")]
 z_index = -1
-position = Vector2(-905, -1006)
+position = Vector2(-803, -1022)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.5,
 "probability": 0.7,
@@ -203,7 +204,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="ranancio" parent="InteractiveObjects" unique_id=1376135273 instance=ExtResource("15_6v6tw")]
 z_index = -1
-position = Vector2(-709, -1132)
+position = Vector2(-603, -1254)
 spawn_schedules = Array[Dictionary]([{
 "end": 8.5,
 "probability": 0.95,
@@ -220,7 +221,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="el_viejo" parent="InteractiveObjects" unique_id=1293872949 instance=ExtResource("16_a7jku")]
 z_index = -1
-position = Vector2(139, 144)
+position = Vector2(674, -367)
 spawn_schedules = Array[Dictionary]([{
 "end": 9.5,
 "probability": 0.78,
@@ -240,13 +241,14 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="bicicleta" parent="InteractiveObjects" unique_id=1384308745 instance=ExtResource("17_rrags")]
+visible = false
 z_index = -1
-position = Vector2(-844, -36)
+position = Vector2(363, -419)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_bollo" parent="InteractiveObjects" unique_id=1162038245 instance=ExtResource("18_6pkd5")]
 z_index = -1
-position = Vector2(-403, -301)
+position = Vector2(639, -150)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_laboratorio" parent="InteractiveObjects" unique_id=971389305 instance=ExtResource("19_d3cav")]
@@ -271,7 +273,7 @@ spawn_schedules = Array[Dictionary]([])
 
 [node name="piedra_grieta" parent="InteractiveObjects" unique_id=723286548 instance=ExtResource("23_8pxje")]
 z_index = -1
-position = Vector2(628, -378)
+position = Vector2(119, 130)
 scale = Vector2(1.5, 1.5)
 spawn_schedules = Array[Dictionary]([])
 
@@ -289,18 +291,24 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="orbe_electrico" parent="InteractiveObjects" unique_id=382298321 instance=ExtResource("25_fwq8m")]
-position = Vector2(-219, -1087)
+position = Vector2(-58, -429)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_aldea" parent="InteractiveObjects" unique_id=1056807754 instance=ExtResource("26_85sbw")]
-position = Vector2(6, 82)
+position = Vector2(205, -393)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_playa_sur" parent="InteractiveObjects" unique_id=162991114 instance=ExtResource("27_13e4m")]
+visible = false
 z_index = -1
 position = Vector2(-232, 25)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="BOCETO" parent="." unique_id=1116437331 instance=ExtResource("1_flq5a")]
+visible = false
 z_index = -1
 position = Vector2(149, -383)
+
+[node name="MAPA MAIZENA 2" parent="." unique_id=2049794662 instance=ExtResource("29_5jrns")]
+z_index = -1
+position = Vector2(158, -431)

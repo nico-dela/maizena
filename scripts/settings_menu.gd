@@ -6,7 +6,6 @@ const FONT: FontFile = preload("res://assets/ui/PixelOperator8.ttf")
 const BASE_TITLE_FONT := 38
 const BASE_VOLUME_FONT := 28
 const BASE_MUSIC_FONT := 22
-const BASE_MUTE_FONT := 18
 const BASE_HINT_FONT := 14
 const BASE_CLOSE_FONT := 22
 const BASE_PANEL_WIDTH := 420.0
@@ -18,10 +17,12 @@ const BASE_PANEL_WIDTH := 420.0
 @onready var settings_button: Button = $Button
 @onready var close_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/CloseButton
 @onready var volume_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow
-@onready var mute_button: Button = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow/MuteButton
 @onready var volume_slider: HSlider = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow/VolumeHSlider
 @onready var title_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Titulo
 @onready var volume_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/VolumeLabel
+@onready var mute_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow
+@onready var mute_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/MuteLabel
+@onready var mute_toggle: CheckButton = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/MuteToggle
 @onready var music_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow
 @onready var music_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicLabel
 @onready var music_toggle: CheckButton = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicToggle
@@ -64,11 +65,12 @@ func _ready() -> void:
 	_master_muted = bool(settings.get("master_muted", false))
 	_loading_settings = false
 	volume_slider.value_changed.connect(_on_volume_changed)
-	mute_button.pressed.connect(_on_mute_pressed)
+	mute_toggle.toggled.connect(_on_mute_toggled)
+	_sync_mute_toggle()
 	_apply_master_audio()
 	_update_volume_label()
 
-	_style_mute_button()
+	_style_mute_toggle()
 	_style_music_toggle()
 	music_toggle.toggled.connect(_on_background_play_toggled)
 	call_deferred("_bind_background_toggle")
@@ -109,23 +111,21 @@ func _style_close_button() -> void:
 	close_btn.add_theme_font_override("font", FONT)
 
 
-func _style_mute_button() -> void:
-	var sb_n := StyleBoxFlat.new()
-	sb_n.bg_color = Color(0.1, 0.16, 0.24, 0.92)
-	sb_n.set_corner_radius_all(5)
-	sb_n.set_border_width_all(1)
-	sb_n.border_color = Color(0.42, 0.76, 0.94, 0.45)
-	var sb_h := sb_n.duplicate()
-	sb_h.bg_color = Color(0.14, 0.22, 0.32, 0.98)
-	mute_button.add_theme_stylebox_override("normal", sb_n)
-	mute_button.add_theme_stylebox_override("hover", sb_h)
-	mute_button.add_theme_stylebox_override("pressed", sb_h)
-	mute_button.add_theme_stylebox_override("focus", sb_n)
-	mute_button.add_theme_font_override("font", FONT)
-	mute_button.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
-	mute_button.add_theme_color_override("font_hover_color", Color(1, 1, 1, 1.0))
-	mute_button.focus_mode = Control.FOCUS_NONE
-	_update_mute_button_text()
+func _style_mute_toggle() -> void:
+	mute_label.add_theme_font_override("font", FONT)
+	mute_label.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
+	mute_toggle.text = ""
+	mute_toggle.flat = true
+	mute_toggle.add_theme_font_override("font", FONT)
+	mute_toggle.focus_mode = Control.FOCUS_NONE
+
+
+func _sync_mute_toggle() -> void:
+	if mute_toggle == null:
+		return
+	mute_toggle.set_block_signals(true)
+	mute_toggle.button_pressed = _master_muted
+	mute_toggle.set_block_signals(false)
 
 
 func _style_volume_slider() -> void:
@@ -147,9 +147,10 @@ func _style_volume_slider() -> void:
 func _style_music_toggle() -> void:
 	music_label.add_theme_font_override("font", FONT)
 	music_label.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
+	music_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	music_toggle.text = ""
+	music_toggle.flat = true
 	music_toggle.add_theme_font_override("font", FONT)
-	music_toggle.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
-	music_toggle.add_theme_color_override("font_hover_color", Color(1, 1, 1, 1.0))
 	music_toggle.focus_mode = Control.FOCUS_NONE
 
 
@@ -182,10 +183,12 @@ func _apply_menu_layout() -> void:
 	_set_label_font(title_label, BASE_TITLE_FONT)
 	title_label.add_theme_color_override("font_color", Color(0.45, 0.85, 0.96, 1))
 	_set_label_font(volume_label, BASE_VOLUME_FONT)
+	_set_label_font(mute_label, BASE_MUSIC_FONT)
+	mute_toggle.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_MUSIC_FONT))
+	mute_toggle.custom_minimum_size.x = maxf(40.0, 36.0 * s)
 	_set_label_font(music_label, BASE_MUSIC_FONT)
 	music_toggle.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_MUSIC_FONT))
-	mute_button.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_MUTE_FONT))
-	mute_button.custom_minimum_size.x = maxf(48.0, 44.0 * s)
+	music_toggle.custom_minimum_size.x = maxf(40.0, 36.0 * s)
 	_set_label_font(hint_label, BASE_HINT_FONT)
 	close_btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_CLOSE_FONT))
 	close_btn.custom_minimum_size.y = maxf(48.0, 40.0 * s)
@@ -297,11 +300,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _on_mute_pressed() -> void:
-	_master_muted = not _master_muted
+func _on_mute_toggled(muted: bool) -> void:
+	_master_muted = muted
 	_apply_master_audio()
 	_update_volume_label()
-	_update_mute_button_text()
 	if not _loading_settings:
 		PlayerSettings.save_partial({"master_muted": _master_muted})
 
@@ -309,7 +311,7 @@ func _on_mute_pressed() -> void:
 func _on_volume_changed(value: float) -> void:
 	if not _loading_settings and _master_muted:
 		_master_muted = false
-		_update_mute_button_text()
+		_sync_mute_toggle()
 	_apply_master_audio()
 	_update_volume_label()
 	if not _loading_settings:
@@ -331,10 +333,6 @@ func _update_volume_label() -> void:
 		volume_label.text = "Volumen — Silenciado"
 	else:
 		volume_label.text = "Volumen — %d%%" % _volume_percent(volume_slider.value)
-
-
-func _update_mute_button_text() -> void:
-	mute_button.text = "Vol." if _master_muted else "Sil."
 
 
 func _volume_percent(db: float) -> int:

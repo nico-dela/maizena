@@ -85,8 +85,9 @@ const NPC_DISPLAY_NAMES := {
 var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
 var _infographic_grid: GridContainer
-var _footer_links_box: VBoxContainer
+var _footer_links_box: HBoxContainer
 var _footer_link: LinkButton
+var _footer_separator: Label
 var _footer_spacer: Control
 var _credits_root: VBoxContainer
 var _credits_nav_btn: LinkButton
@@ -219,7 +220,7 @@ func _make_footer_link(text: String, callback: Callable) -> LinkButton:
 	link.add_theme_color_override("font_color", Color(0.45, 0.80, 0.91, 1.0))
 	link.add_theme_color_override("font_hover_color", Color(0.65, 0.92, 1.0, 1.0))
 	link.focus_mode = Control.FOCUS_NONE
-	link.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	link.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	link.pressed.connect(callback)
 	return link
 
@@ -231,16 +232,34 @@ func _apply_footer_link_layout(link: LinkButton, portrait: bool) -> void:
 	link.custom_minimum_size.y = maxf(36.0, 28.0 * _font_boost())
 
 
+func _make_footer_separator() -> Label:
+	var sep := Label.new()
+	sep.text = "·"
+	sep.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sep.add_theme_font_override("font", FONT)
+	sep.add_theme_color_override("font_color", Color(0.38, 0.58, 0.72, 0.85))
+	return sep
+
+
+func _apply_footer_separator_layout(sep: Label, portrait: bool) -> void:
+	if sep == null:
+		return
+	sep.add_theme_font_size_override("font_size", _scaled_news_font(20 if portrait else 16))
+	sep.custom_minimum_size.x = maxf(12.0, 10.0 * _font_boost())
+
+
 func _setup_footer_links() -> void:
-	var links_box := VBoxContainer.new()
+	var links_box := HBoxContainer.new()
 	links_box.alignment = BoxContainer.ALIGNMENT_BEGIN
 	links_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	links_box.add_theme_constant_override("separation", int(round(6.0 * _font_boost())))
+	links_box.add_theme_constant_override("separation", int(round(10.0 * _font_boost())))
 	_footer_links_box = links_box
 
 	_footer_link = _make_footer_link("Seguinos en las redes", _on_linktree_pressed)
+	_footer_separator = _make_footer_separator()
 	_credits_nav_btn = _make_footer_link("Créditos", _on_credits_nav_pressed)
 	links_box.add_child(_footer_link)
+	links_box.add_child(_footer_separator)
 	links_box.add_child(_credits_nav_btn)
 
 	var spacer := Control.new()
@@ -619,12 +638,11 @@ func _apply_responsive_layout() -> void:
 		_footer_links_box.size_flags_vertical = Control.SIZE_SHRINK_END
 		_footer_links_box.add_theme_constant_override(
 			"separation",
-			int(round((4.0 if portrait else 3.0) * boost))
+			int(round((12.0 if portrait else 14.0) * boost))
 		)
 		var link_h := maxf(36.0, 28.0 * boost)
-		_footer_links_box.custom_minimum_size.y = link_h * 2.0 + float(
-			_footer_links_box.get_theme_constant("separation")
-		)
+		_footer_links_box.custom_minimum_size.y = link_h
+		_apply_footer_separator_layout(_footer_separator, portrait)
 	if _footer_link != null:
 		_footer_link.visible = true
 		_apply_footer_link_layout(_footer_link, portrait)

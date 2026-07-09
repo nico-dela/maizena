@@ -15,7 +15,7 @@
 [node name="NewWorld" parent="." unique_id=1636943568 instance=ExtResource("2_c1pb6")]
 
 [node name="Player" parent="." unique_id=1271161695 instance=ExtResource("2_p6wng")]
-position = Vector2(-218, -264)
+position = Vector2(-573, -326)
 
 [node name="SettingsMenu" parent="." unique_id=2051298128 instance=ExtResource("3_7mwkq")]
 
