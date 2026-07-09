@@ -1,5 +1,7 @@
 extends Node
 
+const PlayerSettings = preload("res://scripts/player_settings.gd")
+
 @onready var player: AudioStreamPlayer = $AudioStreamPlayer
 
 signal song_changed(title: String)
@@ -43,20 +45,31 @@ const SONG_TITLES := {
 var playlist: Array = []
 var current_index := -1
 var current_song: int
+var play_in_background := false
 var _background_paused := false
 var _paused_playback_position := 0.0
 
 
-func _ready():
+func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	player.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("music_manager")
 	player.finished.connect(_play_next)
+	play_in_background = bool(PlayerSettings.load_all().get("play_in_background", false))
 	_create_playlist()
 	_play_next()
 	call_deferred("_connect_window_focus")
 	if OS.has_feature("web"):
 		_setup_web_visibility_pause()
+
+
+func is_play_in_background() -> bool:
+	return play_in_background
+
+
+func set_play_in_background(enabled: bool) -> void:
+	play_in_background = enabled
+	PlayerSettings.save_partial({"play_in_background": enabled})
 
 
 func _connect_window_focus() -> void:
@@ -94,6 +107,8 @@ func _on_web_visibility_changed(hidden: Variant) -> void:
 
 
 func _pause_for_background() -> void:
+	if play_in_background:
+		return
 	if _background_paused:
 		return
 	if player.stream == null:
@@ -117,7 +132,7 @@ func _resume_from_background() -> void:
 		player.play(_paused_playback_position)
 
 
-func _create_playlist():
+func _create_playlist() -> void:
 	playlist.clear()
 	for value in SONGS.values():
 		playlist.append(int(value))
@@ -125,7 +140,7 @@ func _create_playlist():
 	current_index = -1
 
 
-func _play_next():
+func _play_next() -> void:
 	current_index += 1
 
 	if current_index >= playlist.size():

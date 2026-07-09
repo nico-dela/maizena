@@ -25,6 +25,30 @@ const RESIDUE_MAX := 80
 
 const BACKDROP_WAIT_MS := 2500
 
+enum PopupView { NEWS, CREDITS }
+
+const HEADER_NEWS := (
+	"[center][color=#72cce8]Las noticias[/color] "
+	+ "[color=#e85050]/[/color][color=#e8c840]/[/color][color=#5080e8]/[/color] "
+	+ "[color=#f07828]Maizena.tv[/color][/center]"
+)
+const HEADER_CREDITS := (
+	"[center][color=#72cce8]Créditos[/color] "
+	+ "[color=#f07828]Maizena.tv[/color][/center]"
+)
+
+const CREDIT_SONG_TITLES := [
+	"Colores",
+	"La cumbia de Naruto",
+	"Grua",
+	"Recien me levanto",
+	"Repollo Morado",
+	"Resaka",
+	"Todo lo que necesito",
+	"Tus medias",
+	"Matar al sol",
+]
+
 @onready var dim_overlay: ColorRect = $CenterRoot/Dim
 @onready var header_label: RichTextLabel = $CenterRoot/Report/Margin/VBox/HeaderLabel
 @onready var report_panel: PanelContainer = $CenterRoot/Report
@@ -61,8 +85,12 @@ const NPC_DISPLAY_NAMES := {
 var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
 var _infographic_grid: GridContainer
+var _footer_links_box: VBoxContainer
 var _footer_link: LinkButton
 var _footer_spacer: Control
+var _credits_root: VBoxContainer
+var _credits_nav_btn: LinkButton
+var _current_view := PopupView.NEWS
 var _applied_layout_scale := 1.0
 var _applied_portrait := false
 
@@ -78,6 +106,8 @@ func _ready() -> void:
 	_setup_footer_links()
 	close_btn.pressed.connect(_on_close_pressed)
 	_build_infographic_ui()
+	_build_credits_ui()
+	_show_news_view()
 	_applied_layout_scale = ViewportLayout.effective_ui_scale()
 	_applied_portrait = ViewportLayout.is_portrait
 	_apply_responsive_layout()
@@ -177,33 +207,50 @@ func _setup_header() -> void:
 	header_label.scroll_active = false
 	header_label.add_theme_font_override("normal_font", FONT)
 	header_label.add_theme_font_size_override("normal_font_size", _scaled_news_font(20))
-	header_label.text = (
-		"[center][color=#72cce8]Las noticias[/color] "
-		+ "[color=#e85050]/[/color][color=#e8c840]/[/color][color=#5080e8]/[/color] "
-		+ "[color=#f07828]Maizena.tv[/color][/center]"
-	)
+	header_label.text = HEADER_NEWS
 
 
-func _setup_footer_links() -> void:
+func _make_footer_link(text: String, callback: Callable) -> LinkButton:
 	var link := LinkButton.new()
-	link.text = "Seguinos en las redes"
+	link.text = text
 	link.underline = LinkButton.UNDERLINE_MODE_ON_HOVER
 	link.add_theme_font_override("font", FONT)
 	link.add_theme_font_size_override("font_size", _scaled_news_font(16))
 	link.add_theme_color_override("font_color", Color(0.45, 0.80, 0.91, 1.0))
 	link.add_theme_color_override("font_hover_color", Color(0.65, 0.92, 1.0, 1.0))
 	link.focus_mode = Control.FOCUS_NONE
-	link.pressed.connect(_on_linktree_pressed)
-	_footer_link = link
+	link.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	link.pressed.connect(callback)
+	return link
+
+
+func _apply_footer_link_layout(link: LinkButton, portrait: bool) -> void:
+	if link == null:
+		return
+	link.add_theme_font_size_override("font_size", _scaled_news_font(18 if portrait else 15))
+	link.custom_minimum_size.y = maxf(36.0, 28.0 * _font_boost())
+
+
+func _setup_footer_links() -> void:
+	var links_box := VBoxContainer.new()
+	links_box.alignment = BoxContainer.ALIGNMENT_BEGIN
+	links_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	links_box.add_theme_constant_override("separation", int(round(6.0 * _font_boost())))
+	_footer_links_box = links_box
+
+	_footer_link = _make_footer_link("Seguinos en las redes", _on_linktree_pressed)
+	_credits_nav_btn = _make_footer_link("Créditos", _on_credits_nav_pressed)
+	links_box.add_child(_footer_link)
+	links_box.add_child(_credits_nav_btn)
 
 	var spacer := Control.new()
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_footer_spacer = spacer
 
 	var vbox := close_btn.get_parent()
-	vbox.add_child(link)
+	vbox.add_child(links_box)
 	vbox.add_child(spacer)
-	vbox.move_child(link, close_btn.get_index())
+	vbox.move_child(links_box, close_btn.get_index())
 	vbox.move_child(spacer, close_btn.get_index())
 
 
@@ -213,6 +260,110 @@ func _on_linktree_pressed() -> void:
 
 func _open_external_url(url: String) -> void:
 	OS.shell_open(url)
+
+
+func _build_credits_ui() -> void:
+	var root := VBoxContainer.new()
+	root.visible = false
+	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.add_theme_constant_override("separation", int(round(14.0 * _font_boost())))
+	scroll_container.add_child(root)
+	_credits_root = root
+
+	_add_credits_block(
+		root,
+		COLOR_ORANGE,
+		"Proyecto",
+		"Archipiélago Maizena — disco Una Banda de Cosas Tiradas (La Casa Mutante)."
+	)
+	_add_credits_block(
+		root,
+		COLOR_YELLOW,
+		"Desarrollo digital",
+		"Una obra digital desarrollada por Kumo Estudio."
+	)
+	_add_credits_block(
+		root,
+		COLOR_GREEN,
+		"Equipo",
+		"Tobias Gencarelli, Felipe Pagani, Candela Gencarelli, Nicolas de la Cruz."
+	)
+	_add_credits_block(
+		root,
+		COLOR_CORAL,
+		"Música",
+		" · ".join(CREDIT_SONG_TITLES)
+	)
+	_add_credits_block(
+		root,
+		COLOR_ORANGE,
+		"Comunidad",
+		(
+			"MAIZENA es un proyecto de La Casa Mutante, financiado por nosotres mismos, "
+			+ "confiando en la comunidad."
+		)
+	)
+
+	var footer := _lbl(14 if ViewportLayout.is_portrait else 12, COLOR_VALUE)
+	footer.text = "Córdoba, Argentina · © 2026 Kumo Estudio"
+	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	root.add_child(footer)
+
+
+func _add_credits_block(
+	parent: VBoxContainer,
+	accent: Color,
+	title: String,
+	body: String
+) -> void:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
+	panel.add_child(v)
+
+	var header := _lbl(16 if ViewportLayout.is_portrait else 13, accent)
+	header.text = title
+	v.add_child(header)
+
+	var body_lbl := _lbl(14 if ViewportLayout.is_portrait else 12, COLOR_VALUE)
+	body_lbl.text = body
+	v.add_child(body_lbl)
+
+	parent.add_child(panel)
+
+
+func _show_news_view() -> void:
+	_current_view = PopupView.NEWS
+	header_label.text = HEADER_NEWS
+	infographic_root.visible = true
+	if _credits_root != null:
+		_credits_root.visible = false
+	if _credits_nav_btn != null:
+		_credits_nav_btn.text = "Créditos"
+	if scroll_container != null:
+		scroll_container.scroll_vertical = 0
+
+
+func _show_credits_view() -> void:
+	_current_view = PopupView.CREDITS
+	header_label.text = HEADER_CREDITS
+	infographic_root.visible = false
+	if _credits_root != null:
+		_credits_root.visible = true
+	if _credits_nav_btn != null:
+		_credits_nav_btn.text = "Volver a las noticias"
+	if scroll_container != null:
+		scroll_container.scroll_vertical = 0
+
+
+func _on_credits_nav_pressed() -> void:
+	if _current_view == PopupView.CREDITS:
+		_show_news_view()
+	else:
+		_show_credits_view()
 
 
 func _build_infographic_ui() -> void:
@@ -437,8 +588,8 @@ func _apply_responsive_layout() -> void:
 		report_panel.offset_top = -panel_h * 0.5
 		report_panel.offset_bottom = panel_h * 0.5
 	else:
-		var panel_w := minf(720.0, layout.x * 0.94)
-		var panel_h := minf(600.0, layout.y * 0.88)
+		var panel_w := minf(760.0, layout.x * 0.94)
+		var panel_h := minf(680.0, layout.y * 0.92)
 		report_panel.offset_left = -panel_w * 0.5
 		report_panel.offset_right = panel_w * 0.5
 		report_panel.offset_top = -panel_h * 0.5
@@ -448,21 +599,41 @@ func _apply_responsive_layout() -> void:
 	report_margin.add_theme_constant_override("margin_left", outer_m)
 	report_margin.add_theme_constant_override("margin_right", outer_m)
 	report_margin.add_theme_constant_override("margin_top", int(round((8.0 if portrait else 4.0) * boost)))
-	report_margin.add_theme_constant_override("margin_bottom", int(round((8.0 if portrait else 4.0) * boost)))
-	report_vbox.add_theme_constant_override("separation", int(round((16.0 if portrait else 12.0) * boost)))
+	report_margin.add_theme_constant_override("margin_bottom", int(round((6.0 if portrait else 4.0) * boost)))
+	report_vbox.add_theme_constant_override("separation", int(round((8.0 if portrait else 6.0) * boost)))
 
 	if header_label != null:
-		header_label.custom_minimum_size.y = float(_scaled_news_font(28 if portrait else 20))
-		header_label.add_theme_font_size_override("normal_font_size", _scaled_news_font(28 if portrait else 20))
-	if close_btn != null:
-		close_btn.add_theme_font_size_override("font_size", _scaled_news_font(28 if portrait else 22))
-		close_btn.custom_minimum_size.y = maxf(56.0, 44.0 * boost)
-	if _footer_link != null:
-		_footer_link.add_theme_font_size_override("font_size", _scaled_news_font(20 if portrait else 16))
-	if _footer_spacer != null:
-		_footer_spacer.custom_minimum_size.y = maxf(28.0, (44.0 if portrait else 20.0) * boost)
+		header_label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		header_label.custom_minimum_size.y = float(_scaled_news_font(22 if portrait else 18))
+		header_label.add_theme_font_size_override("normal_font_size", _scaled_news_font(22 if portrait else 18))
 	if scroll_container != null:
+		scroll_container.custom_minimum_size.y = 0
+		scroll_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		scroll_container.size_flags_stretch_ratio = 12.0
 		scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	if close_btn != null:
+		close_btn.size_flags_vertical = Control.SIZE_SHRINK_END
+		close_btn.add_theme_font_size_override("font_size", _scaled_news_font(20 if portrait else 18))
+		close_btn.custom_minimum_size.y = maxf(36.0, 30.0 * boost)
+	if _footer_links_box != null:
+		_footer_links_box.size_flags_vertical = Control.SIZE_SHRINK_END
+		_footer_links_box.add_theme_constant_override(
+			"separation",
+			int(round((4.0 if portrait else 3.0) * boost))
+		)
+		var link_h := maxf(36.0, 28.0 * boost)
+		_footer_links_box.custom_minimum_size.y = link_h * 2.0 + float(
+			_footer_links_box.get_theme_constant("separation")
+		)
+	if _footer_link != null:
+		_footer_link.visible = true
+		_apply_footer_link_layout(_footer_link, portrait)
+	if _credits_nav_btn != null:
+		_credits_nav_btn.visible = true
+		_apply_footer_link_layout(_credits_nav_btn, portrait)
+	if _footer_spacer != null:
+		_footer_spacer.size_flags_vertical = Control.SIZE_SHRINK_END
+		_footer_spacer.custom_minimum_size.y = maxf(4.0, 6.0 * boost)
 	if infographic_root != null:
 		infographic_root.custom_minimum_size.x = 0.0 if portrait else 320.0
 	if _infographic_grid != null:
@@ -475,6 +646,7 @@ func is_blocking() -> bool:
 
 func open_welcome(mark_seen_when_closed: bool) -> void:
 	_mark_seen_on_close = mark_seen_when_closed
+	_show_news_view()
 	if dim_overlay != null:
 		dim_overlay.color = Color(0.02, 0.04, 0.08, 0.52)
 	ViewportLayout.refresh()
@@ -527,7 +699,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event.is_action_pressed("ui_cancel"):
-		_on_close_pressed()
+		if _current_view == PopupView.CREDITS:
+			_show_news_view()
+		else:
+			_on_close_pressed()
 		get_viewport().set_input_as_handled()
 
 

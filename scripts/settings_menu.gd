@@ -1,9 +1,12 @@
 extends CanvasLayer
 
+const PlayerSettings = preload("res://scripts/player_settings.gd")
 const FONT: FontFile = preload("res://assets/ui/PixelOperator8.ttf")
 
 const BASE_TITLE_FONT := 38
 const BASE_VOLUME_FONT := 28
+const BASE_MUSIC_FONT := 22
+const BASE_MUTE_FONT := 18
 const BASE_HINT_FONT := 14
 const BASE_CLOSE_FONT := 22
 const BASE_PANEL_WIDTH := 420.0
@@ -14,15 +17,22 @@ const BASE_PANEL_WIDTH := 420.0
 @onready var menu_vbox: VBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox
 @onready var settings_button: Button = $Button
 @onready var close_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/CloseButton
-@onready var volume_slider: HSlider = $Menu/CenterContainer/Panel/Margin/VBox/VolumeHSlider
+@onready var volume_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow
+@onready var mute_button: Button = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow/MuteButton
+@onready var volume_slider: HSlider = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow/VolumeHSlider
 @onready var title_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Titulo
 @onready var volume_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/VolumeLabel
+@onready var music_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow
+@onready var music_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicLabel
+@onready var music_toggle: CheckButton = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicToggle
 @onready var hint_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Hint
 
 @export var icon_open: Texture2D
 var is_open := false
 
 var _panel_style: StyleBoxFlat
+var _loading_settings := false
+var _master_muted := false
 
 
 func _ready() -> void:
@@ -45,12 +55,23 @@ func _ready() -> void:
 	close_btn.pressed.connect(_on_close_pressed)
 	_style_close_button()
 
-	volume_slider.min_value = -40
-	volume_slider.max_value = 0
+	volume_slider.min_value = PlayerSettings.VOLUME_MIN_DB
+	volume_slider.max_value = PlayerSettings.VOLUME_MAX_DB
 	volume_slider.step = 1
-	volume_slider.value = 0
+	_loading_settings = true
+	var settings := PlayerSettings.load_all()
+	volume_slider.value = float(settings.get("master_volume_db", PlayerSettings.default_volume_db()))
+	_master_muted = bool(settings.get("master_muted", false))
+	_loading_settings = false
 	volume_slider.value_changed.connect(_on_volume_changed)
-	_on_volume_changed(volume_slider.value)
+	mute_button.pressed.connect(_on_mute_pressed)
+	_apply_master_audio()
+	_update_volume_label()
+
+	_style_mute_button()
+	_style_music_toggle()
+	music_toggle.toggled.connect(_on_background_play_toggled)
+	call_deferred("_bind_background_toggle")
 
 	menu_dim.gui_input.connect(_on_dim_gui_input)
 	_style_volume_slider()
@@ -88,6 +109,25 @@ func _style_close_button() -> void:
 	close_btn.add_theme_font_override("font", FONT)
 
 
+func _style_mute_button() -> void:
+	var sb_n := StyleBoxFlat.new()
+	sb_n.bg_color = Color(0.1, 0.16, 0.24, 0.92)
+	sb_n.set_corner_radius_all(5)
+	sb_n.set_border_width_all(1)
+	sb_n.border_color = Color(0.42, 0.76, 0.94, 0.45)
+	var sb_h := sb_n.duplicate()
+	sb_h.bg_color = Color(0.14, 0.22, 0.32, 0.98)
+	mute_button.add_theme_stylebox_override("normal", sb_n)
+	mute_button.add_theme_stylebox_override("hover", sb_h)
+	mute_button.add_theme_stylebox_override("pressed", sb_h)
+	mute_button.add_theme_stylebox_override("focus", sb_n)
+	mute_button.add_theme_font_override("font", FONT)
+	mute_button.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
+	mute_button.add_theme_color_override("font_hover_color", Color(1, 1, 1, 1.0))
+	mute_button.focus_mode = Control.FOCUS_NONE
+	_update_mute_button_text()
+
+
 func _style_volume_slider() -> void:
 	var track := StyleBoxFlat.new()
 	track.bg_color = Color(0.04, 0.07, 0.1, 0.95)
@@ -102,6 +142,29 @@ func _style_volume_slider() -> void:
 	volume_slider.add_theme_stylebox_override("slider", track)
 	volume_slider.add_theme_stylebox_override("grabber", grabber)
 	volume_slider.add_theme_stylebox_override("grabber_highlight", grabber_h)
+
+
+func _style_music_toggle() -> void:
+	music_label.add_theme_font_override("font", FONT)
+	music_label.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
+	music_toggle.add_theme_font_override("font", FONT)
+	music_toggle.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
+	music_toggle.add_theme_color_override("font_hover_color", Color(1, 1, 1, 1.0))
+	music_toggle.focus_mode = Control.FOCUS_NONE
+
+
+func _bind_background_toggle() -> void:
+	var mm := get_tree().get_first_node_in_group("music_manager")
+	if mm == null:
+		return
+	music_toggle.button_pressed = mm.is_play_in_background()
+
+
+func _on_background_play_toggled(enabled: bool) -> void:
+	var mm := get_tree().get_first_node_in_group("music_manager")
+	if mm == null:
+		return
+	mm.set_play_in_background(enabled)
 
 
 func _on_viewport_layout_changed() -> void:
@@ -119,6 +182,10 @@ func _apply_menu_layout() -> void:
 	_set_label_font(title_label, BASE_TITLE_FONT)
 	title_label.add_theme_color_override("font_color", Color(0.45, 0.85, 0.96, 1))
 	_set_label_font(volume_label, BASE_VOLUME_FONT)
+	_set_label_font(music_label, BASE_MUSIC_FONT)
+	music_toggle.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_MUSIC_FONT))
+	mute_button.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_MUTE_FONT))
+	mute_button.custom_minimum_size.x = maxf(48.0, 44.0 * s)
 	_set_label_font(hint_label, BASE_HINT_FONT)
 	close_btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_CLOSE_FONT))
 	close_btn.custom_minimum_size.y = maxf(48.0, 40.0 * s)
@@ -230,10 +297,44 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
+func _on_mute_pressed() -> void:
+	_master_muted = not _master_muted
+	_apply_master_audio()
+	_update_volume_label()
+	_update_mute_button_text()
+	if not _loading_settings:
+		PlayerSettings.save_partial({"master_muted": _master_muted})
+
+
 func _on_volume_changed(value: float) -> void:
+	if not _loading_settings and _master_muted:
+		_master_muted = false
+		_update_mute_button_text()
+	_apply_master_audio()
+	_update_volume_label()
+	if not _loading_settings:
+		PlayerSettings.save_partial({
+			"master_volume_db": value,
+			"master_muted": _master_muted,
+		})
+
+
+func _apply_master_audio() -> void:
 	var master_bus := AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_volume_db(master_bus, value)
-	volume_label.text = "Volumen — %d%%" % _volume_percent(value)
+	AudioServer.set_bus_mute(master_bus, _master_muted)
+	if not _master_muted:
+		AudioServer.set_bus_volume_db(master_bus, volume_slider.value)
+
+
+func _update_volume_label() -> void:
+	if _master_muted:
+		volume_label.text = "Volumen — Silenciado"
+	else:
+		volume_label.text = "Volumen — %d%%" % _volume_percent(volume_slider.value)
+
+
+func _update_mute_button_text() -> void:
+	mute_button.text = "Vol." if _master_muted else "Sil."
 
 
 func _volume_percent(db: float) -> int:

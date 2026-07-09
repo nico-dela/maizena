@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://2h556cg2tjmp"]
 
-[ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="28_time"]
 [ext_resource type="PackedScene" uid="uid://b53tdrxdpctib" path="res://assets/tilesets/yati/BOCETO.tmx" id="1_flq5a"]
 [ext_resource type="Script" uid="uid://c21xtfolvw85n" path="res://scripts/weather_visual_system.gd" id="2_2fwvg"]
 [ext_resource type="Script" uid="uid://daf7nnw21qel" path="res://scripts/world_residue_system.gd" id="3_oi80u"]
@@ -28,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://d1apwd78wbsra" path="res://scenes/interactive_objects/orbe_electrico.tscn" id="25_fwq8m"]
 [ext_resource type="PackedScene" uid="uid://bm3511735icgx" path="res://scenes/interactive_objects/cartel_aldea.tscn" id="26_85sbw"]
 [ext_resource type="PackedScene" uid="uid://hsr2jst4mrr" path="res://scenes/interactive_objects/cartel_playa_sur.tscn" id="27_13e4m"]
+[ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="28_time"]
 
 [node name="NewWorld" type="Node2D" unique_id=1636943568]
 script = ExtResource("28_time")
@@ -255,7 +255,7 @@ position = Vector2(553, -900)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="laboratorio" parent="InteractiveObjects" unique_id=423673712 instance=ExtResource("20_w5ap8")]
-z_index = -2
+z_index = -1
 position = Vector2(225, -667)
 spawn_schedules = Array[Dictionary]([])
 

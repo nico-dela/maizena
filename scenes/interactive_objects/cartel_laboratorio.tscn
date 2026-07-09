@@ -16,7 +16,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_mscds")
 }],
-"loop": true,
+"loop": 1,
 "name": &"cartel_laboratorio",
 "speed": 5.0
 }]
