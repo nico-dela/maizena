@@ -1,8 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cdomcth8xmar6"]
 
-[ext_resource type="Script" path="res://scripts/minimap.gd" id="1_minimap"]
+[ext_resource type="Script" uid="uid://ny2dkvcn01l3" path="res://scripts/minimap.gd" id="1_minimap"]
 
-[node name="Minimap" type="Control"]
+[node name="Minimap" type="Control" unique_id=1161798601]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,16 +13,16 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_minimap")
 
-[node name="Frame" type="PanelContainer" parent="."]
+[node name="Frame" type="PanelContainer" parent="." unique_id=622674244]
 layout_mode = 0
 mouse_filter = 2
 
-[node name="MapStack" type="Control" parent="Frame"]
+[node name="MapStack" type="Control" parent="Frame" unique_id=2073785327]
 custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="ViewportBox" type="SubViewportContainer" parent="Frame/MapStack"]
+[node name="ViewportBox" type="SubViewportContainer" parent="Frame/MapStack" unique_id=394718461]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,12 +32,12 @@ grow_vertical = 2
 mouse_filter = 2
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="Frame/MapStack/ViewportBox"]
+[node name="SubViewport" type="SubViewport" parent="Frame/MapStack/ViewportBox" unique_id=525314416]
 handle_input_locally = false
 size = Vector2i(200, 200)
-render_target_update_mode = 4
+render_target_update_mode = 0
 
-[node name="PlayerDot" type="ColorRect" parent="Frame/MapStack"]
+[node name="PlayerDot" type="ColorRect" parent="Frame/MapStack" unique_id=1370935394]
 layout_mode = 0
 offset_right = 6.0
 offset_bottom = 6.0

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://2h556cg2tjmp"]
+[gd_scene format=3 uid="uid://cg5lbuu3ujug7"]
 
 [ext_resource type="Script" uid="uid://c21xtfolvw85n" path="res://scripts/weather_visual_system.gd" id="2_2fwvg"]
 [ext_resource type="Script" uid="uid://daf7nnw21qel" path="res://scripts/world_residue_system.gd" id="3_oi80u"]
@@ -26,18 +26,17 @@
 [ext_resource type="PackedScene" uid="uid://d1apwd78wbsra" path="res://scenes/interactive_objects/orbe_electrico.tscn" id="25_fwq8m"]
 [ext_resource type="PackedScene" uid="uid://bm3511735icgx" path="res://scenes/interactive_objects/cartel_aldea.tscn" id="26_85sbw"]
 [ext_resource type="PackedScene" uid="uid://hsr2jst4mrr" path="res://scenes/interactive_objects/cartel_playa_sur.tscn" id="27_13e4m"]
-[ext_resource type="PackedScene" uid="uid://b8wlpnu0gf1s1" path="res://assets/WEB MAIZENA RPG/Bosque encantado 1.tmx" id="28_oi80u"]
+[ext_resource type="PackedScene" uid="uid://dq3t1ypigyvw8" path="res://assets/WEB MAIZENA RPG/Ciudad.tmx" id="28_oi80u"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="28_time"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/map_hotspot.gd" id="29_hotspot"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_oi80u"]
-size = Vector2(32, 32)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_5jrns"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bosque"]
 size = Vector2(32, 32)
 
 [node name="NewWorld" type="Node2D" unique_id=1636943568]
 script = ExtResource("28_time")
+camera_limit_right = 1216
+camera_limit_bottom = 1024
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=713198712]
 
@@ -56,11 +55,13 @@ script = ExtResource("5_60po5")
 [node name="InteractiveObjects" type="Node" parent="." unique_id=643106436]
 
 [node name="cartel_sanjin" parent="InteractiveObjects" unique_id=1033152148 instance=ExtResource("6_odkj4")]
-position = Vector2(152, 440)
+z_index = -1
+position = Vector2(-478, -338)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="boji" parent="InteractiveObjects" unique_id=2142925047 instance=ExtResource("7_kt4yv")]
-position = Vector2(115, 427)
+z_index = -1
+position = Vector2(-345, -308)
 spawn_schedules = Array[Dictionary]([{
 "end": 11.5,
 "probability": 0.75,
@@ -76,7 +77,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="hi" parent="InteractiveObjects" unique_id=1084350328 instance=ExtResource("8_xdcm8")]
-position = Vector2(131, 415)
+z_index = -1
+position = Vector2(-329, -320)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.5,
 "probability": 0.35,
@@ -117,8 +119,7 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="spinetto" parent="InteractiveObjects" unique_id=1878421902 instance=ExtResource("10_f1e0n")]
-z_index = -1
-position = Vector2(296, -728)
+position = Vector2(469, 377)
 spawn_schedules = Array[Dictionary]([{
 "end": 11.0,
 "probability": 0.82,
@@ -307,22 +308,14 @@ z_index = -1
 position = Vector2(-232, 25)
 spawn_schedules = Array[Dictionary]([])
 
-[node name="Bosque encantado 1" parent="." unique_id=623475497 instance=ExtResource("28_oi80u")]
+[node name="Ciudad" parent="." unique_id=623475497 instance=ExtResource("28_oi80u")]
 
-[node name="CiudadHotspot" type="Area2D" parent="Bosque encantado 1" unique_id=917625069]
-position = Vector2(408, 5)
+[node name="BosqueHotspot" type="Area2D" parent="Ciudad" unique_id=917625069]
+position = Vector2(408, 1016)
+scale = Vector2(0.5, 0.5)
 script = ExtResource("29_hotspot")
-target_scene_path = "uid://cg5lbuu3ujug7"
-spawn_position = Vector2(400, 992)
+target_scene_path = "res://scenes/new_world.tscn"
+spawn_position = Vector2(408, 60)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bosque encantado 1/CiudadHotspot" unique_id=456793747]
-shape = SubResource("RectangleShape2D_oi80u")
-
-[node name="PantanoHotspot" type="Area2D" parent="Bosque encantado 1" unique_id=1937265519]
-position = Vector2(5, 384)
-script = ExtResource("29_hotspot")
-target_scene_path = "res://scenes/pantano_world.tscn"
-spawn_position = Vector2(590, 1020)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Bosque encantado 1/PantanoHotspot" unique_id=2038265845]
-shape = SubResource("RectangleShape2D_5jrns")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ciudad/BosqueHotspot" unique_id=456793747]
+shape = SubResource("RectangleShape2D_bosque")
