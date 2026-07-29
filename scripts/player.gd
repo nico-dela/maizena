@@ -27,6 +27,7 @@ func _ready():
 	ViewportLayout.layout_changed.connect(_apply_camera_zoom)
 	call_deferred("_refresh_viewport_layout")
 	call_deferred("_ensure_can_move")
+	call_deferred("_apply_camera_limits_from_current_world")
 
 
 func _refresh_viewport_layout() -> void:
@@ -57,6 +58,37 @@ func _apply_camera_zoom() -> void:
 		return
 	var boost := ViewportLayout.camera_boost
 	cam.zoom = BASE_CAMERA_ZOOM * boost
+
+
+func apply_camera_limits(limit_right: int, limit_bottom: int) -> void:
+	var cam: Camera2D = $Camera2D
+	if cam == null:
+		return
+	cam.limit_left = 0
+	cam.limit_top = 0
+	cam.limit_right = limit_right
+	cam.limit_bottom = limit_bottom
+
+
+func apply_camera_limits_from_world(world: Node) -> void:
+	if world == null:
+		return
+	var right: int = 640
+	var bottom: int = 640
+	if "camera_limit_right" in world:
+		right = int(world.camera_limit_right)
+	if "camera_limit_bottom" in world:
+		bottom = int(world.camera_limit_bottom)
+	apply_camera_limits(right, bottom)
+
+
+func _apply_camera_limits_from_current_world() -> void:
+	var root := get_parent()
+	if root == null:
+		return
+	var world := root.get_node_or_null("NewWorld")
+	if world != null:
+		apply_camera_limits_from_world(world)
 
 func _input(event):
 	# Solo procesar taps si el menú no está abierto
