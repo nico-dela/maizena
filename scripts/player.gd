@@ -77,6 +77,17 @@ func apply_camera_limits(limit_right: int, limit_bottom: int) -> void:
 	global_position = _clamp_to_map(global_position)
 
 
+## Deja la cámara centrada en el jugador sin interpolar, para teleports entre mapas.
+func snap_camera_to_player() -> void:
+	var cam: Camera2D = $Camera2D
+	if cam == null:
+		return
+	cam.drag_horizontal_offset = 0.0
+	cam.drag_vertical_offset = 0.0
+	cam.reset_smoothing()
+	cam.force_update_scroll()
+
+
 func _clamp_to_map(target: Vector2) -> Vector2:
 	var footprint := Rect2()
 	if _body_collision != null and _body_collision.shape != null:
