@@ -46,9 +46,9 @@ func _process(delta: float) -> void:
 
 
 func _connect_sources() -> void:
-	var dm: Node = Engine.get_singleton("DialogueManager")
-	if dm != null and dm.has_signal("dialogue_started"):
-		dm.dialogue_started.connect(_on_dialogue_started)
+	# Dialogue Manager es autoload (/root/DialogueManager), no Engine singleton.
+	if DialogueManager != null and DialogueManager.has_signal("dialogue_started"):
+		DialogueManager.dialogue_started.connect(_on_dialogue_started)
 
 	await get_tree().process_frame
 	var mm := get_tree().get_first_node_in_group("music_manager")
