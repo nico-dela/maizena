@@ -19,6 +19,11 @@ var tap_threshold = 10.0
 var settings_menu = null
 var welcome_popup: Node = null
 
+@onready var _body_collision: CollisionShape2D = $CollisionShape2D
+
+var _map_limits := Rect2(0.0, 0.0, 640.0, 640.0)
+
+
 func _ready():
 	$AnimatedSprite2D.play("front_idle")
 	settings_menu = get_tree().get_first_node_in_group("settings_menu")
@@ -68,6 +73,22 @@ func apply_camera_limits(limit_right: int, limit_bottom: int) -> void:
 	cam.limit_top = 0
 	cam.limit_right = limit_right
 	cam.limit_bottom = limit_bottom
+	_map_limits.size = Vector2(limit_right, limit_bottom)
+	global_position = _clamp_to_map(global_position)
+
+
+func _clamp_to_map(target: Vector2) -> Vector2:
+	var footprint := Rect2()
+	if _body_collision != null and _body_collision.shape != null:
+		footprint = _body_collision.shape.get_rect()
+		footprint.position += _body_collision.position
+
+	var minimum := _map_limits.position - footprint.position
+	var maximum := _map_limits.end - footprint.end
+	return Vector2(
+		clampf(target.x, minimum.x, maximum.x),
+		clampf(target.y, minimum.y, maximum.y)
+	)
 
 
 func apply_camera_limits_from_world(world: Node) -> void:
@@ -156,7 +177,7 @@ func _physics_process(_delta):
 	else:
 		# Movimiento por tap/clic
 		if is_moving_to_tap and tap_position != null:
-			var target_position = get_global_mouse_position() if tap_position is Vector2 else tap_position
+			var target_position := _clamp_to_map(get_global_mouse_position())
 			var direction = (target_position - global_position).normalized()
 			var distance = global_position.distance_to(target_position)
 			
@@ -173,6 +194,7 @@ func _physics_process(_delta):
 		play_anim(0)
 
 	move_and_slide()
+	global_position = _clamp_to_map(global_position)
 
 func update_current_dir():
 	# Priorizar la dirección con mayor magnitud
