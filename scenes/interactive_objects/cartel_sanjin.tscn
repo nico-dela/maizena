@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dscj1x67pe7ul" path="res://assets/tilesets/Montaña.png" id="3_2e8xx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
+radius = 7.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xyjrk"]
 atlas = ExtResource("3_2e8xx")
@@ -16,7 +17,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_xyjrk")
 }],
-"loop": true,
+"loop": 1,
 "name": &"cartel_pantano",
 "speed": 5.0
 }]
@@ -26,6 +27,7 @@ script = ExtResource("1_x7mva")
 dialogue = ExtResource("2_x7mva")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
+position = Vector2(0, 1)
 shape = SubResource("CircleShape2D_jxmtf")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2088313280]

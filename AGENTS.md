@@ -166,7 +166,7 @@ This is for my own future debugging — skipping it is how "why did I write this
 
 There is **no CI/CD pipeline**. Validation is entirely manual:
 
-1. Open the project in Godot and run the affected scene(s) — a script with no syntax errors is not the same as a script that works. Boot from F5 or `loading_screen.tscn`, not isolated `world.scn`.
+1. Open the project in Godot and run the affected scene(s) — a script with no syntax errors is not the same as a script that works. Boot from F5 or `loading_screen.tscn`, not an isolated world scene.
 2. Check the Godot **Output** and **Debugger** panels for new warnings/errors after any Agent change — multi-file edits can silently break unrelated scenes.
 3. Run the **smoke test** (Part II §G) for gameplay changes.
 4. For changes that must reach web users: export Web → `./tools/patch_web_build.sh` → test in browser **before** committing `web_build/`.
@@ -208,12 +208,12 @@ LLM-generated code is acceptable only when it:
 Runtime boot sequence:
 
 ```
-loading_screen.tscn  →  main_scene.tscn  →  world.scn + player + UI
+loading_screen.tscn  →  main_scene.tscn  →  new_world.tscn + player + UI
 ```
 
 - `run/main_scene` in `project.godot` = `res://scenes/loading_screen.tscn`
-- `display/window/main_scene` = `world.scn` — editor preview only, **not** runtime boot
-- **LLM rule:** Always test from F5 or `loading_screen.tscn`. Do not run `world.scn` in isolation — it lacks nodes from `main_scene`.
+- Maps swap via `MainScene.travel_to()` between `new_world.tscn`, `ciudad_world.tscn`, and `pantano_world.tscn`
+- **LLM rule:** Always test from F5 or `loading_screen.tscn`. Do not run a world scene in isolation — it lacks nodes from `main_scene`.
 
 ---
 
@@ -239,15 +239,16 @@ loading_screen.tscn  →  main_scene.tscn  →  world.scn + player + UI
 
 ---
 
-## C. World Systems (embedded in `world.scn`)
+## C. World Systems (embedded in `*_world.tscn`)
 
-Nodes managed by `tools/merge_world_systems.gd`:
+Each map scene (`new_world`, `ciudad_world`, `pantano_world`) shares this layout:
 
-- `CanvasModulate` + `TimeOfDaySystem` (`scripts/time_day_system.gd` — the only project `class_name`)
-- `WeatherVisualSystem`, `ResidueSystem`, `WorldAutonomySystem`, `NpcPresenceSystem`
-- `InteractiveObjects/` (`scenes/interactive_objects/` — NPCs and signs)
+- Root `NewWorld` with `scripts/world_map.gd` (`camera_limit_*`)
+- Child `TimeOfDaySystem` (`scripts/time_day_system.gd` — the only project `class_name`) holding `CanvasModulate` + `WeatherVisualSystem`
+- Sibling systems: `ResidueSystem`, `WorldAutonomySystem`, `NpcPresenceSystem`
+- TMX instance from `assets/WEB MAIZENA RPG/` (YATI import) + `InteractiveObjects/` and map hotspots
 
-**LLM rule:** After editing the tilemap in `world.scn`, run the merge CLI tool. Do not manually rearrange system nodes without understanding the tool.
+**LLM rule:** Edit tile data in Tiled (`.tmx`), reimport via YATI. Do not run the legacy `merge_world_systems.gd` tool for these maps.
 
 ---
 
@@ -344,7 +345,7 @@ When implementing a feature, read these first:
 | Player/input | `scripts/player.gd` |
 | Music | `scripts/music_manager.gd` |
 | Responsive UI | `autoload/viewport_layout.gd` |
-| World time/weather | `scripts/time_day_system.gd`, `autoload/cordoba_weather.gd` |
+| World time/weather | `scripts/time_day_system.gd`, `scripts/world_map.gd`, `autoload/cordoba_weather.gd` |
 
 ---
 
@@ -383,7 +384,7 @@ Production flow:
 **Don't:**
 - Invent autoloads, groups, or signals
 - Edit `addons/dialogue_manager/` or `web_build/` binaries
-- Run `world.scn` in isolation for testing
+- Run a world scene in isolation for testing
 - Move session quest state into persisted JSON autoloads
 - Propose CI/CD, coverage thresholds, or new addons without approval
 - Duplicate quest logic outside `.dialogue` + `GameState`

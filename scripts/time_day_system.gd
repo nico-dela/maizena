@@ -3,9 +3,6 @@ class_name TimeOfDaySystem
 
 signal time_updated(current_hour: float, is_day: bool)
 
-@export var camera_limit_right: int = 640
-@export var camera_limit_bottom: int = 640
-
 var time_colors := {
 	"morning": Color(1.0, 1.0, 0.9),
 	"day": Color(1.0, 1.0, 1.0),
@@ -39,7 +36,7 @@ func _ready() -> void:
 	if not canvas_modulate:
 		canvas_modulate = CanvasModulate.new()
 		canvas_modulate.name = "CanvasModulate"
-		get_node("..").call_deferred("add_child", canvas_modulate)
+		call_deferred("add_child", canvas_modulate)
 
 	world_state = get_node_or_null("/root/WorldState")
 	_weather = get_node_or_null("/root/CordobaWeather")

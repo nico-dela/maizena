@@ -28,18 +28,22 @@
 [ext_resource type="PackedScene" uid="uid://hsr2jst4mrr" path="res://scenes/interactive_objects/cartel_playa_sur.tscn" id="27_13e4m"]
 [ext_resource type="PackedScene" uid="uid://fpuli88gfo76" path="res://assets/WEB MAIZENA RPG/Pantano Sur.tmx" id="28_oi80u"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/time_day_system.gd" id="28_time"]
+[ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/map_hotspot.gd" id="29_hotspot"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bosque"]
 size = Vector2(32, 32)
 
 [node name="NewWorld" type="Node2D" unique_id=1636943568]
-script = ExtResource("28_time")
+script = ExtResource("28_world")
 camera_limit_bottom = 1280
 
-[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=713198712]
+[node name="TimeOfDaySystem" type="Node" parent="." unique_id=551068781]
+script = ExtResource("28_time")
 
-[node name="WeatherVisualSystem" type="Node2D" parent="." unique_id=1058850119]
+[node name="CanvasModulate" type="CanvasModulate" parent="TimeOfDaySystem" unique_id=713198712]
+
+[node name="WeatherVisualSystem" type="Node2D" parent="TimeOfDaySystem" unique_id=1058850119]
 script = ExtResource("2_2fwvg")
 
 [node name="ResidueSystem" type="Node2D" parent="." unique_id=766054174]
@@ -54,12 +58,14 @@ script = ExtResource("5_60po5")
 [node name="InteractiveObjects" type="Node" parent="." unique_id=643106436]
 
 [node name="cartel_sanjin" parent="InteractiveObjects" unique_id=1033152148 instance=ExtResource("6_odkj4")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(-478, -338)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="boji" parent="InteractiveObjects" unique_id=2142925047 instance=ExtResource("7_kt4yv")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(-345, -308)
 spawn_schedules = Array[Dictionary]([{
 "end": 11.5,
@@ -76,7 +82,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="hi" parent="InteractiveObjects" unique_id=1084350328 instance=ExtResource("8_xdcm8")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(-329, -320)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.5,
@@ -101,8 +108,9 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="bollo" parent="InteractiveObjects" unique_id=665304462 instance=ExtResource("9_pfsnn")]
-z_index = -1
-position = Vector2(677, -154)
+visible = false
+z_index = 1
+position = Vector2(143, 439)
 spawn_schedules = Array[Dictionary]([{
 "end": 12.0,
 "probability": 0.65,
@@ -118,7 +126,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="spinetto" parent="InteractiveObjects" unique_id=1878421902 instance=ExtResource("10_f1e0n")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(296, -728)
 spawn_schedules = Array[Dictionary]([{
 "end": 11.0,
@@ -135,7 +144,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="silueto_1" parent="InteractiveObjects" unique_id=320360083 instance=ExtResource("11_5rb60")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(-19, -604)
 spawn_schedules = Array[Dictionary]([{
 "end": 6.5,
@@ -152,7 +162,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="silueto_2" parent="InteractiveObjects" unique_id=1542832816 instance=ExtResource("12_br1hn")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(377, -296)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.0,
@@ -169,7 +180,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="michis" parent="InteractiveObjects" unique_id=1887856624 instance=ExtResource("13_kksiw")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(-85, -411)
 spawn_schedules = Array[Dictionary]([{
 "end": 8.5,
@@ -186,6 +198,7 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="kaeru" parent="InteractiveObjects" unique_id=1471275273 instance=ExtResource("14_xkyxe")]
+z_index = 1
 position = Vector2(169, 737)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.5,
@@ -206,7 +219,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="ranancio" parent="InteractiveObjects" unique_id=1376135273 instance=ExtResource("15_6v6tw")]
-position = Vector2(242, 300)
+z_index = 1
+position = Vector2(233, 301)
 spawn_schedules = Array[Dictionary]([{
 "end": 8.5,
 "probability": 0.95,
@@ -222,8 +236,8 @@ spawn_schedules = Array[Dictionary]([{
 }])
 
 [node name="el_viejo" parent="InteractiveObjects" unique_id=1293872949 instance=ExtResource("16_a7jku")]
-z_index = -1
-position = Vector2(674, -367)
+z_index = 1
+position = Vector2(569, 476)
 spawn_schedules = Array[Dictionary]([{
 "end": 9.5,
 "probability": 0.78,
@@ -244,65 +258,64 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="bicicleta" parent="InteractiveObjects" unique_id=1384308745 instance=ExtResource("17_rrags")]
 visible = false
-z_index = -1
+z_index = 1
 position = Vector2(363, -419)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_bollo" parent="InteractiveObjects" unique_id=1162038245 instance=ExtResource("18_6pkd5")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(639, -150)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_laboratorio" parent="InteractiveObjects" unique_id=971389305 instance=ExtResource("19_d3cav")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(553, -900)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="laboratorio" parent="InteractiveObjects" unique_id=423673712 instance=ExtResource("20_w5ap8")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(225, -667)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_arboles" parent="InteractiveObjects" unique_id=636104785 instance=ExtResource("21_6xm8j")]
-z_index = -1
+visible = false
+z_index = 1
 position = Vector2(-626, -606)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_pantano" parent="InteractiveObjects" unique_id=1097113832 instance=ExtResource("22_1vvnq")]
-z_index = -1
-position = Vector2(-634, -961)
+z_index = 1
+position = Vector2(575, 974)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="piedra_grieta" parent="InteractiveObjects" unique_id=723286548 instance=ExtResource("23_8pxje")]
-z_index = -1
-position = Vector2(119, 130)
+z_index = 1
+position = Vector2(133, 929.00006)
 scale = Vector2(1.5, 1.5)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="templo_sapos" parent="InteractiveObjects" unique_id=1830820250 instance=ExtResource("24_ir3by")]
-z_index = -1
-position = Vector2(-895, -1306)
-spawn_schedules = Array[Dictionary]([{
-"end": 12.0,
-"probability": 0.7,
-"start": 9.0
-}, {
-"end": 19.0,
-"probability": 0.8,
-"start": 15.0
-}])
+position = Vector2(273, 102)
+spawn_schedules = Array[Dictionary]([])
 
 [node name="orbe_electrico" parent="InteractiveObjects" unique_id=382298321 instance=ExtResource("25_fwq8m")]
+visible = false
+z_index = 1
 position = Vector2(-58, -429)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_aldea" parent="InteractiveObjects" unique_id=1056807754 instance=ExtResource("26_85sbw")]
+visible = false
+z_index = 1
 position = Vector2(205, -393)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_playa_sur" parent="InteractiveObjects" unique_id=162991114 instance=ExtResource("27_13e4m")]
 visible = false
-z_index = -1
+z_index = 1
 position = Vector2(-232, 25)
 spawn_schedules = Array[Dictionary]([])
 
@@ -314,6 +327,7 @@ scale = Vector2(0.5, 0.5)
 script = ExtResource("29_hotspot")
 target_scene_path = "res://scenes/new_world.tscn"
 spawn_position = Vector2(48, 384)
+destination_label = "Bosque"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Pantano Sur/BosqueHotspot" unique_id=456793747]
 shape = SubResource("RectangleShape2D_bosque")
