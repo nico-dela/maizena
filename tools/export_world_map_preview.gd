@@ -6,6 +6,7 @@ const PREVIEW_SIZE := 512
 const FIT_MARGIN := 1.12
 const PAN_OFFSET := Vector2.ZERO
 const WATER_LAYER_AREA_RATIO := 0.82
+const KNOWN_MAP_ROOTS := ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
 
 var _viewport: SubViewport
 
@@ -20,8 +21,8 @@ func _initialize() -> void:
 	var world := packed.instantiate()
 	_prepare_world(world)
 
-	var boceto := world.get_node_or_null("BOCETO")
-	var bounds_root: Node = boceto if boceto != null else world
+	var map_root := _resolve_map_root(world)
+	var bounds_root: Node = map_root if map_root != null else world
 	var bounds := _collect_tilemap_bounds(bounds_root)
 	if bounds.size.x <= 0.0 or bounds.size.y <= 0.0:
 		push_error("No se encontraron tiles en %s" % WORLD_SCENE)
@@ -79,13 +80,25 @@ func _capture() -> void:
 	quit()
 
 
+func _resolve_map_root(world: Node) -> Node:
+	for map_name in KNOWN_MAP_ROOTS:
+		var named := world.get_node_or_null(map_name)
+		if named != null:
+			return named
+	for child in world.get_children():
+		if child is Node2D and not _find_tilemap_layers(child).is_empty():
+			return child
+	return null
+
+
 func _prepare_world(node: Node) -> void:
 	for child in node.get_children():
 		if child is TileMapLayer:
 			(child as CanvasItem).visible = true
 			child.process_mode = Node.PROCESS_MODE_DISABLED
-		elif child.name == "BOCETO":
-			(child as CanvasItem).visible = true
+		elif child.name in KNOWN_MAP_ROOTS or child.name == "BOCETO":
+			if child is CanvasItem:
+				(child as CanvasItem).visible = true
 			child.process_mode = Node.PROCESS_MODE_DISABLED
 			_prepare_world(child)
 		else:

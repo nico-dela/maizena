@@ -8,7 +8,8 @@
 [ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/ui/PixelOperator8.ttf" id="7_c1pb6"]
 [ext_resource type="PackedScene" uid="uid://eq0kjkx20xsw" path="res://scenes/music_manager.tscn" id="7_c16ls"]
 [ext_resource type="PackedScene" uid="uid://cfngsm8uld2q5" path="res://scenes/welcome_world_popup.tscn" id="8_welcome"]
-[ext_resource type="Script" path="res://scripts/main_scene.gd" id="9_main"]
+[ext_resource type="Script" uid="uid://b8k2yg7qykrv4" path="res://scripts/main_scene.gd" id="9_main"]
+[ext_resource type="PackedScene" uid="uid://cdomcth8xmar6" path="res://scenes/minimap.tscn" id="10_minimap"]
 
 [node name="MainScene" type="Node2D" unique_id=910432244]
 script = ExtResource("9_main")
@@ -16,6 +17,7 @@ script = ExtResource("9_main")
 [node name="NewWorld" parent="." unique_id=1636943568 instance=ExtResource("2_c1pb6")]
 
 [node name="Player" parent="." unique_id=1271161695 instance=ExtResource("2_p6wng")]
+z_index = 1
 position = Vector2(176, 464)
 
 [node name="SettingsMenu" parent="." unique_id=2051298128 instance=ExtResource("3_7mwkq")]
@@ -24,6 +26,8 @@ position = Vector2(176, 464)
 
 [node name="SongBanner" parent="UI" unique_id=163109551 instance=ExtResource("6_rt2n2")]
 visible = false
+
+[node name="Minimap" parent="UI" unique_id=1487351054 instance=ExtResource("10_minimap")]
 
 [node name="NewsContainer" type="Control" parent="UI" unique_id=541901368]
 layout_mode = 3

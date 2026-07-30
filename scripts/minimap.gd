@@ -6,8 +6,8 @@ const WATER_LAYER_AREA_RATIO := 0.82
 const BASE_DOT_SIZE := 7.0
 const MIN_MAP_SIDE := 180.0
 const MAX_MAP_SIDE := 360.0
-const BOCETO_NAME := "BOCETO"
 const NEW_WORLD_NAME := "NewWorld"
+const KNOWN_MAP_ROOTS := ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
 
 @onready var _frame: PanelContainer = $Frame
 @onready var _map_stack: Control = $Frame/MapStack
@@ -30,40 +30,55 @@ func _ready() -> void:
 	_player_dot.color = Color(0.95, 0.28, 0.35, 1.0)
 	_style_frame()
 	ViewportLayout.layout_changed.connect(_on_layout_changed)
-	call_deferred("_setup_minimap")
+	visibility_changed.connect(_on_visibility_changed)
+	if visible:
+		call_deferred("refresh")
 
 
 func _process(_delta: float) -> void:
+	if not visible:
+		return
 	_update_player_dot()
 
 
+func _on_visibility_changed() -> void:
+	if visible and not _map_ready:
+		call_deferred("refresh")
+
+
 func _on_layout_changed() -> void:
+	if not visible:
+		return
 	_apply_layout()
 	if _map_ready:
 		_configure_camera()
 
 
-func _setup_minimap() -> void:
+func refresh() -> void:
+	_map_ready = false
+	if not visible:
+		return
 	_player = get_tree().get_first_node_in_group("player") as Node2D
 
-	var boceto_ref := _get_boceto_ref()
-	if boceto_ref == null:
+	var map_root := _get_map_root()
+	if map_root == null:
 		await get_tree().process_frame
-		boceto_ref = _get_boceto_ref()
-	if boceto_ref == null:
-		push_warning("Minimap: no se encontró el nodo BOCETO en la escena")
+		map_root = _get_map_root()
+	if map_root == null:
+		push_warning("Minimap: no se encontró el tilemap del mundo actual")
+		_player_dot.visible = false
 		return
 
-	_world_bounds = _collect_tilemap_bounds(boceto_ref)
+	_world_bounds = _collect_tilemap_bounds(map_root)
 	if _world_bounds.size == Vector2.ZERO:
-		push_warning("Minimap: BOCETO no tiene tiles")
+		_world_bounds = _bounds_from_camera_limits()
+	if _world_bounds.size == Vector2.ZERO:
+		push_warning("Minimap: el mapa actual no tiene tiles")
+		_player_dot.visible = false
 		return
 
 	_subviewport.world_2d = get_viewport().world_2d
-
-	_minimap_camera = Camera2D.new()
-	_minimap_camera.enabled = true
-	_subviewport.add_child(_minimap_camera)
+	_ensure_minimap_camera()
 
 	_map_ready = true
 	_apply_layout()
@@ -71,18 +86,35 @@ func _setup_minimap() -> void:
 	_configure_camera()
 
 
-func _get_boceto_ref() -> Node2D:
+func _ensure_minimap_camera() -> void:
+	if _minimap_camera != null and is_instance_valid(_minimap_camera):
+		return
+	_minimap_camera = Camera2D.new()
+	_minimap_camera.enabled = true
+	_subviewport.add_child(_minimap_camera)
+
+
+func _get_map_root() -> Node2D:
 	var game_root := _get_game_root()
 	if game_root == null:
 		return null
 
 	var new_world := game_root.get_node_or_null(NEW_WORLD_NAME)
-	if new_world != null:
-		var boceto := new_world.get_node_or_null(BOCETO_NAME)
-		if boceto is Node2D:
-			return boceto as Node2D
+	if new_world == null:
+		return null
 
-	return _find_node_by_name(game_root, BOCETO_NAME) as Node2D
+	for map_name in KNOWN_MAP_ROOTS:
+		var named := new_world.get_node_or_null(map_name)
+		if named is Node2D:
+			return named as Node2D
+
+	for child in new_world.get_children():
+		if child is Node2D and not _find_tilemap_layers(child).is_empty():
+			return child as Node2D
+
+	if not _find_tilemap_layers(new_world).is_empty():
+		return new_world as Node2D
+	return null
 
 
 func _get_game_root() -> Node:
@@ -92,14 +124,22 @@ func _get_game_root() -> Node:
 	return get_tree().current_scene
 
 
-func _find_node_by_name(root: Node, target_name: String) -> Node:
-	if root.name == target_name:
-		return root
-	for child in root.get_children():
-		var found := _find_node_by_name(child, target_name)
-		if found != null:
-			return found
-	return null
+func _bounds_from_camera_limits() -> Rect2:
+	var game_root := _get_game_root()
+	if game_root == null:
+		return Rect2()
+	var world := game_root.get_node_or_null(NEW_WORLD_NAME)
+	if world == null:
+		return Rect2()
+	var right := 640
+	var bottom := 640
+	if "camera_limit_right" in world:
+		right = int(world.camera_limit_right)
+	if "camera_limit_bottom" in world:
+		bottom = int(world.camera_limit_bottom)
+	if right <= 0 or bottom <= 0:
+		return Rect2()
+	return Rect2(0.0, 0.0, float(right), float(bottom))
 
 
 func _configure_camera() -> void:

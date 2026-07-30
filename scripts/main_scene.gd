@@ -41,3 +41,11 @@ func travel_to(packed: PackedScene, spawn: Vector2) -> void:
 
 	if _player.has_method("apply_camera_limits_from_world"):
 		_player.apply_camera_limits_from_world(new_world)
+
+	_refresh_minimap()
+
+
+func _refresh_minimap() -> void:
+	var minimap := get_node_or_null("UI/Minimap")
+	if minimap != null and minimap.has_method("refresh"):
+		minimap.call_deferred("refresh")
