@@ -47,6 +47,7 @@ const CREDIT_SONG_TITLES := [
 	"Todo lo que necesito",
 	"Tus medias",
 	"Matar al sol",
+	"Los amigos",
 ]
 
 @onready var dim_overlay: ColorRect = $CenterRoot/Dim
@@ -537,8 +538,20 @@ func _style_close_button() -> void:
 	close_btn.add_theme_stylebox_override("pressed", sb_h)
 	close_btn.add_theme_stylebox_override("focus", sb_n)
 
-
 	close_btn.add_theme_font_size_override("font_size", _scaled_news_font(22))
+	_apply_close_button_padding(_font_boost())
+
+
+func _apply_close_button_padding(boost: float) -> void:
+	if close_btn == null:
+		return
+	var pad_v := int(round(10.0 * boost))
+	for state in ["normal", "hover", "pressed", "focus"]:
+		var sb := close_btn.get_theme_stylebox(state) as StyleBoxFlat
+		if sb == null:
+			continue
+		sb.content_margin_top = pad_v
+		sb.content_margin_bottom = pad_v
 
 
 func _on_viewport_layout_changed() -> void:
@@ -633,7 +646,8 @@ func _apply_responsive_layout() -> void:
 	if close_btn != null:
 		close_btn.size_flags_vertical = Control.SIZE_SHRINK_END
 		close_btn.add_theme_font_size_override("font_size", _scaled_news_font(20 if portrait else 18))
-		close_btn.custom_minimum_size.y = maxf(36.0, 30.0 * boost)
+		close_btn.custom_minimum_size.y = maxf(52.0 if portrait else 46.0, 40.0 * boost)
+		_apply_close_button_padding(boost)
 	if _footer_links_box != null:
 		_footer_links_box.size_flags_vertical = Control.SIZE_SHRINK_END
 		_footer_links_box.add_theme_constant_override(

@@ -9,6 +9,8 @@ const BASE_MUSIC_FONT := 22
 const BASE_HINT_FONT := 14
 const BASE_CLOSE_FONT := 22
 const BASE_PANEL_WIDTH := 420.0
+const PORTRAIT_PANEL_RATIO := 0.94
+const PORTRAIT_FONT_MUL := 1.22
 
 @onready var menu_panel: Control = $Menu
 @onready var menu_dim: ColorRect = $Menu/Dim
@@ -176,30 +178,56 @@ func _on_viewport_layout_changed() -> void:
 func _apply_menu_layout() -> void:
 	var s := ViewportLayout.effective_ui_scale()
 	var layout: Vector2 = ViewportLayout.visible_layout_size()
-	var panel_w := minf(BASE_PANEL_WIDTH * s, layout.x * 0.94)
+	var portrait := ViewportLayout.is_portrait
+	# En portrait el panel acompaña el ancho de la pantalla, como el popup de Noticias.
+	var panel_w := layout.x * PORTRAIT_PANEL_RATIO if portrait else minf(
+		BASE_PANEL_WIDTH * s, layout.x * 0.94
+	)
 	menu_box.custom_minimum_size = Vector2(panel_w, 0)
-	menu_vbox.add_theme_constant_override("separation", int(round(20.0 * s)))
+	menu_vbox.add_theme_constant_override("separation", int(round((26.0 if portrait else 20.0) * s)))
+	_apply_panel_padding(s, portrait)
 
 	_set_label_font(title_label, BASE_TITLE_FONT)
 	title_label.add_theme_color_override("font_color", Color(0.45, 0.85, 0.96, 1))
 	_set_label_font(volume_label, BASE_VOLUME_FONT)
 	_set_label_font(mute_label, BASE_MUSIC_FONT)
-	mute_toggle.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_MUSIC_FONT))
-	mute_toggle.custom_minimum_size.x = maxf(40.0, 36.0 * s)
+	_apply_toggle_layout(mute_toggle, s)
 	_set_label_font(music_label, BASE_MUSIC_FONT)
-	music_toggle.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_MUSIC_FONT))
-	music_toggle.custom_minimum_size.x = maxf(40.0, 36.0 * s)
+	_apply_toggle_layout(music_toggle, s)
 	_set_label_font(hint_label, BASE_HINT_FONT)
-	close_btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(BASE_CLOSE_FONT))
-	close_btn.custom_minimum_size.y = maxf(48.0, 40.0 * s)
-	volume_slider.custom_minimum_size.y = maxi(28, int(round(24.0 * s)))
+	close_btn.add_theme_font_size_override("font_size", _menu_font(BASE_CLOSE_FONT))
+	close_btn.custom_minimum_size.y = maxf(56.0 if portrait else 48.0, 44.0 * s)
+	volume_slider.custom_minimum_size.y = maxi(36 if portrait else 28, int(round(30.0 * s)))
+
+
+func _menu_font(base_size: int) -> int:
+	var mul := PORTRAIT_FONT_MUL if ViewportLayout.is_portrait else 1.0
+	return maxi(1, int(round(float(ViewportLayout.scaled_font(base_size)) * mul)))
+
+
+func _apply_panel_padding(s: float, portrait: bool) -> void:
+	if _panel_style == null:
+		return
+	var pad := int(round((16.0 if portrait else 6.0) * s))
+	_panel_style.content_margin_left = pad
+	_panel_style.content_margin_top = pad
+	_panel_style.content_margin_right = pad
+	_panel_style.content_margin_bottom = pad
+
+
+func _apply_toggle_layout(toggle: CheckButton, s: float) -> void:
+	if toggle == null:
+		return
+	toggle.add_theme_font_size_override("font_size", _menu_font(BASE_MUSIC_FONT))
+	var side := maxf(52.0 if ViewportLayout.is_portrait else 40.0, 40.0 * s)
+	toggle.custom_minimum_size = Vector2(side, side)
 
 
 func _set_label_font(label: Label, base_size: int) -> void:
 	if label == null:
 		return
 	label.add_theme_font_override("font", FONT)
-	label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(base_size))
+	label.add_theme_font_size_override("font_size", _menu_font(base_size))
 
 
 func _apply_settings_button_layout() -> void:
