@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://18542l13jsva"]
 
-[ext_resource type="PackedScene" uid="uid://2h556cg2tjmp" path="res://scenes/new_world.tscn" id="2_c1pb6"]
+[ext_resource type="PackedScene" uid="uid://2h556cg2tjmp" path="res://scenes/bosque_encantado.tscn" id="2_c1pb6"]
 [ext_resource type="PackedScene" uid="uid://cvsnc1d0y0q4g" path="res://scenes/player.tscn" id="2_p6wng"]
 [ext_resource type="PackedScene" uid="uid://wtbpnf36qq6q" path="res://scenes/settings_menu.tscn" id="3_7mwkq"]
 [ext_resource type="Script" uid="uid://cvfrergq0gq1v" path="res://scenes/era_system.gd" id="6_18nlu"]

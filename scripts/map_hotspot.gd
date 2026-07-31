@@ -119,7 +119,7 @@ func _fallback_destination_name() -> String:
 			return "Ciudad"
 		"pantano_world":
 			return "Pantano"
-		"new_world":
+		"bosque_encantado":
 			return "Bosque"
 		_:
 			if target_scene_path.begins_with("uid://"):

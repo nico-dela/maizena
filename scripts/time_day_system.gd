@@ -27,7 +27,12 @@ const WEATHER_TINTS := {
 const DAWN_LEAD_HOURS := 0.5
 const DAWN_TAIL_HOURS := 0.75
 const DUSK_LEAD_HOURS := 0.75
-const DUSK_TAIL_HOURS := 0.5
+## Civil twilight (~25–30 min) after sunset — still evening.
+const DUSK_TAIL_HOURS := 0.45
+## Nautical + astronomical twilight: evening → night.
+const NIGHT_SETTLE_HOURS := 1.0
+## Settle to deep night after astronomical darkness.
+const MIDNIGHT_SETTLE_HOURS := 0.5
 
 
 func _ready() -> void:
@@ -127,12 +132,25 @@ func _compute_time_color() -> Color:
 		var dusk_t := (current_time - dusk_start) / maxf(dusk_end - dusk_start, 0.01)
 		return time_colors["day"].lerp(time_colors["evening"], clampf(dusk_t, 0.0, 1.0))
 	if current_time >= dusk_end or current_time < dawn_start:
-		if current_time >= dusk_end:
-			var night_t := (current_time - dusk_end) / maxf(24.0 - dusk_end + dawn_start, 0.01)
-			return time_colors["evening"].lerp(time_colors["night"], clampf(night_t, 0.0, 1.0))
-		var pre_dawn_t := current_time / maxf(dawn_start, 0.01)
-		return time_colors["midnight"].lerp(time_colors["night"], clampf(pre_dawn_t, 0.0, 1.0))
+		return _compute_night_color(current_time, dusk_end)
 	return time_colors["day"]
+
+
+func _compute_night_color(hour: float, dusk_end: float) -> Color:
+	var hours_since_dusk := hour - dusk_end
+	if hours_since_dusk < 0.0:
+		hours_since_dusk += 24.0
+
+	if hours_since_dusk < NIGHT_SETTLE_HOURS:
+		var night_t := hours_since_dusk / maxf(NIGHT_SETTLE_HOURS, 0.01)
+		return time_colors["evening"].lerp(time_colors["night"], clampf(night_t, 0.0, 1.0))
+
+	var after_night := hours_since_dusk - NIGHT_SETTLE_HOURS
+	if after_night < MIDNIGHT_SETTLE_HOURS:
+		var midnight_t := after_night / maxf(MIDNIGHT_SETTLE_HOURS, 0.01)
+		return time_colors["night"].lerp(time_colors["midnight"], clampf(midnight_t, 0.0, 1.0))
+
+	return time_colors["midnight"]
 
 
 func _apply_weather_tint(color: Color) -> Color:

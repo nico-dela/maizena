@@ -71,8 +71,6 @@ func apply_debug_condition(cond: String) -> void:
 
 
 func get_cordoba_local_hour() -> float:
-	if is_available:
-		return api_local_hour
 	return _local_hour_from_unix(Time.get_unix_time_from_system())
 
 
@@ -95,8 +93,6 @@ func get_effective_sunset_hour() -> float:
 
 
 func get_effective_is_day() -> bool:
-	if is_available:
-		return api_is_day
 	var hour := get_cordoba_local_hour()
 	var sunrise := get_effective_sunrise_hour()
 	var sunset := get_effective_sunset_hour()

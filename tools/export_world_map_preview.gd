@@ -1,6 +1,6 @@
 extends SceneTree
 
-const WORLD_SCENE := "res://scenes/new_world.tscn"
+const WORLD_SCENE := "res://scenes/bosque_encantado.tscn"
 const OUTPUT_PATH := "res://assets/ui/world_map_preview.png"
 const PREVIEW_SIZE := 512
 const FIT_MARGIN := 1.12
