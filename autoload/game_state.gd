@@ -31,6 +31,9 @@ func buscar_comida():
 func agarrar_comida():
 	add_item("hongos", 1)
 	tiene_comida = has_item("hongos")
+	var spawner := get_node_or_null("/root/HongosSpawner")
+	if spawner != null and spawner.has_method("clear_pending"):
+		spawner.clear_pending()
 
 func completar_comida():
 	quest_hambre_active = false

@@ -21,6 +21,7 @@ func _apply_initial_camera_limits() -> void:
 	var world := get_node_or_null(WORLD_NODE_NAME)
 	if world != null and _player != null and _player.has_method("apply_camera_limits_from_world"):
 		_player.apply_camera_limits_from_world(world)
+	_notify_hongos_spawner()
 
 
 ## El fundido vive en su propia CanvasLayer y sigue corriendo con el árbol pausado.
@@ -60,6 +61,7 @@ func travel_to(packed: PackedScene, spawn: Vector2) -> void:
 	await _fade_to(1.0, FADE_OUT_TIME)
 	var new_world := _swap_world(packed, spawn)
 	await _settle_new_world(new_world)
+	_notify_hongos_spawner()
 	await _fade_to(0.0, FADE_IN_TIME)
 	_travel_busy = false
 
@@ -116,3 +118,9 @@ func _refresh_minimap() -> void:
 	var minimap := get_node_or_null("UI/Minimap")
 	if minimap != null and minimap.has_method("refresh"):
 		minimap.call_deferred("refresh")
+
+
+func _notify_hongos_spawner() -> void:
+	var spawner := get_node_or_null("/root/HongosSpawner")
+	if spawner != null and spawner.has_method("try_spawn_in_current_world"):
+		spawner.call_deferred("try_spawn_in_current_world")

@@ -17,18 +17,19 @@ if GameState.has_item("hongos"):
 if GameState.quest_hambre_active:
 	El viejo: Sigo esperando… tengo hambre. [speed=0.75]
 	Sanjin: Voy a buscar esos hongos.
-	El viejo: En el bosque o en la playa… creo haberlos visto ahí.
+	El viejo: Fijate en {{HongosSpawner.hint_place}}… ahí los vi.
 	=> END
 
 El viejo: … ¿Podrías buscarme algo para comer?
 Sanjin: ¿Qué te pasó?
 El viejo: El tiempo pesa distinto en la isla… y hoy pesa hambre.
-El viejo: Vi unos hongos en el bosque o en la playa…
+El viejo: Vi unos hongos por ahí… en alguno de los rincones de la isla.
 
 - Si
 	do GameState.buscar_comida()
 	do HongosSpawner.spawn_hongos()
 	El viejo: Gracias… no tengo fuerzas para salir. [speed=0.8]
+	El viejo: Creo haberlos visto en {{HongosSpawner.hint_place}}.
 	Sanjin: Yo los busco.
 	=> END
 

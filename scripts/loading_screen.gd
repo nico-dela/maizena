@@ -152,8 +152,23 @@ func _notification(what: int) -> void:
 		_apply_responsive_layout()
 
 
+func _canvas_stretch() -> float:
+	var layout_size: Vector2 = ViewportLayout.visible_layout_size()
+	var window := DisplayServer.window_get_size()
+	if window.x < 1 or window.y < 1 or layout_size.x < 1.0 or layout_size.y < 1.0:
+		return 1.0
+	return maxf(minf(float(window.x) / layout_size.x, float(window.y) / layout_size.y), 0.001)
+
+
+func _loading_size_boost() -> float:
+	## Compensa stretch bajo (ventanas anchas/bajas con aspect expand).
+	## No agranda tipografía en pantallas altas donde el stretch ya es ~1.
+	var stretch := _canvas_stretch()
+	return clampf(0.75 / stretch, 1.0, 2.1)
+
+
 func _loading_font(base: int) -> int:
-	var scaled := float(base) * ViewportLayout.effective_ui_scale()
+	var scaled := float(base) * ViewportLayout.effective_ui_scale() * _loading_size_boost()
 	if ViewportLayout.is_portrait:
 		scaled *= PORTRAIT_LOADING_FONT_MUL
 	return maxi(1, int(round(scaled)))
@@ -163,30 +178,26 @@ func _apply_responsive_layout() -> void:
 	var layout_size: Vector2 = ViewportLayout.visible_layout_size()
 	var portrait := ViewportLayout.is_portrait
 	var ui_boost := ViewportLayout.effective_ui_scale()
-	var viewport_h := get_viewport().get_visible_rect().size.y
+	var size_boost := _loading_size_boost()
+	var stretch := _canvas_stretch()
+	var window := DisplayServer.window_get_size()
 
-	var content_w := minf((layout_size.x * (0.92 if portrait else 0.84)) * ui_boost, layout_size.x * 0.96)
+	var content_w := minf(layout_size.x * (0.92 if portrait else 0.84), layout_size.x * 0.96)
 	content.custom_minimum_size.x = content_w
 
-	var logo_side := 0.0
+	# Tamaño en pantalla (~42% alto landscape / ~38% portrait), convertido a unidades de canvas.
+	var map_screen: float
 	if portrait:
-		logo_side = clampf(
-			minf(layout_size.x * 0.9, viewport_h * 0.34),
-			280.0,
-			560.0
-		)
+		map_screen = minf(float(window.x) * 0.72, float(window.y) * 0.38)
 	else:
-		var logo_ratio := 0.36
-		var logo_max := 280.0
-		var logo_min := 170.0
-		logo_side = clampf(layout_size.x * logo_ratio, logo_min, logo_max)
-		logo_side = clampf(floorf(logo_side / 128.0) * 128.0, 128.0, 512.0)
+		map_screen = float(window.y) * 0.42
+	var logo_side := clampf(map_screen / stretch, 220.0 if portrait else 240.0, 560.0 if portrait else 520.0)
 	map_preview_aspect.custom_minimum_size = Vector2(logo_side, logo_side)
 	map_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	map_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	map_preview.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	if map_preview_frame != null:
-		var frame_pad := int(round((12.0 if portrait else 8.0) * ui_boost))
+		var frame_pad := int(round((12.0 if portrait else 8.0) * ui_boost * size_boost))
 		if _map_frame_style == null:
 			var base := map_preview_frame.get_theme_stylebox("panel") as StyleBoxFlat
 			_map_frame_style = base.duplicate() as StyleBoxFlat if base else StyleBoxFlat.new()
@@ -194,14 +205,14 @@ func _apply_responsive_layout() -> void:
 		_map_frame_style.content_margin_top = frame_pad
 		_map_frame_style.content_margin_right = frame_pad
 		_map_frame_style.content_margin_bottom = frame_pad
-		_map_frame_style.set_border_width_all(maxi(2, int(round(3.0 * ui_boost))))
-		_map_frame_style.set_corner_radius_all(maxi(6, int(round(8.0 * ui_boost))))
+		_map_frame_style.set_border_width_all(maxi(2, int(round(3.0 * ui_boost * size_boost))))
+		_map_frame_style.set_corner_radius_all(maxi(6, int(round(8.0 * ui_boost * size_boost))))
 		map_preview_frame.add_theme_stylebox_override("panel", _map_frame_style)
 
-	progress_bar.custom_minimum_size.y = maxi(22, int(round((30.0 if portrait else 18.0) * ui_boost)))
-	progress_row.add_theme_constant_override("separation", int(round((14.0 if portrait else 8.0) * ui_boost)))
-	main_vbox.add_theme_constant_override("separation", int(round((12.0 if portrait else 10.0) * ui_boost)))
-	content.add_theme_constant_override("separation", int(round((22.0 if portrait else 18.0) * ui_boost)))
+	progress_bar.custom_minimum_size.y = maxi(22, int(round((30.0 if portrait else 22.0) * ui_boost * size_boost)))
+	progress_row.add_theme_constant_override("separation", int(round((14.0 if portrait else 8.0) * ui_boost * size_boost)))
+	main_vbox.add_theme_constant_override("separation", int(round((12.0 if portrait else 10.0) * ui_boost * size_boost)))
+	content.add_theme_constant_override("separation", int(round((22.0 if portrait else 18.0) * ui_boost * size_boost)))
 
 	if top_spacer != null:
 		top_spacer.custom_minimum_size.y = 0.0
@@ -216,11 +227,11 @@ func _apply_responsive_layout() -> void:
 	margin.add_theme_constant_override("margin_right", int(round(ViewportLayout.screen_margin_right(float(margin_scaled)))))
 	margin.add_theme_constant_override(
 		"margin_top",
-		int(round(ViewportLayout.screen_margin_top((14.0 if portrait else 40.0) * ui_boost)))
+		int(round(ViewportLayout.screen_margin_top((14.0 if portrait else 28.0) * ui_boost)))
 	)
 	margin.add_theme_constant_override(
 		"margin_bottom",
-		int(round(ViewportLayout.screen_margin_bottom((10.0 if portrait else 28.0) * ui_boost)))
+		int(round(ViewportLayout.screen_margin_bottom((10.0 if portrait else 20.0) * ui_boost)))
 	)
 
 	title_label.add_theme_font_size_override("font_size", _loading_font(FONT_TITLE + (6 if portrait else 0)))
