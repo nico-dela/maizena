@@ -45,7 +45,7 @@ var _is_web := false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_started_at = _now_sec()
-	_is_web = ClassDB.class_exists("JavaScriptBridge")
+	_is_web = OS.has_feature("web")
 	tip_label.text = PHRASES[randi() % PHRASES.size()]
 	ViewportLayout.refresh()
 	_apply_responsive_layout()
@@ -59,7 +59,7 @@ func _ready() -> void:
 	var err := ResourceLoader.load_threaded_request(MAIN_SCENE)
 	if err != OK:
 		push_error("LoadingScreen: no se pudo iniciar la carga (%s)" % err)
-		get_tree().change_scene_to_file(MAIN_SCENE)
+		_loaded_scene = ResourceLoader.load(MAIN_SCENE) as PackedScene
 
 
 func _begin_web_loading() -> void:
@@ -91,19 +91,18 @@ func _process(_delta: float) -> void:
 		_process_web_display()
 		return
 
-	var progress_array: Array = []
-	var status := ResourceLoader.load_threaded_get_status(MAIN_SCENE, progress_array)
-	var load_ratio := float(progress_array[0]) if progress_array.size() > 0 else 0.0
-
-	match status:
-		ResourceLoader.THREAD_LOAD_INVALID_RESOURCE, ResourceLoader.THREAD_LOAD_FAILED:
-			push_error("LoadingScreen: carga fallida de %s" % MAIN_SCENE)
-			set_process(false)
-			get_tree().change_scene_to_file(MAIN_SCENE)
-			return
-		ResourceLoader.THREAD_LOAD_LOADED:
-			load_ratio = 1.0
-			if _loaded_scene == null:
+	var load_ratio := 1.0 if _loaded_scene != null else 0.0
+	if _loaded_scene == null:
+		var progress_array: Array = []
+		var status := ResourceLoader.load_threaded_get_status(MAIN_SCENE, progress_array)
+		load_ratio = float(progress_array[0]) if progress_array.size() > 0 else 0.0
+		match status:
+			ResourceLoader.THREAD_LOAD_FAILED, ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+				push_error("LoadingScreen: carga fallida de %s (status %s)" % [MAIN_SCENE, status])
+				_loaded_scene = ResourceLoader.load(MAIN_SCENE) as PackedScene
+				load_ratio = 1.0 if _loaded_scene != null else 0.0
+			ResourceLoader.THREAD_LOAD_LOADED:
+				load_ratio = 1.0
 				_loaded_scene = ResourceLoader.load_threaded_get(MAIN_SCENE) as PackedScene
 
 	var elapsed := _now_sec() - _started_at

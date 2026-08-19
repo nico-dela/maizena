@@ -29,21 +29,6 @@ func get_current_era_number() -> int:
 	return int(days_passed / 7.0) + 1
 
 
-## Lore: martes de ensayo desde la fecha del disco hasta hoy (días calendario, TZ del sistema).
-func count_tuesday_rehearsals_since_release() -> int:
-	var start_unix := int(Time.get_unix_time_from_datetime_dict(ERA_START_DATE))
-	var end_unix := int(Time.get_unix_time_from_system())
-	const DAY := 86400
-	var n := 0
-	var u := start_unix
-	while u <= end_unix:
-		var dt := Time.get_datetime_dict_from_unix_time(u)
-		if int(dt.get("weekday", -1)) == 2:
-			n += 1
-		u += DAY
-	return n
-
-
 func record_song_play(song_enum: int) -> void:
 	var era := get_current_era_number()
 	_play_log.append({"era": era, "song": song_enum})
@@ -75,10 +60,6 @@ func mark_welcome_seen() -> void:
 
 func is_welcome_seen() -> bool:
 	return welcome_popup_seen
-
-
-func get_recent_era_window() -> int:
-	return RECENT_ERA_COUNT
 
 
 func get_visible_residue_count() -> int:

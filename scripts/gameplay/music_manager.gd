@@ -16,7 +16,8 @@ enum SONGS {
 	TODO,
 	MEDIAS,
 	MATAR,
-	AMIGOS
+	AMIGOS,
+	NADIE
 }
 
 const TRACKS := {
@@ -29,7 +30,8 @@ const TRACKS := {
 	SONGS.TODO: preload("res://assets/audio/music/Todo_lo_que_necesito.ogg"),
 	SONGS.MEDIAS: preload("res://assets/audio/music/Tus_medias.ogg"),
 	SONGS.MATAR: preload("res://assets/audio/music/Matar_al_sol.ogg"),
-	SONGS.AMIGOS: preload("res://assets/audio/music/Los_amigos.ogg")
+	SONGS.AMIGOS: preload("res://assets/audio/music/Los_amigos.ogg"),
+	SONGS.NADIE: preload("res://assets/audio/music/Nadie_me_enseno_a_vivir.ogg")
 }
 
 const SONG_TITLES := {
@@ -42,7 +44,8 @@ const SONG_TITLES := {
 	SONGS.TODO: "Todo lo que necesito",
 	SONGS.MEDIAS: "Tus medias",
 	SONGS.MATAR: "Matar al sol",
-	SONGS.AMIGOS: "Los amigos"
+	SONGS.AMIGOS: "Los amigos",
+	SONGS.NADIE: "Nadie me enseñó a vivir"
 }
 
 var playlist: Array = []
@@ -56,12 +59,14 @@ var _paused_playback_position := 0.0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	player.process_mode = Node.PROCESS_MODE_ALWAYS
+	player.bus = "Master"
 	add_to_group("music_manager")
 	player.finished.connect(_play_next)
 	play_in_background = bool(PlayerSettings.load_all().get("play_in_background", false))
+	_apply_audio_from_settings()
 	_create_playlist()
-	_play_next()
-	call_deferred("_connect_window_focus")
+	# Esperar un frame: el AudioServer y el banner de canción terminan de listarse.
+	call_deferred("_play_next")
 	if OS.has_feature("web"):
 		_setup_web_visibility_pause()
 
@@ -75,22 +80,16 @@ func set_play_in_background(enabled: bool) -> void:
 	PlayerSettings.save_partial({"play_in_background": enabled})
 
 
-func _connect_window_focus() -> void:
-	var win := get_window()
-	if win == null:
-		return
-	if not win.focus_entered.is_connected(_resume_from_background):
-		win.focus_entered.connect(_resume_from_background)
-	if not win.focus_exited.is_connected(_pause_for_background):
-		win.focus_exited.connect(_pause_for_background)
-
-
-func _notification(what: int) -> void:
-	match what:
-		NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_WM_WINDOW_FOCUS_OUT:
-			_pause_for_background()
-		NOTIFICATION_APPLICATION_FOCUS_IN, NOTIFICATION_WM_WINDOW_FOCUS_IN:
-			_resume_from_background()
+func _apply_audio_from_settings() -> void:
+	var settings := PlayerSettings.load_all()
+	var master_bus := AudioServer.get_bus_index("Master")
+	var muted := bool(settings.get("master_muted", false))
+	AudioServer.set_bus_mute(master_bus, muted)
+	if not muted:
+		AudioServer.set_bus_volume_db(
+			master_bus,
+			float(settings.get("master_volume_db", PlayerSettings.default_volume_db()))
+		)
 
 
 func _setup_web_visibility_pause() -> void:
@@ -136,23 +135,39 @@ func _resume_from_background() -> void:
 
 
 func _create_playlist() -> void:
+	var last_song := current_song if current_index >= 0 else -1
 	playlist.clear()
-	for value in SONGS.values():
-		playlist.append(int(value))
+	for song_id in TRACKS.keys():
+		playlist.append(int(song_id))
 	playlist.shuffle()
+	if playlist.size() > 1 and last_song >= 0 and playlist[0] == last_song:
+		playlist[0] = playlist[1]
+		playlist[1] = last_song
 	current_index = -1
 
 
 func _play_next() -> void:
+	if playlist.is_empty():
+		_create_playlist()
 	current_index += 1
 
 	if current_index >= playlist.size():
 		_create_playlist()
 		current_index = 0
 
-	current_song = playlist[current_index]
+	current_song = int(playlist[current_index])
 
-	player.stream = TRACKS[current_song]
+	var source: AudioStream = TRACKS.get(current_song)
+	if source == null:
+		push_error("MusicManager: no hay stream para la canción %s" % current_song)
+		return
+	var stream: AudioStream = source.duplicate()
+	if stream is AudioStreamOggVorbis:
+		(stream as AudioStreamOggVorbis).loop = false
+	player.stop()
+	player.stream = stream
+	player.volume_db = 0.0
+	player.stream_paused = false
 	player.play()
 	_background_paused = false
 	_paused_playback_position = 0.0

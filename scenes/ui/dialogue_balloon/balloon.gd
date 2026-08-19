@@ -1,5 +1,10 @@
 extends CanvasLayer
-## A basic dialogue balloon for use with Dialogue Manager.
+## Custom dialogue balloon for Dialogue Manager (navy / cyan / magenta).
+
+const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
+const DIALOGUE_THEME: Theme = preload("res://assets/art/ui/themes/dialogue_theme.tres")
+const NAME_COLOR := Color(0.35, 0.82, 0.96, 1.0)
+const BODY_COLOR := Color(0.96, 0.97, 0.98, 1.0)
 
 
 ## The dialogue resource
@@ -103,8 +108,13 @@ func _apply_viewport_layout() -> void:
 	dialogue_bar.add_theme_constant_override("margin_right", m)
 	dialogue_bar.add_theme_constant_override("margin_top", int(round(15.0 * s)))
 	dialogue_bar.add_theme_constant_override("margin_bottom", int(round(15.0 * s)))
+
+	character_label.add_theme_font_override("normal_font", FONT)
 	character_label.add_theme_font_size_override("normal_font_size", ViewportLayout.scaled_font(20))
+	character_label.modulate = NAME_COLOR
+	dialogue_label.add_theme_font_override("normal_font", FONT)
 	dialogue_label.add_theme_font_size_override("normal_font_size", ViewportLayout.scaled_font(20))
+	dialogue_label.add_theme_color_override("default_color", BODY_COLOR)
 
 	var half_w := minf(vp.x * 0.46, 320.0 * s)
 	var choice_h := maxf(80.0, 40.0 * s)
@@ -115,10 +125,9 @@ func _apply_viewport_layout() -> void:
 	responses_menu.offset_bottom = choice_h * 0.5 - y_shift
 	responses_menu.add_theme_constant_override("separation", int(round(8.0 * s)))
 
-	if balloon.theme:
-		var theme := balloon.theme.duplicate()
-		theme.default_font_size = ViewportLayout.scaled_font(20)
-		balloon.theme = theme
+	var theme := DIALOGUE_THEME.duplicate()
+	theme.default_font_size = ViewportLayout.scaled_font(20)
+	balloon.theme = theme
 
 	_style_response_buttons()
 
@@ -127,6 +136,7 @@ func _style_response_buttons() -> void:
 	var s := ViewportLayout.effective_ui_scale()
 	for child in responses_menu.get_children():
 		if child is Button and child.visible:
+			child.add_theme_font_override("font", FONT)
 			child.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(20))
 			child.custom_minimum_size.y = maxf(48.0, 40.0 * s)
 

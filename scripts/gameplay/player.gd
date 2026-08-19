@@ -18,6 +18,8 @@ var tap_threshold = 10.0
 # Referencia al menú
 var settings_menu = null
 var welcome_popup: Node = null
+var _joystick: Node = null
+var _is_mobile := false
 
 @onready var _body_collision: CollisionShape2D = $CollisionShape2D
 
@@ -28,6 +30,10 @@ func _ready():
 	$AnimatedSprite2D.play("front_idle")
 	settings_menu = get_tree().get_first_node_in_group("settings_menu")
 	welcome_popup = get_tree().get_first_node_in_group("welcome_popup")
+	_is_mobile = OS.has_feature("mobile")
+	var ui := get_parent().get_node_or_null("UI")
+	if ui != null:
+		_joystick = ui.get_node_or_null("VirtualJoystick")
 	_apply_camera_zoom()
 	ViewportLayout.layout_changed.connect(_apply_camera_zoom)
 	call_deferred("_refresh_viewport_layout")
@@ -132,6 +138,10 @@ func _input(event):
 		
 	if DialogueController.input_locked:
 		return
+
+	# Mobile usa el stick fijo; tap-to-move tapaba el sprite.
+	if _is_mobile:
+		return
 	
 	# Detectar tap/clic en la pantalla
 	if event is InputEventScreenTouch or event is InputEventMouseButton:
@@ -144,29 +154,11 @@ func _input(event):
 			tap_position = null
 
 func _physics_process(_delta):
-	# Verificar si el menú de configuración está abierto
-	if settings_menu and settings_menu.is_open:
+	if _movement_blocked():
 		velocity = Vector2.ZERO
-		play_anim(0)
-		move_and_slide()
-		return
-
-	if welcome_popup and welcome_popup.has_method("is_blocking") and welcome_popup.call("is_blocking"):
-		velocity = Vector2.ZERO
-		play_anim(0)
-		move_and_slide()
-		return
-	
-	if DialogueController.input_locked:
-		velocity = Vector2.ZERO
-		play_anim(0)
-		move_and_slide()
-		return
-
-	if GameState.bollo_training_active:
-		velocity = Vector2.ZERO
-		is_moving_to_tap = false
-		tap_position = null
+		if GameState.bollo_training_active:
+			is_moving_to_tap = false
+			tap_position = null
 		play_anim(0)
 		move_and_slide()
 		return
@@ -186,17 +178,11 @@ func _physics_process(_delta):
 	if velocity != Vector2.ZERO:
 		velocity = velocity.normalized() * SPEED
 	else:
-		# Movimiento por tap/clic
-		if is_moving_to_tap and tap_position != null:
-			var target_position := _clamp_to_map(get_global_mouse_position())
-			var direction = (target_position - global_position).normalized()
-			var distance = global_position.distance_to(target_position)
-			
-			if distance > tap_threshold:
-				velocity = direction * SPEED
-			else:
-				is_moving_to_tap = false
-				tap_position = null
+		var joy := _joystick_vector()
+		if joy != Vector2.ZERO:
+			velocity = joy.normalized() * SPEED
+		elif not _is_mobile:
+			_apply_click_hold_move()
 
 	if velocity != Vector2.ZERO:
 		update_current_dir()
@@ -206,6 +192,38 @@ func _physics_process(_delta):
 
 	move_and_slide()
 	global_position = _clamp_to_map(global_position)
+
+
+func _movement_blocked() -> bool:
+	if settings_menu and settings_menu.is_open:
+		return true
+	if welcome_popup and welcome_popup.has_method("is_blocking") and welcome_popup.call("is_blocking"):
+		return true
+	if DialogueController.input_locked:
+		return true
+	return GameState.bollo_training_active
+
+
+func _apply_click_hold_move() -> void:
+	if not is_moving_to_tap or tap_position == null:
+		return
+	var target_position := _clamp_to_map(get_global_mouse_position())
+	var distance := global_position.distance_to(target_position)
+	if distance > tap_threshold:
+		velocity = (target_position - global_position).normalized() * SPEED
+	else:
+		is_moving_to_tap = false
+		tap_position = null
+
+
+func _joystick_vector() -> Vector2:
+	if _joystick == null or not is_instance_valid(_joystick):
+		return Vector2.ZERO
+	if not _joystick.visible:
+		return Vector2.ZERO
+	if _joystick.has_method("get_vector"):
+		return _joystick.get_vector()
+	return Vector2.ZERO
 
 func update_current_dir():
 	# Priorizar la dirección con mayor magnitud
