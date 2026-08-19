@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://d12p3xev5d6es" path="res://scenes/entities/places/laboratorio/laboratorio.tscn" id="20_w5ap8"]
 [ext_resource type="PackedScene" uid="uid://d1apwd78wbsra" path="res://scenes/entities/places/orbe_electrico/orbe_electrico.tscn" id="25_fwq8m"]
 [ext_resource type="PackedScene" uid="uid://bm3511735icgx" path="res://scenes/entities/signs/cartel_aldea/cartel_aldea.tscn" id="26_85sbw"]
-[ext_resource type="PackedScene" uid="uid://dq3t1ypigyvw8" path="res://assets/art/maps/web_maizena_rpg/Ciudad.tmx" id="28_oi80u"]
+[ext_resource type="PackedScene" path="res://scenes/world/maps/ciudad_map.tscn" id="28_oi80u"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/systems/time_day_system.gd" id="28_time"]
 [ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/systems/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]

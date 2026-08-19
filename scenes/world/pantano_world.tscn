@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://ciptywmmhmv6s" path="res://scenes/entities/signs/cartel_pantano/cartel_pantano.tscn" id="22_1vvnq"]
 [ext_resource type="PackedScene" uid="uid://drtr7yjmbc2k2" path="res://scenes/entities/props/piedra_grieta/piedra_grieta.tscn" id="23_8pxje"]
 [ext_resource type="PackedScene" uid="uid://b31bwtlmh52w6" path="res://scenes/entities/places/templo_sapos/templo_sapos.tscn" id="24_ir3by"]
-[ext_resource type="PackedScene" uid="uid://fpuli88gfo76" path="res://assets/art/maps/web_maizena_rpg/Pantano Sur.tmx" id="28_oi80u"]
+[ext_resource type="PackedScene" path="res://scenes/world/maps/pantano_sur_map.tscn" id="28_oi80u"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/systems/time_day_system.gd" id="28_time"]
 [ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/systems/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]

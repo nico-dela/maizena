@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dbfpvthkccyut" path="res://scenes/entities/npcs/bollo/bollo.tscn" id="9_pfsnn"]
 [ext_resource type="PackedScene" uid="uid://bfenr60g5ux07" path="res://scenes/entities/signs/cartel_arboles/cartel_arboles.tscn" id="21_6xm8j"]
 [ext_resource type="PackedScene" uid="uid://hsr2jst4mrr" path="res://scenes/entities/signs/cartel_playa_sur/cartel_playa_sur.tscn" id="27_13e4m"]
-[ext_resource type="PackedScene" uid="uid://b8wlpnu0gf1s1" path="res://assets/art/maps/web_maizena_rpg/Bosque encantado 1.tmx" id="28_oi80u"]
+[ext_resource type="PackedScene" path="res://scenes/world/maps/bosque_encantado_map.tscn" id="28_oi80u"]
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/systems/time_day_system.gd" id="28_time"]
 [ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/systems/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]
