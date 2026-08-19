@@ -29,7 +29,7 @@ static var known_static_ids: Dictionary = {}
 static func prepare() -> void:
 	_update_dependency_timer = Timer.new()
 	_update_dependency_timer.timeout.connect(_on_dependency_timer_timeout)
-	DMPlugin.instance.add_child(_update_dependency_timer)
+	(Engine.get_main_loop() as SceneTree).root.add_child(_update_dependency_timer)
 
 	var current_files: PackedStringArray = _get_dialogue_files_in_filesystem()
 	for file: String in current_files:
@@ -61,14 +61,18 @@ static func reimport_files(and_files: PackedStringArray = []) -> void:
 	if _files_marked_for_reimport.is_empty(): return
 
 	# Guard against recursive reimport calls. Don't mark for reimport unless attempted once.
-	var filesystem: EditorFileSystem = EditorInterface.get_resource_filesystem()
+	var editor_interface: Object = Engine.get_singleton("EditorInterface")
+	if editor_interface == null:
+		_files_marked_for_reimport.clear()
+		return
+	var filesystem: Object = editor_interface.get_resource_filesystem()
 	if filesystem.is_scanning():
 		# Defer the reimport to the next idle frame.
 		_schedule_deferred_reimport.call_deferred()
 		return
 
 	# Attempt reimport immediately if not busy.
-	EditorInterface.get_resource_filesystem().reimport_files(_files_marked_for_reimport)
+	filesystem.reimport_files(_files_marked_for_reimport)
 	_files_marked_for_reimport.clear()
 
 
@@ -77,7 +81,11 @@ static func _schedule_deferred_reimport() -> void:
 	# Wait before trying again.
 	if _files_marked_for_reimport.is_empty(): return
 
-	var filesystem: EditorFileSystem = EditorInterface.get_resource_filesystem()
+	var editor_interface: Object = Engine.get_singleton("EditorInterface")
+	if editor_interface == null:
+		_files_marked_for_reimport.clear()
+		return
+	var filesystem: Object = editor_interface.get_resource_filesystem()
 	if filesystem.is_scanning():
 		# Still working on it. Try again later.
 		await Engine.get_main_loop().create_timer(0.1).timeout
@@ -139,10 +147,12 @@ static func get_files_with_errors() -> Array[Dictionary]:
 static func queue_updating_dependencies(of_path: String) -> void:
 	if _update_dependency_paths.has(of_path): return
 
-	_update_dependency_timer.stop()
+	if is_instance_valid(_update_dependency_timer):
+		_update_dependency_timer.stop()
 	if not _update_dependency_paths.has(of_path):
 		_update_dependency_paths.append(of_path)
-	_update_dependency_timer.start(0.5)
+	if is_instance_valid(_update_dependency_timer):
+		_update_dependency_timer.start(0.5)
 
 
 ## Update any references to a file path that has moved
@@ -190,7 +200,8 @@ static func _get_dialogue_files_in_filesystem(path: String = "res://") -> Packed
 
 
 static func _on_dependency_timer_timeout() -> void:
-	_update_dependency_timer.stop()
+	if is_instance_valid(_update_dependency_timer):
+		_update_dependency_timer.stop()
 	var import_regex: RegEx = RegEx.create_from_string("import \"(?<path>.*?)\"")
 	var file: FileAccess
 	var found_imports: Array[RegExMatch]
