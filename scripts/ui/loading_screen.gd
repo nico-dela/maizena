@@ -116,7 +116,7 @@ func _process(_delta: float) -> void:
 
 	if _loaded_scene != null and elapsed >= MIN_DISPLAY_SEC:
 		set_process(false)
-		get_tree().change_scene_to_packed(_loaded_scene)
+		_change_to_loaded_scene()
 
 
 func _process_web_display() -> void:
@@ -138,7 +138,24 @@ func _process_web_display() -> void:
 func _finish_loading() -> void:
 	if _loaded_scene == null:
 		return
-	get_tree().change_scene_to_packed(_loaded_scene)
+	_change_to_loaded_scene()
+
+
+func _change_to_loaded_scene() -> void:
+	if _loaded_scene == null:
+		_show_load_error("No se pudo cargar la escena principal.")
+		return
+
+	var err := get_tree().change_scene_to_packed(_loaded_scene)
+	if err != OK:
+		push_error("LoadingScreen: change_scene_to_packed falló (%s)" % error_string(err))
+		_show_load_error("Error al iniciar el juego.")
+
+
+func _show_load_error(message: String) -> void:
+	progress_bar.value = 0.0
+	status_label.text = message
+	tip_label.text = "Revisá la consola del navegador."
 
 
 func _now_sec() -> float:
