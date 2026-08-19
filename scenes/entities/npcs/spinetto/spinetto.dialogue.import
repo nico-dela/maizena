@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bcwpac5ftq6lo"
+path="res://.godot/imported/spinetto.dialogue-e62cf0eb6da6b11e1ebd57ebc1e69502.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/spinetto/spinetto.dialogue"
+dest_files=["res://.godot/imported/spinetto.dialogue-e62cf0eb6da6b11e1ebd57ebc1e69502.tres"]
+
+[params]
+
+defaults=true

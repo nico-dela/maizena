@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bg1aqbsjrs2lt"
+path="res://.godot/imported/laboratorio.dialogue-893b2e079c929c7daf0df8bb2b012c7f.tres"
+
+[deps]
+
+source_file="res://scenes/entities/places/laboratorio/laboratorio.dialogue"
+dest_files=["res://.godot/imported/laboratorio.dialogue-893b2e079c929c7daf0df8bb2b012c7f.tres"]
+
+[params]
+
+defaults=true

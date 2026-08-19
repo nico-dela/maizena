@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://dxnmouqpahdmh"
+path="res://.godot/imported/michis.dialogue-c966f4088a604507fb3f404bfe8fdfb9.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/michis/michis.dialogue"
+dest_files=["res://.godot/imported/michis.dialogue-c966f4088a604507fb3f404bfe8fdfb9.tres"]
+
+[params]
+
+defaults=true

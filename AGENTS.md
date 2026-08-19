@@ -208,11 +208,11 @@ LLM-generated code is acceptable only when it:
 Runtime boot sequence:
 
 ```
-loading_screen.tscn  →  main_scene.tscn  →  new_world.tscn + player + UI
+scenes/boot/loading_screen.tscn → scenes/boot/main_scene.tscn → bosque_encantado.tscn + player + UI
 ```
 
-- `run/main_scene` in `project.godot` = `res://scenes/loading_screen.tscn`
-- Maps swap via `MainScene.travel_to()` between `new_world.tscn`, `ciudad_world.tscn`, and `pantano_world.tscn`
+- `run/main_scene` in `project.godot` = `res://scenes/boot/loading_screen.tscn`
+- Maps swap via `MainScene.travel_to()` between `bosque_encantado.tscn`, `ciudad_world.tscn`, and `pantano_world.tscn`
 - **LLM rule:** Always test from F5 or `loading_screen.tscn`. Do not run a world scene in isolation — it lacks nodes from `main_scene`.
 
 ---
@@ -243,10 +243,10 @@ loading_screen.tscn  →  main_scene.tscn  →  new_world.tscn + player + UI
 
 Each map scene (`new_world`, `ciudad_world`, `pantano_world`) shares this layout:
 
-- Root `NewWorld` with `scripts/world_map.gd` (`camera_limit_*`)
-- Child `TimeOfDaySystem` (`scripts/time_day_system.gd` — the only project `class_name`) holding `CanvasModulate` + `WeatherVisualSystem`
+- Root `NewWorld` with `scripts/systems/world_map.gd` (`camera_limit_*`)
+- Child `TimeOfDaySystem` (`scripts/systems/time_day_system.gd` — the only project `class_name`) holding `CanvasModulate` + `WeatherVisualSystem`
 - Sibling systems: `ResidueSystem`, `WorldAutonomySystem`, `NpcPresenceSystem`
-- TMX instance from `assets/WEB MAIZENA RPG/` (YATI import) + `InteractiveObjects/` and map hotspots
+- TMX instance from `assets/art/maps/web_maizena_rpg/` (YATI import) + `InteractiveObjects/` and map hotspots
 
 **LLM rule:** Edit tile data in Tiled (`.tmx`), reimport via YATI. Do not run the legacy `merge_world_systems.gd` tool for these maps.
 
@@ -260,13 +260,13 @@ Each map scene (`new_world`, `ciudad_world`, `pantano_world`) shares this layout
 - New public `GameState` methods → Spanish; new system scripts → English
 
 **Base classes:**
-- NPCs/signs extend `scripts/interactive_object.gd` (StaticBody2D + dialogue + schedules)
-- Exception: `scenes/interactive_objects/hongos.gd` (Area2D pickup)
-- Minigame: `scripts/bollo_fight_minigame.gd` — `enum UiPhase` + signal `finished(victory: bool)`
+- NPCs/signs extend `scripts/gameplay/interactive_object.gd` (StaticBody2D + dialogue + schedules)
+- Exception: `scenes/entities/props/hongos/hongos.gd` (Area2D pickup)
+- Minigame: `scripts/gameplay/bollo_fight_minigame.gd` — `enum UiPhase` + signal `finished(victory: bool)`
 
 **Existing groups (do not invent):** `player`, `dialogue`, `time_system`, `world_npc`, `settings_menu`, `welcome_popup`, `music_manager`, `weather_visual_system`
 
-**Responsive UI:** New UI must use `ViewportLayout` (`effective_ui_scale()`, signal `layout_changed`) — see `scripts/song_banner.gd` as reference.
+**Responsive UI:** New UI must use `ViewportLayout` (`effective_ui_scale()`, signal `layout_changed`) — see `scripts/ui/song_banner.gd` as reference.
 
 **Input gating:** Respect `DialogueController.input_locked`, `GameState.bollo_training_active`, and pause state from settings/welcome popups.
 
@@ -276,8 +276,8 @@ Each map scene (`new_world`, `ciudad_world`, `pantano_world`) shares this layout
 
 ## E. Dialogue (first-class code)
 
-- Dialogue files live in `dialogues/` (`.dialogue` format)
-- Custom balloon: `dialogue balloon/balloon.tscn`
+- Dialogue files live next to their entity (`scenes/entities/{npcs|signs|places|props}/{name}/{name}.dialogue`)
+- Custom balloon: `scenes/ui/dialogue_balloon/balloon.tscn` + `assets/art/ui/themes/dialogue_theme.tres`
 - Quest changes go through `.dialogue` mutations + autoload methods — do not duplicate quest logic in NPC scripts
 - Do not edit `addons/dialogue_manager/` except for approved upgrades
 
@@ -293,15 +293,33 @@ do HongosSpawner.spawn_hongos()
 ## F. Folder Layout
 
 ```
-autoload/     → project singletons
-scripts/      → gameplay/UI (not autoload)
-scenes/       → scenes + interactive_objects/ + world_resources/
-dialogues/    → .dialogue resources
-assets/       → art/audio (soundtrack/, battle/, world_props/, etc.)
-tools/        → editor CLI (merge, export, web patch)
-web_build/    → Netlify deploy artifact (regenerate via export; see §J)
-netlify/      → serverless functions (metrics); netlify.toml = COOP/COEP + cache headers
-addons/       → dialogue_manager only
+assets/
+  fonts/
+  audio/music/
+  audio/sfx/
+  art/battle|characters|tilesets|props|ui/
+  art/maps/web_maizena_rpg/
+  docs/briefs/
+scenes/
+  boot/                  loading_screen, main_scene
+  ui/                    settings, welcome, song_banner, minimap, dialogue_balloon/, virtual_joystick
+  world/                 bosque_encantado, ciudad_world, pantano_world, world_resources/
+  minigames/             bollo_fight_minigame
+  gameplay/              player.tscn, music_manager.tscn
+  entities/
+    npcs/{name}/         .tscn + .dialogue
+    signs/cartel_*/      .tscn + .dialogue
+    places/              laboratorio, templo_sapos, orbe_electrico
+    props/               hongos (+ hongos.gd), bicicleta, piedra_grieta
+scripts/
+  systems/               time, weather, residue, autonomy, npc_presence, era_system, world_map, map_hotspot
+  ui/                    settings, welcome, song_banner, loading_screen, virtual_joystick, minimap, player_settings
+  gameplay/              player, interactive_object, bollo_fight, music_manager, main_scene
+autoload/                project singletons
+tools/                   editor CLI (merge, export, web patch)
+web_build/               Netlify deploy artifact (regenerate via export; see §J)
+netlify/                 serverless functions (metrics); netlify.toml = COOP/COEP + cache headers
+addons/                  dialogue_manager + YATI (Tiled import)
 ```
 
 ---
@@ -339,13 +357,13 @@ When implementing a feature, read these first:
 | Task | Reference file |
 |------|----------------|
 | Quest/inventory | `autoload/game_state.gd` |
-| Interactive NPC | `scripts/interactive_object.gd` |
+| Interactive NPC | `scripts/gameplay/interactive_object.gd` |
 | Persistence | `autoload/world_state.gd`, `autoload/maizena_meta.gd` |
-| Minigame | `scripts/bollo_fight_minigame.gd` |
-| Player/input | `scripts/player.gd` |
-| Music | `scripts/music_manager.gd` |
+| Minigame | `scripts/gameplay/bollo_fight_minigame.gd` |
+| Player/input | `scripts/gameplay/player.gd` |
+| Music | `scripts/gameplay/music_manager.gd` |
 | Responsive UI | `autoload/viewport_layout.gd` |
-| World time/weather | `scripts/time_day_system.gd`, `scripts/world_map.gd`, `autoload/cordoba_weather.gd` |
+| World time/weather | `scripts/systems/time_day_system.gd`, `scripts/systems/world_map.gd`, `autoload/cordoba_weather.gd` |
 
 ---
 
@@ -364,10 +382,10 @@ Production flow:
 **LLM rules for `web_build/`:**
 - Do **not** hand-edit `index.pck`, `.wasm`, `.js`, or other export binaries
 - Do **not** commit `web_build/` without running the patch script after export
-- Source changes (`.gd`, `.tscn`, `assets/`, `dialogues/`) are **not live** until re-exported and pushed
+- Source changes (`.gd`, `.tscn`, `assets/`, entity `.dialogue` files) are **not live** until re-exported and pushed
 - COOP/COEP and cache headers live in `netlify.toml` — do not duplicate without reason
 
-**Re-export when:** Any change in `scripts/`, `scenes/`, `autoload/`, `dialogues/`, or `assets/` must reach web users.
+**Re-export when:** Any change in `scripts/`, `scenes/`, `autoload/`, or `assets/` must reach web users.
 
 ---
 
@@ -376,7 +394,7 @@ Production flow:
 **Do:**
 - Read reference files (§I) before implementing
 - Use existing groups, signals, and autoload APIs
-- Extend `interactive_object.gd` for new NPCs/signs
+- Extend `scripts/gameplay/interactive_object.gd` for new NPCs/signs
 - Use `ViewportLayout` for new UI
 - Run smoke test after gameplay changes
 - Re-export web build when shipping to production

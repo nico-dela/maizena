@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://dbfpvthkccyut"]
+
+[ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/gameplay/interactive_object.gd" id="1_1fh6r"]
+[ext_resource type="Resource" uid="uid://n1iae167vlu1" path="res://scenes/entities/npcs/bollo/bollo.dialogue" id="2_xc7e8"]
+[ext_resource type="Texture2D" uid="uid://bco6302npuaym" path="res://assets/art/characters/BOLLO.png" id="3_1t43f"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jxmtf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hoaxm"]
+atlas = ExtResource("3_1t43f")
+region = Rect2(0, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgugo"]
+atlas = ExtResource("3_1t43f")
+region = Rect2(16, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2peqk"]
+atlas = ExtResource("3_1t43f")
+region = Rect2(32, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gooxv"]
+atlas = ExtResource("3_1t43f")
+region = Rect2(48, 0, 16, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1aedo"]
+atlas = ExtResource("3_1t43f")
+region = Rect2(64, 0, 16, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2rou7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hoaxm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgugo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2peqk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gooxv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1aedo")
+}],
+"loop": 1,
+"name": &"bollo",
+"speed": 5.0
+}]
+
+[node name="StaticBody2D" type="StaticBody2D" unique_id=1033152148 groups=["dialogue"]]
+script = ExtResource("1_1fh6r")
+dialogue = ExtResource("2_xc7e8")
+npc_id = "bollo"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
+shape = SubResource("CircleShape2D_jxmtf")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2088313280]
+sprite_frames = SubResource("SpriteFrames_2rou7")
+animation = &"bollo"
+autoplay = "bollo"
+frame_progress = 0.63938123

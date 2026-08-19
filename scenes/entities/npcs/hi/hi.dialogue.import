@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://crkpbmy0vpqv1"
+path="res://.godot/imported/hi.dialogue-a7c550b726f119b172dcf8e5e95e80f6.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/hi/hi.dialogue"
+dest_files=["res://.godot/imported/hi.dialogue-a7c550b726f119b172dcf8e5e95e80f6.tres"]
+
+[params]
+
+defaults=true

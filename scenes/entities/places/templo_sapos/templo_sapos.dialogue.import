@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://brw3r6ggteb00"
+path="res://.godot/imported/templo_sapos.dialogue-5ad443f392123e2c0f1dc8fdacbdd022.tres"
+
+[deps]
+
+source_file="res://scenes/entities/places/templo_sapos/templo_sapos.dialogue"
+dest_files=["res://.godot/imported/templo_sapos.dialogue-5ad443f392123e2c0f1dc8fdacbdd022.tres"]
+
+[params]
+
+defaults=true

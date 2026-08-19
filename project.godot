@@ -15,12 +15,12 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Archipiélago Maizena"
-run/main_scene="res://scenes/loading_screen.tscn"
+run/main_scene="res://scenes/boot/loading_screen.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 run/max_fps=20
 boot_splash/bg_color=Color(0.768627, 0.305882, 0.513726, 1)
 boot_splash/stretch_mode=0
-config/icon="res://assets/ui/logos/Mascara.svg"
+config/icon="res://assets/art/ui/logos/Mascara.svg"
 
 [autoload]
 
@@ -36,7 +36,7 @@ ViewportLayout="*res://autoload/viewport_layout.gd"
 
 [dialogue_manager]
 
-runtime/balloon_path="res://dialogue balloon//balloon.tscn"
+runtime/balloon_path="res://scenes/ui/dialogue_balloon/balloon.tscn"
 
 [display]
 
@@ -44,7 +44,7 @@ window/size/viewport_width=1216
 window/size/viewport_height=1024
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/main_scene="res://scenes/world.scn"
+window/main_scene="res://scenes/world/world.scn"
 window/emulate_touch_from_mouse=true
 
 [dotnet]
@@ -100,7 +100,7 @@ ui_world_news={
 
 [internationalization]
 
-locale/translations_pot_files=PackedStringArray("?", "res://dialogues/cartel_sanjin.dialogue", "res://dialogues/ranancio.dialogue", "res://dialogues/bicicleta.dialogue", "res://dialogues/boji.dialogue", "res://dialogues/bollo.dialogue", "res://dialogues/cartel_aldea.dialogue", "res://dialogues/cartel_arboles.dialogue", "res://dialogues/cartel_bollo.dialogue", "res://dialogues/cartel_laboratorio.dialogue", "res://dialogues/cartel_pantano.dialogue", "res://dialogues/cartel_playa_sur.dialogue", "res://dialogues/el_viejo.dialogue", "res://dialogues/hi.dialogue", "res://dialogues/kaeru.dialogue", "res://dialogues/laboratorio.dialogue", "res://dialogues/michis.dialogue", "res://dialogues/orbe_electrico.dialogue", "res://dialogues/piedra_grieta.dialogue", "res://dialogues/silueto_1.dialogue", "res://dialogues/silueto_2.dialogue", "res://dialogues/spinetto.dialogue", "res://dialogues/templo_sapos.dialogue", "res://dialogues/hongos.dialogue", "res://dialogues/cartel_casa.dialogue")
+locale/translations_pot_files=PackedStringArray("?", "res://scenes/entities/signs/cartel_sanjin/cartel_sanjin.dialogue", "res://scenes/entities/npcs/ranancio/ranancio.dialogue", "res://scenes/entities/props/bicicleta/bicicleta.dialogue", "res://scenes/entities/npcs/boji/boji.dialogue", "res://scenes/entities/npcs/bollo/bollo.dialogue", "res://scenes/entities/signs/cartel_aldea/cartel_aldea.dialogue", "res://scenes/entities/signs/cartel_arboles/cartel_arboles.dialogue", "res://scenes/entities/signs/cartel_bollo/cartel_bollo.dialogue", "res://scenes/entities/signs/cartel_laboratorio/cartel_laboratorio.dialogue", "res://scenes/entities/signs/cartel_pantano/cartel_pantano.dialogue", "res://scenes/entities/signs/cartel_playa_sur/cartel_playa_sur.dialogue", "res://scenes/entities/npcs/el_viejo/el_viejo.dialogue", "res://scenes/entities/npcs/hi/hi.dialogue", "res://scenes/entities/npcs/kaeru/kaeru.dialogue", "res://scenes/entities/places/laboratorio/laboratorio.dialogue", "res://scenes/entities/npcs/michis/michis.dialogue", "res://scenes/entities/places/orbe_electrico/orbe_electrico.dialogue", "res://scenes/entities/props/piedra_grieta/piedra_grieta.dialogue", "res://scenes/entities/npcs/silueto_1/silueto_1.dialogue", "res://scenes/entities/npcs/silueto_2/silueto_2.dialogue", "res://scenes/entities/npcs/spinetto/spinetto.dialogue", "res://scenes/entities/places/templo_sapos/templo_sapos.dialogue", "res://scenes/entities/props/hongos/hongos.dialogue")
 
 [maizena]
 

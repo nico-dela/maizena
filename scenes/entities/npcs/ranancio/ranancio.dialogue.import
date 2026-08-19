@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://pa6yqs7u10p7"
+path="res://.godot/imported/ranancio.dialogue-2b679336a0586301a37cd3e570d09383.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/ranancio/ranancio.dialogue"
+dest_files=["res://.godot/imported/ranancio.dialogue-2b679336a0586301a37cd3e570d09383.tres"]
+
+[params]
+
+defaults=true

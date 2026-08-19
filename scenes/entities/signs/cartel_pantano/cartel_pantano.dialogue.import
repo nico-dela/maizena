@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://b8or3aq1bh23g"
+path="res://.godot/imported/cartel_pantano.dialogue-2d8162952f28a44c0230a345ebd52e57.tres"
+
+[deps]
+
+source_file="res://scenes/entities/signs/cartel_pantano/cartel_pantano.dialogue"
+dest_files=["res://.godot/imported/cartel_pantano.dialogue-2d8162952f28a44c0230a345ebd52e57.tres"]
+
+[params]
+
+defaults=true

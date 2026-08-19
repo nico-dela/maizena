@@ -16,7 +16,7 @@ var silueto1_chose_defend := false
 var silueto1_chose_silence := false
 var silueto1_chose_ask := false
 
-const BOLLO_FIGHT_SCENE_PATH := "res://scenes/bollo_fight_minigame.tscn"
+const BOLLO_FIGHT_SCENE_PATH := "res://scenes/minigames/bollo_fight_minigame.tscn"
 
 func get_npc_talk_count(id: String) -> int:
 	return int(npc_talk_counts.get(id, 0))

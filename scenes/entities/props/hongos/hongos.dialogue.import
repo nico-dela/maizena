@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://basmobrfjk3q3"
+path="res://.godot/imported/hongos.dialogue-59a50972512387884f0488ae9ed157ae.tres"
+
+[deps]
+
+source_file="res://scenes/entities/props/hongos/hongos.dialogue"
+dest_files=["res://.godot/imported/hongos.dialogue-59a50972512387884f0488ae9ed157ae.tres"]
+
+[params]
+
+defaults=true

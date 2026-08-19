@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://n1iae167vlu1"
+path="res://.godot/imported/bollo.dialogue-3028354999b460e97574006e7dd4d6a9.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/bollo/bollo.dialogue"
+dest_files=["res://.godot/imported/bollo.dialogue-3028354999b460e97574006e7dd4d6a9.tres"]
+
+[params]
+
+defaults=true

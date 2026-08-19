@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cxsb6sns4b02l"
+path="res://.godot/imported/el_viejo.dialogue-228ef592e12433fff9dfc1dc2114ba60.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/el_viejo/el_viejo.dialogue"
+dest_files=["res://.godot/imported/el_viejo.dialogue-228ef592e12433fff9dfc1dc2114ba60.tres"]
+
+[params]
+
+defaults=true

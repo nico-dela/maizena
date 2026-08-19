@@ -1,9 +1,9 @@
 extends SceneTree
 ## Restaura nodos de sistemas desde world.scn de HEAD sobre el mapa actual.
 
-const CURRENT_SCENE := "res://scenes/world.scn"
+const CURRENT_SCENE := "res://scenes/world/world.scn"
 const REFERENCE_SCENE := "res://tools/_world_head_reference.scn"
-const OUTPUT_SCENE := "res://scenes/world.scn"
+const OUTPUT_SCENE := "res://scenes/world/world.scn"
 
 const SYSTEM_NODE_NAMES := [
 	"CanvasModulate",

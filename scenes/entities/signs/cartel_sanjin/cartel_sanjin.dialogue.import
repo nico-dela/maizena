@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://df3qxy1b8rrsc"
+path="res://.godot/imported/cartel_sanjin.dialogue-d1ebafc6de5a5320d45bc077a0768838.tres"
+
+[deps]
+
+source_file="res://scenes/entities/signs/cartel_sanjin/cartel_sanjin.dialogue"
+dest_files=["res://.godot/imported/cartel_sanjin.dialogue-d1ebafc6de5a5320d45bc077a0768838.tres"]
+
+[params]
+
+defaults=true

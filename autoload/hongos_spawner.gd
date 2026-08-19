@@ -2,7 +2,7 @@ extends Node
 
 ## Spawnea hongos en un mapa al azar, sobre tiles caminables (Ground/Caminos).
 
-const HONGOS_SCENE := preload("res://scenes/interactive_objects/hongos.tscn")
+const HONGOS_SCENE := preload("res://scenes/entities/props/hongos/hongos.tscn")
 const WORLD_NODE_NAME := "NewWorld"
 const MAX_ATTEMPTS := 48
 const EDGE_MARGIN_CELLS := 2
@@ -11,17 +11,17 @@ const MIN_PLAYER_DISTANCE := 96.0
 const MAPS: Array[Dictionary] = [
 	{
 		"id": "bosque_encantado",
-		"path": "res://scenes/bosque_encantado.tscn",
+		"path": "res://scenes/world/bosque_encantado.tscn",
 		"hint": "el bosque",
 	},
 	{
 		"id": "ciudad_world",
-		"path": "res://scenes/ciudad_world.tscn",
+		"path": "res://scenes/world/ciudad_world.tscn",
 		"hint": "la ciudad",
 	},
 	{
 		"id": "pantano_world",
-		"path": "res://scenes/pantano_world.tscn",
+		"path": "res://scenes/world/pantano_world.tscn",
 		"hint": "el pantano",
 	},
 ]
@@ -140,12 +140,12 @@ func _resolve_world_scene_path(world: Node) -> String:
 		return path
 	# Fallback: comparar por nodos típicos de cada mapa.
 	if world.get_node_or_null("InteractiveObjects/el_viejo") != null:
-		return "res://scenes/pantano_world.tscn"
+		return "res://scenes/world/pantano_world.tscn"
 	if world.get_node_or_null("InteractiveObjects/boji") != null:
-		return "res://scenes/bosque_encantado.tscn"
+		return "res://scenes/world/bosque_encantado.tscn"
 	if world.get_node_or_null("InteractiveObjects/spinetto") != null \
 		or world.get_node_or_null("InteractiveObjects/michis") != null:
-		return "res://scenes/ciudad_world.tscn"
+		return "res://scenes/world/ciudad_world.tscn"
 	return ""
 
 

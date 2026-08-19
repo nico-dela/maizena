@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://d155cjm3ai77v"
+path="res://.godot/imported/boji.dialogue-5191ed0983a0d683259fc10eea6da695.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/boji/boji.dialogue"
+dest_files=["res://.godot/imported/boji.dialogue-5191ed0983a0d683259fc10eea6da695.tres"]
+
+[params]
+
+defaults=true

@@ -1,8 +1,8 @@
 extends SceneTree
 
-const WORLD_SCENE := "res://scenes/world.tscn"
-const TILESET_DIR := "res://scenes/world_resources"
-const OUTPUT_SCENE := "res://scenes/world.scn"
+const WORLD_SCENE := "res://scenes/world/world.tscn"
+const TILESET_DIR := "res://scenes/world/world_resources"
+const OUTPUT_SCENE := "res://scenes/world/world.scn"
 
 
 func _initialize() -> void:

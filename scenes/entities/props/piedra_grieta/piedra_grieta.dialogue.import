@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://b1s4j6u75wsah"
+path="res://.godot/imported/piedra_grieta.dialogue-0a4a9d8d4df64d67ccdd73d064612095.tres"
+
+[deps]
+
+source_file="res://scenes/entities/props/piedra_grieta/piedra_grieta.dialogue"
+dest_files=["res://.godot/imported/piedra_grieta.dialogue-0a4a9d8d4df64d67ccdd73d064612095.tres"]
+
+[params]
+
+defaults=true

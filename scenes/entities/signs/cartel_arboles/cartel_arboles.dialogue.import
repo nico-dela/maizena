@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://cynlg0h2pwi0w"
+path="res://.godot/imported/cartel_arboles.dialogue-ef3e4b09bc6d7a743b949e0982bae20e.tres"
+
+[deps]
+
+source_file="res://scenes/entities/signs/cartel_arboles/cartel_arboles.dialogue"
+dest_files=["res://.godot/imported/cartel_arboles.dialogue-ef3e4b09bc6d7a743b949e0982bae20e.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://mnby6roko3xt"
+path="res://.godot/imported/kaeru.dialogue-001c6950927dee115eec91552cb914ff.tres"
+
+[deps]
+
+source_file="res://scenes/entities/npcs/kaeru/kaeru.dialogue"
+dest_files=["res://.godot/imported/kaeru.dialogue-001c6950927dee115eec91552cb914ff.tres"]
+
+[params]
+
+defaults=true

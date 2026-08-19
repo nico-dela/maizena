@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://daqg3ubqoucgj"
+path="res://.godot/imported/orbe_electrico.dialogue-7029792731134c54cb34007315bc4749.tres"
+
+[deps]
+
+source_file="res://scenes/entities/places/orbe_electrico/orbe_electrico.dialogue"
+dest_files=["res://.godot/imported/orbe_electrico.dialogue-7029792731134c54cb34007315bc4749.tres"]
+
+[params]
+
+defaults=true

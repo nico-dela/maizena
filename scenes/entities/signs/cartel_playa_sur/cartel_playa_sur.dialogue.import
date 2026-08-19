@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://fxwwifkkxtum"
+path="res://.godot/imported/cartel_playa_sur.dialogue-72f77c06e1dba38037fa87d170dce42a.tres"
+
+[deps]
+
+source_file="res://scenes/entities/signs/cartel_playa_sur/cartel_playa_sur.dialogue"
+dest_files=["res://.godot/imported/cartel_playa_sur.dialogue-72f77c06e1dba38037fa87d170dce42a.tres"]
+
+[params]
+
+defaults=true

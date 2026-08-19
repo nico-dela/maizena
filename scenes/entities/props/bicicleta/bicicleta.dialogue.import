@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=15
+type="Resource"
+uid="uid://bghrotqrmyxeb"
+path="res://.godot/imported/bicicleta.dialogue-a1e55c6f4cf1bf17b9bfe0c1bce5381e.tres"
+
+[deps]
+
+source_file="res://scenes/entities/props/bicicleta/bicicleta.dialogue"
+dest_files=["res://.godot/imported/bicicleta.dialogue-a1e55c6f4cf1bf17b9bfe0c1bce5381e.tres"]
+
+[params]
+
+defaults=true

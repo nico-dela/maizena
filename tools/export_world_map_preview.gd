@@ -1,7 +1,7 @@
 extends SceneTree
 
-const WORLD_SCENE := "res://scenes/bosque_encantado.tscn"
-const OUTPUT_PATH := "res://assets/ui/world_map_preview.png"
+const WORLD_SCENE := "res://scenes/world/bosque_encantado.tscn"
+const OUTPUT_PATH := "res://assets/art/ui/world_map_preview.png"
 const PREVIEW_SIZE := 512
 const FIT_MARGIN := 1.12
 const PAN_OFFSET := Vector2.ZERO
