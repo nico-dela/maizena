@@ -23,7 +23,7 @@
 size = Vector2(32, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_house_w"]
-size = Vector2(192, 112)
+size = Vector2(160, 112)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_house_m1"]
 size = Vector2(144, 128)
@@ -175,7 +175,7 @@ shape = SubResource("RectangleShape2D_bosque")
 [node name="HouseColliders" type="Node2D" parent="."]
 
 [node name="HouseWorldBuilding" type="StaticBody2D" parent="HouseColliders"]
-position = Vector2(240, 488)
+position = Vector2(224, 488)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseWorldBuilding"]
 shape = SubResource("RectangleShape2D_house_w")
