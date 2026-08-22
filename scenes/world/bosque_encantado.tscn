@@ -66,7 +66,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="hi" parent="InteractiveObjects" unique_id=1084350328 instance=ExtResource("8_xdcm8")]
 z_index = 1
-position = Vector2(375, 396)
+position = Vector2(456, 360)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.5,
 "probability": 0.35,

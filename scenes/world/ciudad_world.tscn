@@ -9,7 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://buksmhs0h357c" path="res://scenes/entities/npcs/silueto_2/silueto_2.tscn" id="12_br1hn"]
 [ext_resource type="PackedScene" uid="uid://b7618xys4wxpk" path="res://scenes/entities/npcs/michis/michis.tscn" id="13_kksiw"]
 [ext_resource type="PackedScene" uid="uid://po3g34mvkncy" path="res://scenes/entities/signs/cartel_bollo/cartel_bollo.tscn" id="18_6pkd5"]
+[ext_resource type="PackedScene" uid="uid://dtvxthg8v012b" path="res://scenes/entities/props/bicicleta/bicicleta.tscn" id="19_bici"]
 [ext_resource type="PackedScene" uid="uid://d12p3xev5d6es" path="res://scenes/entities/places/laboratorio/laboratorio.tscn" id="20_w5ap8"]
+[ext_resource type="PackedScene" uid="uid://b16c7l0dwvw5b" path="res://scenes/entities/signs/cartel_laboratorio/cartel_laboratorio.tscn" id="21_cartel_lab"]
 [ext_resource type="PackedScene" uid="uid://d1apwd78wbsra" path="res://scenes/entities/places/orbe_electrico/orbe_electrico.tscn" id="25_fwq8m"]
 [ext_resource type="PackedScene" uid="uid://bm3511735icgx" path="res://scenes/entities/signs/cartel_aldea/cartel_aldea.tscn" id="26_85sbw"]
 [ext_resource type="PackedScene" path="res://scenes/world/maps/ciudad_map.tscn" id="28_oi80u"]
@@ -19,6 +21,21 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bosque"]
 size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_house_w"]
+size = Vector2(192, 112)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_house_m1"]
+size = Vector2(144, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_house_m2"]
+size = Vector2(128, 112)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_house_m3"]
+size = Vector2(144, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_house_s"]
+size = Vector2(32, 48)
 
 [node name="NewWorld" type="Node2D" unique_id=1636943568]
 script = ExtResource("28_world")
@@ -117,9 +134,19 @@ z_index = 1
 position = Vector2(268, 545)
 spawn_schedules = Array[Dictionary]([])
 
-[node name="laboratorio" parent="InteractiveObjects" unique_id=423673712 instance=ExtResource("20_w5ap8")]
+[node name="bicicleta" parent="InteractiveObjects" instance=ExtResource("19_bici")]
 z_index = 1
+position = Vector2(392, 552)
+spawn_schedules = Array[Dictionary]([])
+
+[node name="laboratorio" parent="InteractiveObjects" unique_id=423673712 instance=ExtResource("20_w5ap8")]
+z_index = 0
 position = Vector2(496, 320)
+spawn_schedules = Array[Dictionary]([])
+
+[node name="cartel_laboratorio" parent="InteractiveObjects" instance=ExtResource("21_cartel_lab")]
+z_index = 1
+position = Vector2(496, 268)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="orbe_electrico" parent="InteractiveObjects" unique_id=382298321 instance=ExtResource("25_fwq8m")]
@@ -144,3 +171,47 @@ destination_label = "Bosque"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ciudad/BosqueHotspot" unique_id=456793747]
 shape = SubResource("RectangleShape2D_bosque")
+
+[node name="HouseColliders" type="Node2D" parent="."]
+
+[node name="HouseWorldBuilding" type="StaticBody2D" parent="HouseColliders"]
+position = Vector2(240, 488)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseWorldBuilding"]
+shape = SubResource("RectangleShape2D_house_w")
+
+[node name="HouseMurallaA" type="StaticBody2D" parent="HouseColliders"]
+position = Vector2(248, 784)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaA"]
+shape = SubResource("RectangleShape2D_house_m1")
+
+[node name="HouseMurallaB" type="StaticBody2D" parent="HouseColliders"]
+position = Vector2(416, 792)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaB"]
+shape = SubResource("RectangleShape2D_house_m2")
+
+[node name="HouseMurallaC" type="StaticBody2D" parent="HouseColliders"]
+position = Vector2(408, 696)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaC"]
+shape = SubResource("RectangleShape2D_house_m3")
+
+[node name="HouseMurallaS1" type="StaticBody2D" parent="HouseColliders"]
+position = Vector2(208, 680)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS1"]
+shape = SubResource("RectangleShape2D_house_s")
+
+[node name="HouseMurallaS2" type="StaticBody2D" parent="HouseColliders"]
+position = Vector2(256, 680)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS2"]
+shape = SubResource("RectangleShape2D_house_s")
+
+[node name="HouseMurallaS3" type="StaticBody2D" parent="HouseColliders"]
+position = Vector2(304, 680)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS3"]
+shape = SubResource("RectangleShape2D_house_s")

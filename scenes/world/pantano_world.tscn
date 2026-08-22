@@ -64,7 +64,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="ranancio" parent="InteractiveObjects" unique_id=1376135273 instance=ExtResource("15_6v6tw")]
 z_index = 1
-position = Vector2(233, 301)
+position = Vector2(480, 400)
 spawn_schedules = Array[Dictionary]([{
 "end": 8.5,
 "probability": 0.95,
@@ -106,7 +106,7 @@ position = Vector2(575, 974)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="piedra_grieta" parent="InteractiveObjects" unique_id=723286548 instance=ExtResource("23_8pxje")]
-z_index = 1
+z_index = 0
 position = Vector2(133, 929.00006)
 scale = Vector2(1.5, 1.5)
 spawn_schedules = Array[Dictionary]([])
