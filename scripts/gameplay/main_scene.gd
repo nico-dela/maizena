@@ -6,15 +6,59 @@ const FADE_COLOR := Color(0.02, 0.03, 0.06, 1.0)
 const FADE_OUT_TIME := 0.22
 const FADE_IN_TIME := 0.3
 
+const FogOverlayScene := preload("res://scenes/world/world_resources/fog_overlay.tscn")
+
 @onready var _player: Node2D = $Player
 
 var _fade_rect: ColorRect
 var _travel_busy := false
+var _map_discovery: Node
+var _fog_overlay: Node2D
 
 
 func _ready() -> void:
 	_build_fade_overlay()
+	_setup_map_discovery()
 	call_deferred("_apply_initial_camera_limits")
+
+
+func _setup_map_discovery() -> void:
+	_map_discovery = MapDiscovery.new()
+	_map_discovery.name = "MapDiscovery"
+	add_child(_map_discovery)
+
+	_fog_overlay = FogOverlayScene.instantiate() as Node2D
+	_fog_overlay.name = "FogOverlay"
+	add_child(_fog_overlay)
+	if _fog_overlay.has_method("bind"):
+		_fog_overlay.bind(_map_discovery)
+
+	call_deferred("_refresh_map_discovery")
+
+
+func _refresh_map_discovery() -> void:
+	var world := get_node_or_null(WORLD_NODE_NAME)
+	if world == null or _map_discovery == null:
+		return
+	if _map_discovery.has_method("flush_pending"):
+		_map_discovery.flush_pending()
+	_map_discovery.setup_from_world(world)
+	if _fog_overlay != null:
+		if _fog_overlay.get_parent() != world:
+			if _fog_overlay.get_parent() != null:
+				_fog_overlay.get_parent().remove_child(_fog_overlay)
+			world.add_child(_fog_overlay)
+		world.move_child(_fog_overlay, world.get_child_count() - 1)
+		if _fog_overlay.has_method("bind"):
+			_fog_overlay.bind(_map_discovery)
+	if _player == null:
+		_player = get_node_or_null("Player") as Node2D
+	if _player != null and _map_discovery.has_method("reveal_at"):
+		_map_discovery.reveal_at(_player.global_position)
+
+
+func get_map_discovery() -> Node:
+	return _map_discovery
 
 
 func _apply_initial_camera_limits() -> void:
@@ -88,6 +132,7 @@ func _swap_world(packed: PackedScene, spawn: Vector2) -> Node:
 		_player.snap_camera_to_player()
 
 	_refresh_minimap()
+	_refresh_map_discovery()
 	return new_world
 
 
@@ -118,6 +163,18 @@ func _refresh_minimap() -> void:
 	var minimap := get_node_or_null("UI/Minimap")
 	if minimap != null and minimap.has_method("refresh"):
 		minimap.call_deferred("refresh")
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventScreenTouch or event is InputEventMouseButton:
+		if event.pressed:
+			_try_unlock_audio()
+
+
+func _try_unlock_audio() -> void:
+	var music := get_node_or_null("MusicManager")
+	if music != null and music.has_method("unlock_and_play"):
+		music.unlock_and_play()
 
 
 func _notify_hongos_spawner() -> void:

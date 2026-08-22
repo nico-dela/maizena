@@ -8,6 +8,7 @@ const RECENT_ERA_COUNT := 5
 const PLAY_LOG_MAX := 400
 
 var welcome_popup_seen := false
+var movement_tutorial_seen := false
 var _play_log: Array = []
 
 
@@ -62,6 +63,15 @@ func is_welcome_seen() -> bool:
 	return welcome_popup_seen
 
 
+func mark_movement_tutorial_seen() -> void:
+	movement_tutorial_seen = true
+	_save()
+
+
+func is_movement_tutorial_seen() -> bool:
+	return movement_tutorial_seen
+
+
 func get_visible_residue_count() -> int:
 	var ws: Node = get_node_or_null("/root/WorldState")
 	if ws == null:
@@ -79,6 +89,7 @@ func _load() -> void:
 	if typeof(data) != TYPE_DICTIONARY:
 		return
 	welcome_popup_seen = bool(data.get("welcome_popup_seen", false))
+	movement_tutorial_seen = bool(data.get("movement_tutorial_seen", false))
 	var raw_log = data.get("play_log", [])
 	if typeof(raw_log) == TYPE_ARRAY:
 		_play_log.clear()
@@ -100,6 +111,7 @@ func _save() -> void:
 		serializable.append({"era": entry.get("era", 0), "song": entry.get("song", 0)})
 	var data := {
 		"welcome_popup_seen": welcome_popup_seen,
+		"movement_tutorial_seen": movement_tutorial_seen,
 		"play_log": serializable,
 	}
 	f.store_string(JSON.stringify(data))

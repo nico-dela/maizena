@@ -5,6 +5,8 @@ signal world_day_changed(current_day: int)
 signal world_state_changed()
 
 const SAVE_PATH := "user://world_state.json"
+## Subir cuando cambie el tamaño/origen del grid de exploración (invalida fog guardado).
+const EXPLORATION_SAVE_VERSION := 2
 
 var world_day := 0
 var current_hour := 0.0
@@ -14,6 +16,7 @@ var unseen_events := 0
 var absent_days := 0
 var residue_seed := 1337
 var last_absence_mutation_day := -1
+var explored_cells: Dictionary = {}
 
 var _last_seen_unix := 0
 var _last_seen_unix_day := 0
@@ -121,6 +124,38 @@ func consume_unseen_events(max_count: int) -> int:
 	world_state_changed.emit()
 	return consumed
 
+
+func get_explored_cells(map_id: String) -> Array:
+	if map_id.is_empty():
+		return []
+	var raw = explored_cells.get(map_id, [])
+	if typeof(raw) != TYPE_ARRAY:
+		return []
+	return raw.duplicate()
+
+
+func is_cell_explored(map_id: String, cell_key: String) -> bool:
+	if map_id.is_empty() or cell_key.is_empty():
+		return false
+	var raw = explored_cells.get(map_id, [])
+	if typeof(raw) != TYPE_ARRAY:
+		return false
+	return cell_key in raw
+
+
+func add_explored_cells(map_id: String, keys: Array) -> void:
+	if map_id.is_empty() or keys.is_empty():
+		return
+	if not explored_cells.has(map_id) or typeof(explored_cells[map_id]) != TYPE_ARRAY:
+		explored_cells[map_id] = []
+	var stored: Array = explored_cells[map_id]
+	for key in keys:
+		var cell_key := str(key)
+		if cell_key.is_empty() or cell_key in stored:
+			continue
+		stored.append(cell_key)
+	world_state_changed.emit()
+
 func _load_state():
 	if not FileAccess.file_exists(SAVE_PATH):
 		_initialize_defaults()
@@ -145,6 +180,12 @@ func _load_state():
 	last_absence_mutation_day = int(data.get("last_absence_mutation_day", -1))
 	_last_seen_unix = int(data.get("last_seen_unix", int(Time.get_unix_time_from_system())))
 	_last_seen_unix_day = int(data.get("last_seen_unix_day", _get_unix_day()))
+	var loaded_exploration_version := int(data.get("exploration_save_version", 0))
+	var raw_explored = data.get("explored_cells", {})
+	if loaded_exploration_version == EXPLORATION_SAVE_VERSION and typeof(raw_explored) == TYPE_DICTIONARY:
+		explored_cells = raw_explored.duplicate(true)
+	else:
+		explored_cells = {}
 
 func _initialize_defaults():
 	world_day = 0
@@ -156,6 +197,7 @@ func _initialize_defaults():
 	_last_seen_unix = int(Time.get_unix_time_from_system())
 	_last_seen_unix_day = _get_unix_day()
 	current_hour = _get_cordoba_hour()
+	explored_cells = {}
 
 func _save_state():
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -171,7 +213,9 @@ func _save_state():
 		"residue_seed": residue_seed,
 		"last_absence_mutation_day": last_absence_mutation_day,
 		"last_seen_unix": _last_seen_unix,
-		"last_seen_unix_day": _last_seen_unix_day
+		"last_seen_unix_day": _last_seen_unix_day,
+		"exploration_save_version": EXPLORATION_SAVE_VERSION,
+		"explored_cells": explored_cells,
 	}
 	file.store_string(JSON.stringify(data))
 

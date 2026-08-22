@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/fog_overlay.gd" id="1_fog"]
+
+[node name="FogOverlay" type="Node2D"]
+z_index = 0
+script = ExtResource("1_fog")
+
+[node name="FogSprite" type="Sprite2D" parent="."]
+centered = false
