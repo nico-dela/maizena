@@ -5,9 +5,12 @@ signal exploration_updated(map_id: String)
 
 const TILE_SIZE := 16
 const VISION_RADIUS := 140.0
+const VISION_RADIUS_SQ := VISION_RADIUS * VISION_RADIUS
 const WATER_LAYER_AREA_RATIO := 0.82
 const NEW_WORLD_NAME := "NewWorld"
 const KNOWN_MAP_ROOTS: Array[String] = ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
+
+## Soft 3x3 brush alphas by distance squared (0 center, 1 ortho, 2 diag).
 
 var map_id: String = ""
 var world_bounds: Rect2 = Rect2()
@@ -18,12 +21,22 @@ var _grid_size := Vector2i.ZERO
 var _dirty := false
 var _last_cell := Vector2i(-999999, -999999)
 var _pending_cells: Array[String] = []
+var _explored: Dictionary = {}
 
 
 func _ready() -> void:
 	exploration_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
-	exploration_image.fill(Color(0.0, 0.0, 0.0, 0.92))
+	exploration_image.fill(Color(0.0, 0.0, 0.0, 1.0))
 	exploration_texture = ImageTexture.create_from_image(exploration_image)
+
+
+func _process(_delta: float) -> void:
+	if not _dirty:
+		return
+	_dirty = false
+	if exploration_texture != null and exploration_image != null:
+		exploration_texture.update(exploration_image)
+	exploration_updated.emit(map_id)
 
 
 func setup_from_world(world: Node) -> void:
@@ -37,7 +50,8 @@ func setup_from_world(world: Node) -> void:
 		maxi(1, int(ceil(world_bounds.size.y / float(TILE_SIZE))))
 	)
 	exploration_image = Image.create(_grid_size.x, _grid_size.y, false, Image.FORMAT_RGBA8)
-	exploration_image.fill(Color(0.0, 0.0, 0.0, 0.92))
+	exploration_image.fill(Color(0.0, 0.0, 0.0, 1.0))
+	_explored.clear()
 	_apply_saved_cells(WorldState.get_explored_cells(map_id))
 	exploration_texture = ImageTexture.create_from_image(exploration_image)
 	_last_cell = Vector2i(-999999, -999999)
@@ -62,19 +76,18 @@ func reveal_at(world_pos: Vector2) -> void:
 			if not _is_cell_in_grid(cell):
 				continue
 			var cell_center := _cell_to_world(cell)
-			if cell_center.distance_to(world_pos) > VISION_RADIUS:
+			if cell_center.distance_squared_to(world_pos) > VISION_RADIUS_SQ:
 				continue
 			var key := _cell_key(cell)
-			if WorldState.is_cell_explored(map_id, key):
+			if _explored.has(key):
 				continue
+			_explored[key] = true
 			_paint_cell(cell)
 			_pending_cells.append(key)
 			changed = true
 
 	if changed:
 		_dirty = true
-		exploration_texture.update(exploration_image)
-		exploration_updated.emit(map_id)
 		if _pending_cells.size() >= 8:
 			_flush_pending_cells()
 
@@ -96,12 +109,12 @@ func get_fog_texture() -> ImageTexture:
 
 func sample_fog_alpha(world_pos: Vector2) -> float:
 	if map_id.is_empty() or _grid_size == Vector2i.ZERO:
-		return 0.92
+		return 1.0
 	if not world_bounds.has_point(world_pos):
-		return 0.92
+		return 1.0
 	var cell := _world_to_cell(world_pos)
 	if not _is_cell_in_grid(cell):
-		return 0.92
+		return 1.0
 	return exploration_image.get_pixel(cell.x, cell.y).a
 
 
@@ -110,7 +123,7 @@ func build_minimap_fog_image(map_size: Vector2, bounds: Rect2, cam_zoom: float) 
 	var h := maxi(1, int(map_size.y))
 	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
 	if bounds.size == Vector2.ZERO or cam_zoom <= 0.0:
-		img.fill(Color(0.0, 0.0, 0.0, 0.92))
+		img.fill(Color(0.0, 0.0, 0.0, 1.0))
 		return img
 
 	var center := bounds.get_center()
@@ -135,6 +148,7 @@ func _apply_saved_cells(keys: Array) -> void:
 			continue
 		var cell := Vector2i(int(parts[0]), int(parts[1]))
 		if _is_cell_in_grid(cell):
+			_explored[key] = true
 			_paint_cell(cell, false)
 
 
@@ -143,8 +157,15 @@ func _paint_cell(cell: Vector2i, mark_dirty: bool = true) -> void:
 	var py := cell.y
 	for y in range(maxi(0, py - 1), mini(_grid_size.y, py + 2)):
 		for x in range(maxi(0, px - 1), mini(_grid_size.x, px + 2)):
-			var dist := Vector2(float(x - px), float(y - py)).length()
-			var target_alpha := clampf(dist * 0.35, 0.0, 0.92)
+			var dist_sq := (x - px) * (x - px) + (y - py) * (y - py)
+			var target_alpha := 0.92
+			match dist_sq:
+				0:
+					target_alpha = 0.0
+				1:
+					target_alpha = 0.35
+				2:
+					target_alpha = 0.70
 			var current := exploration_image.get_pixel(x, y).a
 			exploration_image.set_pixel(x, y, Color(0.0, 0.0, 0.0, minf(current, target_alpha)))
 	if mark_dirty:

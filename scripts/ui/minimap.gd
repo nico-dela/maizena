@@ -10,6 +10,7 @@ const NEW_WORLD_NAME := "NewWorld"
 const KNOWN_MAP_ROOTS := ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
 ## Solo capa 1 (tilemaps/mundo); el jugador usa capa 2.
 const MINIMAP_CULL_MASK := 1
+const FOG_REFRESH_INTERVAL := 0.25
 
 @onready var _frame: PanelContainer = $Frame
 @onready var _map_stack: Control = $Frame/MapStack
@@ -24,6 +25,8 @@ var _frame_style: StyleBoxFlat
 var _map_ready := false
 var _minimap_camera: Camera2D
 var _fog_minimap_texture: ImageTexture
+var _fog_dirty := false
+var _fog_refresh_cooldown := 0.0
 
 
 func _ready() -> void:
@@ -51,23 +54,38 @@ func _connect_map_discovery() -> void:
 	if discovery != null and discovery.has_signal("exploration_updated"):
 		if not discovery.exploration_updated.is_connected(_on_exploration_updated):
 			discovery.exploration_updated.connect(_on_exploration_updated)
-	_update_fog_mask()
+	_fog_dirty = true
+	_fog_refresh_cooldown = 0.0
+	_try_refresh_fog_mask(true)
 
 
 func _on_exploration_updated(_map_id: String) -> void:
-	_update_fog_mask()
+	_fog_dirty = true
 
 
 func _update_fog_mask() -> void:
+	_try_refresh_fog_mask(true)
+
+
+func _try_refresh_fog_mask(force: bool = false) -> void:
 	if _fog_mask == null:
 		return
+	if not visible and not force:
+		return
+	if not _fog_dirty and not force:
+		return
+	if not force and _fog_refresh_cooldown > 0.0:
+		return
+
 	var main := _get_game_root()
 	if main == null or not main.has_method("get_map_discovery"):
 		_fog_mask.texture = null
+		_fog_dirty = false
 		return
 	var discovery: Node = main.get_map_discovery()
 	if discovery == null or not discovery.has_method("build_minimap_fog_image"):
 		_fog_mask.texture = null
+		_fog_dirty = false
 		return
 	if not _map_ready or _world_bounds.size == Vector2.ZERO:
 		return
@@ -83,17 +101,27 @@ func _update_fog_mask() -> void:
 		_fog_minimap_texture.update(img)
 	_fog_mask.texture = _fog_minimap_texture
 	_fog_mask.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_fog_dirty = false
+	_fog_refresh_cooldown = FOG_REFRESH_INTERVAL
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if _fog_refresh_cooldown > 0.0:
+		_fog_refresh_cooldown = maxf(0.0, _fog_refresh_cooldown - delta)
 	if not visible:
 		return
 	_update_player_dot()
+	if _fog_dirty:
+		_try_refresh_fog_mask(false)
 
 
 func _on_visibility_changed() -> void:
-	if visible and not _map_ready:
-		call_deferred("refresh")
+	if visible:
+		if not _map_ready:
+			call_deferred("refresh")
+		elif _fog_dirty:
+			_fog_refresh_cooldown = 0.0
+			_try_refresh_fog_mask(true)
 
 
 func _on_layout_changed() -> void:
