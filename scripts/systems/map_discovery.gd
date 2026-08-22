@@ -5,12 +5,12 @@ signal exploration_updated(map_id: String)
 
 const TILE_SIZE := 16
 const VISION_RADIUS := 140.0
-const VISION_RADIUS_SQ := VISION_RADIUS * VISION_RADIUS
+## ceil(VISION_RADIUS / TILE_SIZE); circle test uses cell-distance squared.
+const RADIUS_CELLS := 9
+const RADIUS_CELLS_SQ := 77
 const WATER_LAYER_AREA_RATIO := 0.82
 const NEW_WORLD_NAME := "NewWorld"
 const KNOWN_MAP_ROOTS: Array[String] = ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
-
-## Soft 3x3 brush alphas by distance squared (0 center, 1 ortho, 2 diag).
 
 var map_id: String = ""
 var world_bounds: Rect2 = Rect2()
@@ -20,7 +20,8 @@ var exploration_texture: ImageTexture
 var _grid_size := Vector2i.ZERO
 var _dirty := false
 var _last_cell := Vector2i(-999999, -999999)
-var _pending_cells: Array[String] = []
+var _pending_cells: Array[Vector2i] = []
+## Vector2i → true (O(1), no string alloc on the reveal hot path).
 var _explored: Dictionary = {}
 
 
@@ -31,12 +32,13 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if not _dirty:
-		return
-	_dirty = false
-	if exploration_texture != null and exploration_image != null:
-		exploration_texture.update(exploration_image)
-	exploration_updated.emit(map_id)
+	if _dirty:
+		_dirty = false
+		if exploration_texture != null and exploration_image != null:
+			exploration_texture.update(exploration_image)
+		exploration_updated.emit(map_id)
+	if not _pending_cells.is_empty():
+		_flush_pending_cells()
 
 
 func setup_from_world(world: Node) -> void:
@@ -52,6 +54,7 @@ func setup_from_world(world: Node) -> void:
 	exploration_image = Image.create(_grid_size.x, _grid_size.y, false, Image.FORMAT_RGBA8)
 	exploration_image.fill(Color(0.0, 0.0, 0.0, 1.0))
 	_explored.clear()
+	_pending_cells.clear()
 	_apply_saved_cells(WorldState.get_explored_cells(map_id))
 	exploration_texture = ImageTexture.create_from_image(exploration_image)
 	_last_cell = Vector2i(-999999, -999999)
@@ -68,28 +71,23 @@ func reveal_at(world_pos: Vector2) -> void:
 		return
 	_last_cell = center_cell
 
-	var radius_cells := int(ceil(VISION_RADIUS / float(TILE_SIZE)))
 	var changed := false
-	for dy in range(-radius_cells, radius_cells + 1):
-		for dx in range(-radius_cells, radius_cells + 1):
-			var cell := center_cell + Vector2i(dx, dy)
-			if not _is_cell_in_grid(cell):
+	for dy in range(-RADIUS_CELLS, RADIUS_CELLS + 1):
+		for dx in range(-RADIUS_CELLS, RADIUS_CELLS + 1):
+			if dx * dx + dy * dy > RADIUS_CELLS_SQ:
 				continue
-			var cell_center := _cell_to_world(cell)
-			if cell_center.distance_squared_to(world_pos) > VISION_RADIUS_SQ:
+			var cell := Vector2i(center_cell.x + dx, center_cell.y + dy)
+			if cell.x < 0 or cell.y < 0 or cell.x >= _grid_size.x or cell.y >= _grid_size.y:
 				continue
-			var key := _cell_key(cell)
-			if _explored.has(key):
+			if _explored.has(cell):
 				continue
-			_explored[key] = true
+			_explored[cell] = true
 			_paint_cell(cell)
-			_pending_cells.append(key)
+			_pending_cells.append(cell)
 			changed = true
 
 	if changed:
 		_dirty = true
-		if _pending_cells.size() >= 8:
-			_flush_pending_cells()
 
 
 func flush_pending() -> void:
@@ -99,7 +97,12 @@ func flush_pending() -> void:
 func _flush_pending_cells() -> void:
 	if _pending_cells.is_empty():
 		return
-	WorldState.add_explored_cells(map_id, _pending_cells)
+	var keys: Array[String] = []
+	keys.resize(_pending_cells.size())
+	for i in range(_pending_cells.size()):
+		var cell: Vector2i = _pending_cells[i]
+		keys[i] = "%d,%d" % [cell.x, cell.y]
+	WorldState.add_explored_cells(map_id, keys)
 	_pending_cells.clear()
 
 
@@ -121,23 +124,34 @@ func sample_fog_alpha(world_pos: Vector2) -> float:
 func build_minimap_fog_image(map_size: Vector2, bounds: Rect2, cam_zoom: float) -> Image:
 	var w := maxi(1, int(map_size.x))
 	var h := maxi(1, int(map_size.y))
-	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
-	if bounds.size == Vector2.ZERO or cam_zoom <= 0.0:
-		img.fill(Color(0.0, 0.0, 0.0, 1.0))
-		return img
+	if (
+		exploration_image == null
+		or _grid_size == Vector2i.ZERO
+		or bounds.size == Vector2.ZERO
+		or cam_zoom <= 0.0
+	):
+		var blank := Image.create(w, h, false, Image.FORMAT_RGBA8)
+		blank.fill(Color(0.0, 0.0, 0.0, 1.0))
+		return blank
 
 	var center := bounds.get_center()
 	var world_half := map_size / (2.0 * cam_zoom)
-	for py in range(h):
-		for px in range(w):
-			var rel := Vector2(
-				(float(px) / float(w) - 0.5) * 2.0,
-				(float(py) / float(h) - 0.5) * 2.0
-			)
-			var world_pos := center + Vector2(rel.x * world_half.x, rel.y * world_half.y)
-			var alpha := sample_fog_alpha(world_pos)
-			img.set_pixel(px, py, Color(0.0, 0.0, 0.0, alpha))
-	return img
+	var c0 := _world_to_cell(center - world_half)
+	var c1 := _world_to_cell(center + world_half)
+	var x0 := clampi(mini(c0.x, c1.x), 0, _grid_size.x - 1)
+	var y0 := clampi(mini(c0.y, c1.y), 0, _grid_size.y - 1)
+	var x1 := clampi(maxi(c0.x, c1.x), 0, _grid_size.x - 1)
+	var y1 := clampi(maxi(c0.y, c1.y), 0, _grid_size.y - 1)
+	var rw := x1 - x0 + 1
+	var rh := y1 - y0 + 1
+	if rw <= 0 or rh <= 0:
+		var blank2 := Image.create(w, h, false, Image.FORMAT_RGBA8)
+		blank2.fill(Color(0.0, 0.0, 0.0, 1.0))
+		return blank2
+
+	var cropped := exploration_image.get_region(Rect2i(x0, y0, rw, rh))
+	cropped.resize(w, h, Image.INTERPOLATE_NEAREST)
+	return cropped
 
 
 func _apply_saved_cells(keys: Array) -> void:
@@ -148,28 +162,25 @@ func _apply_saved_cells(keys: Array) -> void:
 			continue
 		var cell := Vector2i(int(parts[0]), int(parts[1]))
 		if _is_cell_in_grid(cell):
-			_explored[key] = true
-			_paint_cell(cell, false)
+			_explored[cell] = true
+			_paint_cell(cell)
 
 
-func _paint_cell(cell: Vector2i, mark_dirty: bool = true) -> void:
-	var px := cell.x
-	var py := cell.y
-	for y in range(maxi(0, py - 1), mini(_grid_size.y, py + 2)):
-		for x in range(maxi(0, px - 1), mini(_grid_size.x, px + 2)):
-			var dist_sq := (x - px) * (x - px) + (y - py) * (y - py)
-			var target_alpha := 0.92
-			match dist_sq:
-				0:
-					target_alpha = 0.0
-				1:
-					target_alpha = 0.35
-				2:
-					target_alpha = 0.70
-			var current := exploration_image.get_pixel(x, y).a
-			exploration_image.set_pixel(x, y, Color(0.0, 0.0, 0.0, minf(current, target_alpha)))
-	if mark_dirty:
-		_dirty = true
+func _paint_cell(cell: Vector2i) -> void:
+	## Center clear + cheap ortho soft edge (no diagonal reads).
+	exploration_image.set_pixel(cell.x, cell.y, Color(0.0, 0.0, 0.0, 0.0))
+	_soften_neighbor(cell.x - 1, cell.y, 0.35)
+	_soften_neighbor(cell.x + 1, cell.y, 0.35)
+	_soften_neighbor(cell.x, cell.y - 1, 0.35)
+	_soften_neighbor(cell.x, cell.y + 1, 0.35)
+
+
+func _soften_neighbor(x: int, y: int, target_alpha: float) -> void:
+	if x < 0 or y < 0 or x >= _grid_size.x or y >= _grid_size.y:
+		return
+	var current := exploration_image.get_pixel(x, y).a
+	if current > target_alpha:
+		exploration_image.set_pixel(x, y, Color(0.0, 0.0, 0.0, target_alpha))
 
 
 func _world_to_cell(world_pos: Vector2) -> Vector2i:
@@ -178,17 +189,6 @@ func _world_to_cell(world_pos: Vector2) -> Vector2i:
 		int(floor(local.x / float(TILE_SIZE))),
 		int(floor(local.y / float(TILE_SIZE)))
 	)
-
-
-func _cell_to_world(cell: Vector2i) -> Vector2:
-	return world_bounds.position + Vector2(
-		(float(cell.x) + 0.5) * float(TILE_SIZE),
-		(float(cell.y) + 0.5) * float(TILE_SIZE)
-	)
-
-
-func _cell_key(cell: Vector2i) -> String:
-	return "%d,%d" % [cell.x, cell.y]
 
 
 func _is_cell_in_grid(cell: Vector2i) -> bool:

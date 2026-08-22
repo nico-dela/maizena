@@ -19,16 +19,7 @@ func _ready() -> void:
 
 
 func bind(discovery: Node) -> void:
-	if _discovery != null and _discovery.has_signal("exploration_updated"):
-		if _discovery.exploration_updated.is_connected(_on_exploration_updated):
-			_discovery.exploration_updated.disconnect(_on_exploration_updated)
 	_discovery = discovery
-	if _discovery != null and _discovery.has_signal("exploration_updated"):
-		_discovery.exploration_updated.connect(_on_exploration_updated)
-	_refresh()
-
-
-func _on_exploration_updated(_map_id: String) -> void:
 	_refresh()
 
 

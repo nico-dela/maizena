@@ -10,7 +10,7 @@ const NEW_WORLD_NAME := "NewWorld"
 const KNOWN_MAP_ROOTS := ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
 ## Solo capa 1 (tilemaps/mundo); el jugador usa capa 2.
 const MINIMAP_CULL_MASK := 1
-const FOG_REFRESH_INTERVAL := 0.25
+const FOG_REFRESH_INTERVAL := 0.5
 
 @onready var _frame: PanelContainer = $Frame
 @onready var _map_stack: Control = $Frame/MapStack

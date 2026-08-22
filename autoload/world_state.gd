@@ -6,7 +6,8 @@ signal world_state_changed()
 
 const SAVE_PATH := "user://world_state.json"
 ## Subir cuando cambie el tamaño/origen del grid de exploración (invalida fog guardado).
-const EXPLORATION_SAVE_VERSION := 2
+## v3: explored_cells[map_id] es Dictionary clave→true (O(1) al revelar).
+const EXPLORATION_SAVE_VERSION := 3
 
 var world_day := 0
 var current_hour := 0.0
@@ -128,33 +129,87 @@ func consume_unseen_events(max_count: int) -> int:
 func get_explored_cells(map_id: String) -> Array:
 	if map_id.is_empty():
 		return []
-	var raw = explored_cells.get(map_id, [])
-	if typeof(raw) != TYPE_ARRAY:
-		return []
-	return raw.duplicate()
+	var raw = explored_cells.get(map_id, {})
+	if typeof(raw) == TYPE_DICTIONARY:
+		return raw.keys()
+	if typeof(raw) == TYPE_ARRAY:
+		return raw.duplicate()
+	return []
 
 
 func is_cell_explored(map_id: String, cell_key: String) -> bool:
 	if map_id.is_empty() or cell_key.is_empty():
 		return false
-	var raw = explored_cells.get(map_id, [])
-	if typeof(raw) != TYPE_ARRAY:
-		return false
-	return cell_key in raw
+	var raw = explored_cells.get(map_id, {})
+	if typeof(raw) == TYPE_DICTIONARY:
+		return raw.has(cell_key)
+	if typeof(raw) == TYPE_ARRAY:
+		return cell_key in raw
+	return false
 
 
 func add_explored_cells(map_id: String, keys: Array) -> void:
 	if map_id.is_empty() or keys.is_empty():
 		return
-	if not explored_cells.has(map_id) or typeof(explored_cells[map_id]) != TYPE_ARRAY:
-		explored_cells[map_id] = []
-	var stored: Array = explored_cells[map_id]
+	var stored: Dictionary = _ensure_explored_dict(map_id)
 	for key in keys:
 		var cell_key := str(key)
-		if cell_key.is_empty() or cell_key in stored:
+		if cell_key.is_empty():
 			continue
-		stored.append(cell_key)
-	world_state_changed.emit()
+		stored[cell_key] = true
+	## No emitir world_state_changed: la niebla no debe despertar sistemas de mundo.
+
+
+func _ensure_explored_dict(map_id: String) -> Dictionary:
+	var raw = explored_cells.get(map_id, null)
+	if typeof(raw) == TYPE_DICTIONARY:
+		return raw
+	var converted: Dictionary = {}
+	if typeof(raw) == TYPE_ARRAY:
+		for key in raw:
+			var cell_key := str(key)
+			if not cell_key.is_empty():
+				converted[cell_key] = true
+	explored_cells[map_id] = converted
+	return converted
+
+
+func _normalize_explored_dict(raw: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for map_id in raw.keys():
+		var entry = raw[map_id]
+		if typeof(entry) == TYPE_DICTIONARY:
+			var cells: Dictionary = {}
+			for key in entry.keys():
+				cells[str(key)] = true
+			out[str(map_id)] = cells
+		elif typeof(entry) == TYPE_ARRAY:
+			out[str(map_id)] = _array_to_explored_dict(entry)
+	return out
+
+
+func _migrate_explored_arrays(raw: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for map_id in raw.keys():
+		var entry = raw[map_id]
+		if typeof(entry) == TYPE_DICTIONARY:
+			var cells: Dictionary = {}
+			for key in entry.keys():
+				cells[str(key)] = true
+			out[str(map_id)] = cells
+		elif typeof(entry) == TYPE_ARRAY:
+			out[str(map_id)] = _array_to_explored_dict(entry)
+	return out
+
+
+func _array_to_explored_dict(keys: Array) -> Dictionary:
+	var cells: Dictionary = {}
+	for key in keys:
+		var cell_key := str(key)
+		if not cell_key.is_empty():
+			cells[cell_key] = true
+	return cells
+
 
 func _load_state():
 	if not FileAccess.file_exists(SAVE_PATH):
@@ -182,8 +237,13 @@ func _load_state():
 	_last_seen_unix_day = int(data.get("last_seen_unix_day", _get_unix_day()))
 	var loaded_exploration_version := int(data.get("exploration_save_version", 0))
 	var raw_explored = data.get("explored_cells", {})
-	if loaded_exploration_version == EXPLORATION_SAVE_VERSION and typeof(raw_explored) == TYPE_DICTIONARY:
-		explored_cells = raw_explored.duplicate(true)
+	if typeof(raw_explored) != TYPE_DICTIONARY:
+		explored_cells = {}
+	elif loaded_exploration_version == EXPLORATION_SAVE_VERSION:
+		explored_cells = _normalize_explored_dict(raw_explored)
+	elif loaded_exploration_version == 2:
+		## v2 guardaba Array por mapa; migrar a Dictionary sin invalidar progreso.
+		explored_cells = _migrate_explored_arrays(raw_explored)
 	else:
 		explored_cells = {}
 
