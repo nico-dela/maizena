@@ -98,6 +98,27 @@ func screen_margin_bottom(base: float) -> float:
 	return base + safe_margin_bottom
 
 
+func _layout_safe_margins(window: Vector2i, stretch: float, safe_area: Rect2i) -> Vector4:
+	## Returns (top, left, right, bottom) in layout-space units.
+	var s := maxf(stretch, 0.001)
+	var top := float(safe_area.position.y) / s
+	var left := float(safe_area.position.x) / s
+	var right := maxf(0.0, float(window.x - safe_area.end.x) / s)
+	var bottom := maxf(0.0, float(window.y - safe_area.end.y) / s)
+
+	# Fullscreen / web transitions often report bogus insets (full window as "unsafe").
+	var layout_short := minf(float(window.x), float(window.y)) / s
+	var max_inset := layout_short * 0.18
+	if top > max_inset or left > max_inset or right > max_inset or bottom > max_inset:
+		return Vector4.ZERO
+	if OS.has_feature("web"):
+		top = minf(top, 56.0)
+		left = minf(left, 40.0)
+		right = minf(right, 40.0)
+		bottom = minf(bottom, 56.0)
+	return Vector4(top, left, right, bottom)
+
+
 func _stretch_scale(design: Vector2, window: Vector2i) -> float:
 	var aspect := int(ProjectSettings.get_setting("display/window/stretch/aspect", 1))
 	match aspect:
@@ -146,11 +167,13 @@ func _recalculate() -> void:
 			clampf(letterbox_boost * 0.72, 1.0, camera_max)
 		)
 
+	# Safe area comes in window pixels; UI offsets use layout (viewport) space.
 	var safe_area := DisplayServer.get_display_safe_area()
-	var new_safe_top := float(safe_area.position.y)
-	var new_safe_left := float(safe_area.position.x)
-	var new_safe_right := maxf(0.0, float(window.x - safe_area.end.x))
-	var new_safe_bottom := maxf(0.0, float(window.y - safe_area.end.y))
+	var safe := _layout_safe_margins(window, stretch, safe_area)
+	var new_safe_top: float = safe.x
+	var new_safe_left: float = safe.y
+	var new_safe_right: float = safe.z
+	var new_safe_bottom: float = safe.w
 
 	if (
 		is_equal_approx(new_ui_scale, ui_scale)
