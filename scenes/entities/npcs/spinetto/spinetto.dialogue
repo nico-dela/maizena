@@ -20,8 +20,8 @@ Sanjin: ¿Y vos cuál es el tuyo?
 
 - Preguntar por el álbum
 	do GameState.spinetto_chose_album = true
-	Sanjin: Vi carteles del álbum por todos lados.
-	Spinetto: Una Banda de Cosas Tiradas… acá hasta el pasto canta los temas.
+	Sanjin: Vi carteles viejos y rumores de Las cosas.
+	Spinetto: Una Banda de Cosas Tiradas quedó atrás… ahora el archipiélago se inclina a Las cosas.
 	Sanjin: Suena a mucho trabajo.
 	Spinetto: Todo arte es mucho trabajo disfrazado de magia barata.
 	=> END

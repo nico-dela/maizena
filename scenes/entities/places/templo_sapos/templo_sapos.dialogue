@@ -1,5 +1,16 @@
 ~ start
 
+if GameState.boji_chose_templo:
+	Sanjin: Boji me mandó acá por el repollo… pero el templo pesa distinto cuando sabés que Las cosas también están en proceso.
+	Sanjin: Ranancio no me dejaría entrar sin puff.
+	=> END
+
+if GameState.get_npc_talk_count("ranancio") >= 1:
+	Sanjin: Ranancio sigue con su puff y su vigilancia.
+	Sanjin: Este es el Templo de los Sapos… acá se resguarda el repollo morado.
+	Sanjin: Aunque ahora la isla también se reorganiza para Las cosas.
+	=> END
+
 Sanjin: Este es el Templo de los Sapos…
 Sanjin: Acá se resguarda el repollo morado.
 Sanjin: Ranancio no me dejaría entrar sin puff… pero igual se siente importante.

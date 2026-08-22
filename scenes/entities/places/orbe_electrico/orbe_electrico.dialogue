@@ -1,6 +1,12 @@
 ~ start
 
-Orbe: Este álbum se hizo con mucho amor y porro
-Sanjin: Qué declaración tan honesta.
+if GameState.spinetto_chose_album:
+	Orbe: Antes fue Una Banda de Cosas Tiradas. Ahora pulsa Las cosas.
+	Sanjin: ¿Hasta vos lo sentís?
+	Orbe: Soy un orbe eléctrico. Siento todo y no explico nada.
+	=> END
+
+Orbe: Las cosas están cargándose en la isla… con mucho amor y algo de ruido.
+Sanjin: Parece un anuncio. Pero acá hasta los anuncios cantan.
 
 => END

@@ -22,6 +22,7 @@ animations = [{
 }]
 
 [node name="StaticBody2D" type="StaticBody2D" unique_id=1033152148 groups=["dialogue"]]
+z_index = 4096
 script = ExtResource("1_1fh6r")
 dialogue = ExtResource("2_irb4i")
 npc_id = "spinetto"

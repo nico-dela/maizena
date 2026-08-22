@@ -1,5 +1,20 @@
 ~ start
 
-Laboratorio: 
+if GameState.boji_chose_templo:
+	Laboratorio: Las cosas tardan en acomodarse… el templo y este lugar compiten por el mismo silencio.
+	Sanjin: Entonces no es solo grabar. Es esperar.
+	Laboratorio: Acá se ordenan las cosas antes de salir al mundo.
+	=> END
+
+if GameState.spinetto_chose_album:
+	Laboratorio: Spinetto habló de grabar otra vez. Ahora es otra tanda: Las cosas.
+	Sanjin: ¿Y la primera?
+	Laboratorio: Quedó en las paredes. Una Banda de Cosas Tiradas, descolorida pero presente.
+	=> END
+
+Laboratorio: Acá se mezclan tubos, restos y canciones a medio armar.
+Sanjin: No sé si esto es ciencia o música. En Maizena parece lo mismo.
+Laboratorio: Las cosas se están gestando. Si no mirás, igual se mueven.
+Sanjin: Entonces mejor mirar.
 
 => END

@@ -5,6 +5,7 @@ const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 const DIALOGUE_THEME: Theme = preload("res://assets/art/ui/themes/dialogue_theme.tres")
 const NAME_COLOR := Color(0.35, 0.82, 0.96, 1.0)
 const BODY_COLOR := Color(0.96, 0.97, 0.98, 1.0)
+const PROGRESS_COLOR := Color(1.0, 1.0, 1.0, 1.0)
 
 
 ## The dialogue resource
@@ -78,6 +79,7 @@ var mutation_cooldown: Timer = Timer.new()
 
 func _ready() -> void:
 	balloon.hide()
+	progress.color = PROGRESS_COLOR
 	Engine.get_singleton("DialogueManager").mutated.connect(_on_mutated)
 
 	# If the responses menu doesn't have a next action set, use this one
