@@ -16,7 +16,14 @@ const PORTRAIT_LOADING_FONT_MUL := 1.22
 const FONT_TITLE := 34
 const FONT_BODY := 16
 const FONT_SMALL := 14
-const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experiencia de juego."
+const ORIENTATION_HINT := "Podés jugar en vertical o horizontal."
+const SUBTITLE := "Explorá la isla de Maizena mientras nace Las cosas."
+
+const ONBOARDING_TIPS: Array[String] = [
+	"Hablá con quien encuentres en el archipiélago.",
+	"La isla cambia con las Eras y el tiempo real.",
+	"Descubrí el mapa caminando.",
+]
 
 @onready var margin: MarginContainer = $Margin
 @onready var main_vbox: VBoxContainer = $Margin/VBox
@@ -30,6 +37,7 @@ const ORIENTATION_HINT := "Girá la pantalla en horizontal para una mejor experi
 @onready var orientation_hint_label: Label = $Margin/VBox/MainBlock/Content/ProgressRow/OrientationHint
 @onready var tip_label: Label = $Margin/VBox/MainBlock/Content/TipLabel
 @onready var title_label: Label = $Margin/VBox/MainBlock/Content/Title
+@onready var subtitle_label: Label = $Margin/VBox/MainBlock/Content/Subtitle
 @onready var location_label: Label = $Margin/VBox/LocationLabel
 @onready var copyright_label: Label = $Margin/VBox/CopyrightLabel
 @onready var map_preview_frame: PanelContainer = $Margin/VBox/MainBlock/Content/MapPreviewWrap/MapPreviewFrame
@@ -46,7 +54,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_started_at = _now_sec()
 	_is_web = OS.has_feature("web")
-	tip_label.text = PHRASES[randi() % PHRASES.size()]
+	tip_label.text = _pick_tip()
 	ViewportLayout.refresh()
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_apply_responsive_layout)
@@ -76,6 +84,13 @@ func _load_main_on_web() -> void:
 	if _loaded_scene == null:
 		push_error("LoadingScreen: falló la carga web de %s" % MAIN_SCENE)
 		get_tree().change_scene_to_file(MAIN_SCENE)
+
+
+func _pick_tip() -> String:
+	var tips: Array[String] = []
+	tips.append_array(PHRASES)
+	tips.append_array(ONBOARDING_TIPS)
+	return tips[randi() % tips.size()]
 
 
 func _hide_html_loader() -> void:
@@ -251,6 +266,9 @@ func _apply_responsive_layout() -> void:
 	)
 
 	title_label.add_theme_font_size_override("font_size", _loading_font(FONT_TITLE + (6 if portrait else 0)))
+	if subtitle_label != null:
+		subtitle_label.text = SUBTITLE
+		subtitle_label.add_theme_font_size_override("font_size", _loading_font(FONT_BODY))
 	status_label.add_theme_font_size_override("font_size", _loading_font(FONT_BODY + (2 if portrait else 0)))
 	orientation_hint_label.text = ORIENTATION_HINT
 	orientation_hint_label.visible = portrait

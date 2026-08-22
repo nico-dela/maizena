@@ -151,6 +151,14 @@
           }
         };
 
+        function maizenaResumeAudioOnce() {
+          if (typeof GodotAudio !== "undefined" && GodotAudio.ctx) {
+            GodotAudio.ctx.resume();
+          }
+        }
+        document.addEventListener("touchstart", maizenaResumeAudioOnce, { once: true, passive: true });
+        document.addEventListener("click", maizenaResumeAudioOnce, { once: true });
+
         function notifyGodotResize() {
           window.dispatchEvent(new Event("resize"));
         }

@@ -54,6 +54,8 @@ var current_song: int
 var play_in_background := false
 var _background_paused := false
 var _paused_playback_position := 0.0
+var _audio_unlocked := false
+var _pending_start := false
 
 
 func _ready() -> void:
@@ -65,10 +67,11 @@ func _ready() -> void:
 	play_in_background = bool(PlayerSettings.load_all().get("play_in_background", false))
 	_apply_audio_from_settings()
 	_create_playlist()
-	# Esperar un frame: el AudioServer y el banner de canción terminan de listarse.
-	call_deferred("_play_next")
 	if OS.has_feature("web"):
+		_pending_start = true
 		_setup_web_visibility_pause()
+	else:
+		call_deferred("_play_next")
 
 
 func is_play_in_background() -> bool:
@@ -78,6 +81,18 @@ func is_play_in_background() -> bool:
 func set_play_in_background(enabled: bool) -> void:
 	play_in_background = enabled
 	PlayerSettings.save_partial({"play_in_background": enabled})
+
+
+func unlock_and_play() -> void:
+	if OS.has_feature("web") and not _audio_unlocked:
+		JavaScriptBridge.eval(
+			"(function(){if(typeof GodotAudio!=='undefined'&&GodotAudio.ctx){GodotAudio.ctx.resume();}})();",
+			true
+		)
+	_audio_unlocked = true
+	if _pending_start or not player.playing:
+		_pending_start = false
+		_play_next()
 
 
 func _apply_audio_from_settings() -> void:

@@ -8,6 +8,10 @@ const MAX_UI_SCALE := 2.8
 const MAX_CAMERA_BOOST := 2.0
 const PORTRAIT_UI_EXTRA := 1.18
 
+const PORTRAIT_CAMERA_EXTRA := 1.25
+const PORTRAIT_CAMERA_LERP := 0.72
+const MAX_CAMERA_BOOST_PORTRAIT := 2.4
+
 var ui_scale := 1.0
 var camera_boost := 1.0
 var is_portrait := false
@@ -57,6 +61,13 @@ func effective_ui_scale() -> float:
 	if is_portrait:
 		s *= PORTRAIT_UI_EXTRA
 	return s
+
+
+func effective_camera_boost() -> float:
+	var boost := camera_boost
+	if is_portrait:
+		boost *= PORTRAIT_CAMERA_EXTRA
+	return boost
 
 
 func scaled_font(base: int) -> int:
@@ -123,12 +134,17 @@ func _recalculate() -> void:
 	var ratio := COMFORTABLE_WIDTH / maxf(layout_metric, 1.0) if narrow else 1.0
 
 	var new_ui_scale := clampf(lerpf(1.0, ratio, UI_LERP), 1.0, MAX_UI_SCALE)
-	var new_camera_boost := clampf(lerpf(1.0, ratio, 0.52), 1.0, MAX_CAMERA_BOOST)
+	var camera_lerp := PORTRAIT_CAMERA_LERP if new_portrait else 0.52
+	var camera_max := MAX_CAMERA_BOOST_PORTRAIT if new_portrait else MAX_CAMERA_BOOST
+	var new_camera_boost := clampf(lerpf(1.0, ratio, camera_lerp), 1.0, camera_max)
 
-	if new_portrait and aspect in [1, 2, 3]:
+	if new_portrait and aspect in [1, 2, 3, 4]:
 		var letterbox_boost := clampf(1.0 / stretch, 1.0, MAX_UI_SCALE)
 		new_ui_scale = maxf(new_ui_scale, letterbox_boost * 0.88)
-		new_camera_boost = maxf(new_camera_boost, clampf(letterbox_boost * 0.55, 1.0, MAX_CAMERA_BOOST))
+		new_camera_boost = maxf(
+			new_camera_boost,
+			clampf(letterbox_boost * 0.72, 1.0, camera_max)
+		)
 
 	var safe_area := DisplayServer.get_display_safe_area()
 	var new_safe_top := float(safe_area.position.y)
