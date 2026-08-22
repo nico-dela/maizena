@@ -12,34 +12,45 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
-color = Color(0.02, 0.04, 0.1, 0.45)
+color = Color(0.02, 0.04, 0.08, 0.62)
 
 [node name="Panel" type="PanelContainer" parent="."]
-offset_left = 80.0
+anchors_preset = 0
+offset_left = 40.0
 offset_top = 80.0
-offset_right = 500.0
-offset_bottom = 280.0
+offset_right = 400.0
+offset_bottom = 260.0
 
 [node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 14
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 14
 
 [node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.85, 0.96, 1)
 text = "Archipiélago Maizena"
 horizontal_alignment = 1
 
 [node name="Body" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.94, 1, 1)
 text = "Sanjin despierta en la isla de Maizena. Arrastrá el joystick para explorar, hablar con quien encuentres y descubrir el mapa."
+horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="Hint" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.72, 0.86, 1)
 text = "El joystick está abajo a la izquierda."
 horizontal_alignment = 1
 
 [node name="OkButton" type="Button" parent="Panel/Margin/VBox"]
+layout_mode = 2
 text = "Entendido"
