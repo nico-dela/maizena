@@ -72,10 +72,8 @@ alignment = 1
 [node name="MuteToggleButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow"]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_cr101")
-theme_override_font_sizes/font_size = 22
-text = "🔊"
-flat = true
+text = ""
+flat = false
 
 [node name="VolumeHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow" unique_id=375551595]
 custom_minimum_size = Vector2(0, 28)

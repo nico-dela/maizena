@@ -1,17 +1,26 @@
 extends Control
 
 const PlayerSettingsRes := preload("res://scripts/ui/player_settings.gd")
-const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
+const VolumeIcons := preload("res://scripts/ui/volume_icons.gd")
 const SCREEN_MARGIN := 14.0
 
 @onready var _btn: Button = $Button
+
+var _icon_on: ImageTexture
+var _icon_muted: ImageTexture
 
 
 func _ready() -> void:
 	add_to_group("sound_toggle")
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_icon_on = VolumeIcons.speaker_on()
+	_icon_muted = VolumeIcons.speaker_muted()
 	_btn.pressed.connect(_on_pressed)
-	_btn.add_theme_font_override("font", FONT)
+	_btn.text = ""
+	_btn.expand_icon = true
+	_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_btn.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_btn.focus_mode = Control.FOCUS_NONE
 	ViewportLayout.layout_changed.connect(_apply_layout)
 	_apply_layout()
 	_update_label()
@@ -25,7 +34,6 @@ func _apply_layout() -> void:
 	var margin_bottom := ViewportLayout.screen_margin_bottom(SCREEN_MARGIN)
 	var btn_size := clampf(44.0 * s, 36.0, 56.0)
 	_btn.custom_minimum_size = Vector2(btn_size, btn_size)
-	_btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
 	anchor_left = 1.0
 	anchor_top = 1.0
 	anchor_right = 1.0
@@ -61,8 +69,12 @@ func _on_pressed() -> void:
 		if music != null and music.has_method("unlock_and_play"):
 			music.unlock_and_play()
 	_update_label()
+	var settings_menu := get_tree().get_first_node_in_group("settings_menu")
+	if settings_menu != null and settings_menu.has_method("refresh_mute_from_settings"):
+		settings_menu.refresh_mute_from_settings()
 
 
 func _update_label() -> void:
 	var muted := bool(PlayerSettingsRes.load_all().get("master_muted", false))
-	_btn.text = "🔇" if muted else "🔊"
+	_btn.text = ""
+	_btn.icon = _icon_muted if muted else _icon_on

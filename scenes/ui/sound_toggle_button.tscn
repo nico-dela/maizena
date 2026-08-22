@@ -10,4 +10,5 @@ script = ExtResource("1_sound")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 0
-text = "🔊"
+text = ""
+expand_icon = true

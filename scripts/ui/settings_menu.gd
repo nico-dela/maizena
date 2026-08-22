@@ -2,6 +2,7 @@ extends CanvasLayer
 
 const PlayerSettings = preload("res://scripts/ui/player_settings.gd")
 const InputPlatformRes = preload("res://scripts/ui/input_platform.gd")
+const VolumeIcons = preload("res://scripts/ui/volume_icons.gd")
 const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 
 const BASE_TITLE_FONT := 38
@@ -40,6 +41,8 @@ var is_open := false
 var _panel_style: StyleBoxFlat
 var _loading_settings := false
 var _master_muted := false
+var _icon_speaker_on: ImageTexture
+var _icon_speaker_muted: ImageTexture
 
 
 func _ready() -> void:
@@ -47,11 +50,16 @@ func _ready() -> void:
 	layer = 20
 	add_to_group("settings_menu")
 
+	_icon_speaker_on = VolumeIcons.speaker_on()
+	_icon_speaker_muted = VolumeIcons.speaker_muted()
+
 	_panel_style = _make_panel_style()
 	menu_box.add_theme_stylebox_override("panel", _panel_style)
 
 	menu_panel.hide()
 	is_open = false
+	# Menu must sit above the gear button or the gear steals clicks while open.
+	move_child(menu_panel, get_child_count() - 1)
 
 	settings_button.icon = icon_open
 	settings_button.pressed.connect(_on_settings_pressed)
@@ -194,6 +202,8 @@ func _on_viewport_layout_changed() -> void:
 func _apply_menu_layout() -> void:
 	var s := ViewportLayout.effective_ui_scale()
 	var layout: Vector2 = ViewportLayout.visible_layout_size()
+	if layout.x < 64.0 or layout.y < 64.0:
+		return
 	var portrait := ViewportLayout.is_portrait
 	# En portrait el panel acompaña el ancho de la pantalla, como el popup de Noticias.
 	var panel_w := layout.x * PORTRAIT_PANEL_RATIO if portrait else minf(
@@ -217,6 +227,7 @@ func _apply_menu_layout() -> void:
 	var slider_h := maxi(36 if portrait else 28, int(round(30.0 * s)))
 	volume_slider.custom_minimum_size.y = slider_h
 	joystick_slider.custom_minimum_size.y = slider_h
+	_sync_settings_button_interactive()
 
 
 func _menu_font(base_size: int) -> int:
@@ -241,9 +252,25 @@ func _style_mute_toggle(s: float) -> void:
 	if ViewportLayout.is_portrait:
 		side = maxf(44.0, side)
 	mute_toggle_btn.custom_minimum_size = Vector2(side, side)
-	mute_toggle_btn.add_theme_font_size_override("font_size", _menu_font(BASE_MUSIC_FONT))
-	mute_toggle_btn.flat = true
+	mute_toggle_btn.text = ""
+	mute_toggle_btn.flat = false
 	mute_toggle_btn.focus_mode = Control.FOCUS_NONE
+	mute_toggle_btn.expand_icon = true
+	mute_toggle_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	mute_toggle_btn.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var sb_n := StyleBoxFlat.new()
+	sb_n.bg_color = Color(0.1, 0.16, 0.24, 0.92)
+	sb_n.set_corner_radius_all(5)
+	sb_n.set_border_width_all(1)
+	sb_n.border_color = Color(0.42, 0.76, 0.94, 0.5)
+	sb_n.set_content_margin_all(6)
+	var sb_h := sb_n.duplicate()
+	sb_h.bg_color = Color(0.14, 0.22, 0.32, 0.98)
+	mute_toggle_btn.add_theme_stylebox_override("normal", sb_n)
+	mute_toggle_btn.add_theme_stylebox_override("hover", sb_h)
+	mute_toggle_btn.add_theme_stylebox_override("pressed", sb_h)
+	mute_toggle_btn.add_theme_stylebox_override("focus", sb_n)
+	_sync_mute_icon()
 
 
 func _style_action_button(button: Button, s: float) -> void:
@@ -316,6 +343,8 @@ func _open_menu() -> void:
 	ViewportLayout.refresh()
 	menu_panel.show()
 	is_open = true
+	move_child(menu_panel, get_child_count() - 1)
+	_sync_settings_button_interactive()
 	_apply_joystick_settings_visibility()
 	_apply_menu_layout()
 	call_deferred("_apply_menu_layout")
@@ -324,6 +353,19 @@ func _open_menu() -> void:
 func _close_menu() -> void:
 	menu_panel.hide()
 	is_open = false
+	_sync_settings_button_interactive()
+	if get_viewport() != null:
+		get_viewport().gui_release_focus()
+
+
+func _sync_settings_button_interactive() -> void:
+	if settings_button == null:
+		return
+	# Gear sits as a sibling; ignore it while the modal is open so it cannot eat clicks.
+	settings_button.mouse_filter = (
+		Control.MOUSE_FILTER_IGNORE if is_open else Control.MOUSE_FILTER_STOP
+	)
+	settings_button.visible = not is_open
 
 
 func _on_close_pressed() -> void:
@@ -424,7 +466,18 @@ func _apply_master_audio() -> void:
 func _sync_mute_icon() -> void:
 	if mute_toggle_btn == null:
 		return
-	mute_toggle_btn.text = "🔇" if _master_muted else "🔊"
+	mute_toggle_btn.text = ""
+	if _icon_speaker_on == null:
+		_icon_speaker_on = VolumeIcons.speaker_on()
+	if _icon_speaker_muted == null:
+		_icon_speaker_muted = VolumeIcons.speaker_muted()
+	mute_toggle_btn.icon = _icon_speaker_muted if _master_muted else _icon_speaker_on
+
+
+func refresh_mute_from_settings() -> void:
+	_master_muted = bool(PlayerSettings.load_all().get("master_muted", false))
+	_sync_mute_icon()
+	_update_volume_label()
 
 
 func _on_fullscreen_pressed() -> void:
@@ -460,18 +513,25 @@ func _sync_fullscreen_button(is_fullscreen: bool = false, force: bool = false) -
 
 
 func _refresh_after_fullscreen() -> void:
-	# Fullscreen resize can arrive 1–2 frames late on web.
+	# Fullscreen resize can arrive 1–2 frames late on web; keep the open menu usable.
 	await get_tree().process_frame
 	await get_tree().process_frame
 	ViewportLayout.refresh()
 	_sync_fullscreen_button()
 	_apply_settings_button_layout()
-	_apply_menu_layout()
+	if is_open:
+		move_child(menu_panel, get_child_count() - 1)
+		_sync_settings_button_interactive()
+		_apply_menu_layout()
+	if get_viewport() != null:
+		get_viewport().gui_release_focus()
 	await get_tree().create_timer(0.15).timeout
 	ViewportLayout.refresh()
 	_sync_fullscreen_button()
 	_apply_settings_button_layout()
-	_apply_menu_layout()
+	if is_open:
+		_apply_menu_layout()
+		_sync_settings_button_interactive()
 
 
 func _update_volume_label() -> void:
