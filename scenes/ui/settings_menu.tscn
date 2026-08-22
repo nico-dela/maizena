@@ -69,6 +69,14 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
+[node name="MuteToggleButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 22
+text = "🔊"
+flat = true
+
 [node name="VolumeHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow" unique_id=375551595]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
@@ -76,24 +84,26 @@ size_flags_horizontal = 3
 min_value = -40.0
 max_value = 0.0
 
-[node name="MuteRow" type="VBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551602]
+[node name="JoystickLabel" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 28
+text = "Joystick — 100%"
+horizontal_alignment = 1
+
+[node name="JoystickRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="MuteButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551603]
+[node name="JoystickHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox/JoystickRow"]
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("2_cr101")
-theme_override_font_sizes/font_size = 22
-text = "Silenciar audio"
-
-[node name="ActivateAudioButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551604]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("2_cr101")
-theme_override_font_sizes/font_size = 22
-text = "Activar audio (iPhone)"
+min_value = 0.75
+max_value = 1.5
+step = 0.05
+value = 1.0
 
 [node name="MusicRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551597]
 layout_mode = 2

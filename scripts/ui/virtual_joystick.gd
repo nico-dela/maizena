@@ -2,11 +2,14 @@ extends Control
 ## Fixed virtual stick for mobile / touch web. Hidden on desktop without touch.
 
 const InputPlatformRes := preload("res://scripts/ui/input_platform.gd")
+const PlayerSettingsRes := preload("res://scripts/ui/player_settings.gd")
 
 const DEADZONE := 0.18
 const BASE_DIAMETER := 128.0
 const KNOB_RATIO := 0.42
-const SCREEN_MARGIN := 18.0
+const SCREEN_MARGIN_LEFT := 48.0
+const SCREEN_MARGIN_BOTTOM := 64.0
+const THUMB_INSET_RATIO := 0.04
 const GB_RING := Color(0.545, 0.584, 0.427, 0.92)
 const GB_RING_BORDER := Color(0.188, 0.384, 0.188, 1.0)
 const GB_KNOB := Color(0.608, 0.737, 0.059, 0.92)
@@ -15,12 +18,14 @@ const GB_KNOB_BORDER := Color(0.059, 0.220, 0.059, 1.0)
 var _pointer_id := -1
 var _value := Vector2.ZERO
 var _is_touch := false
+var _joystick_scale := 1.0
 
 @onready var _ring: Panel = $Ring
 @onready var _knob: Panel = $Ring/Knob
 
 
 func _ready() -> void:
+	add_to_group("virtual_joystick")
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_is_touch = InputPlatformRes.is_touch_primary()
 	visible = false
@@ -35,6 +40,10 @@ func get_vector() -> Vector2:
 	if not visible:
 		return Vector2.ZERO
 	return _value
+
+
+func refresh_layout() -> void:
+	_apply_layout()
 
 
 func _process(_delta: float) -> void:
@@ -68,9 +77,13 @@ func _apply_layout() -> void:
 	ViewportLayout.refresh()
 	var s := ViewportLayout.effective_ui_scale()
 	var layout := ViewportLayout.visible_layout_size()
-	var diameter := clampf(BASE_DIAMETER * s, 96.0, 168.0)
-	var margin_left := ViewportLayout.screen_margin_left(SCREEN_MARGIN)
-	var margin_bottom := ViewportLayout.screen_margin_bottom(SCREEN_MARGIN)
+	_joystick_scale = float(
+		PlayerSettingsRes.load_all().get("joystick_scale", PlayerSettingsRes.DEFAULT_JOYSTICK_SCALE)
+	)
+	var diameter := clampf(BASE_DIAMETER * s * _joystick_scale, 80.0, 220.0)
+	var margin_left := ViewportLayout.screen_margin_left(SCREEN_MARGIN_LEFT)
+	var margin_bottom := ViewportLayout.screen_margin_bottom(SCREEN_MARGIN_BOTTOM)
+	margin_left += layout.x * THUMB_INSET_RATIO
 
 	_ring.size = Vector2(diameter, diameter)
 	_ring.position = Vector2(margin_left, layout.y - margin_bottom - diameter)

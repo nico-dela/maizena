@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 const PlayerSettings = preload("res://scripts/ui/player_settings.gd")
+const InputPlatformRes = preload("res://scripts/ui/input_platform.gd")
 const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 
 const BASE_TITLE_FONT := 38
@@ -19,12 +20,13 @@ const PORTRAIT_FONT_MUL := 1.22
 @onready var settings_button: Button = $Button
 @onready var close_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/CloseButton
 @onready var volume_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow
+@onready var mute_toggle_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow/MuteToggleButton
 @onready var volume_slider: HSlider = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow/VolumeHSlider
 @onready var title_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Titulo
 @onready var volume_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/VolumeLabel
-@onready var mute_row: VBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow
-@onready var mute_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/MuteButton
-@onready var activate_audio_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/ActivateAudioButton
+@onready var joystick_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/JoystickLabel
+@onready var joystick_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/JoystickRow
+@onready var joystick_slider: HSlider = $Menu/CenterContainer/Panel/Margin/VBox/JoystickRow/JoystickHSlider
 @onready var music_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow
 @onready var music_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicLabel
 @onready var music_toggle: CheckButton = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicToggle
@@ -63,16 +65,23 @@ func _ready() -> void:
 	volume_slider.min_value = PlayerSettings.VOLUME_MIN_DB
 	volume_slider.max_value = PlayerSettings.VOLUME_MAX_DB
 	volume_slider.step = 1
+	joystick_slider.min_value = PlayerSettings.JOYSTICK_SCALE_MIN
+	joystick_slider.max_value = PlayerSettings.JOYSTICK_SCALE_MAX
+	joystick_slider.step = 0.05
 	_loading_settings = true
 	var settings := PlayerSettings.load_all()
 	volume_slider.value = float(settings.get("master_volume_db", PlayerSettings.default_volume_db()))
 	_master_muted = bool(settings.get("master_muted", false))
+	joystick_slider.value = float(settings.get("joystick_scale", PlayerSettings.DEFAULT_JOYSTICK_SCALE))
 	_loading_settings = false
 	volume_slider.value_changed.connect(_on_volume_changed)
-	mute_btn.pressed.connect(_on_mute_pressed)
-	activate_audio_btn.pressed.connect(_on_activate_audio_pressed)
+	joystick_slider.value_changed.connect(_on_joystick_scale_changed)
+	mute_toggle_btn.pressed.connect(_on_mute_toggle_pressed)
 	_apply_master_audio()
 	_update_volume_label()
+	_update_joystick_label()
+	_sync_mute_icon()
+	_apply_joystick_settings_visibility()
 
 	_style_music_toggle()
 	music_toggle.toggled.connect(_on_background_play_toggled)
@@ -80,9 +89,11 @@ func _ready() -> void:
 
 	fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
 	fullscreen_row.visible = true
+	_sync_fullscreen_button()
 
 	menu_dim.gui_input.connect(_on_dim_gui_input)
 	_style_volume_slider()
+	_style_joystick_slider()
 
 	_apply_settings_button_layout()
 	_apply_menu_layout()
@@ -117,11 +128,25 @@ func _style_close_button() -> void:
 	close_btn.add_theme_font_override("font", FONT)
 
 
-
-
-
-
 func _style_volume_slider() -> void:
+	_apply_slider_theme(volume_slider)
+
+
+func _style_joystick_slider() -> void:
+	_apply_slider_theme(joystick_slider)
+
+
+func _apply_joystick_settings_visibility() -> void:
+	var show_joystick := InputPlatformRes.is_touch_primary()
+	if joystick_label != null:
+		joystick_label.visible = show_joystick
+	if joystick_row != null:
+		joystick_row.visible = show_joystick
+
+
+func _apply_slider_theme(slider: HSlider) -> void:
+	if slider == null:
+		return
 	var track := StyleBoxFlat.new()
 	track.bg_color = Color(0.04, 0.07, 0.1, 0.95)
 	track.set_corner_radius_all(4)
@@ -132,9 +157,9 @@ func _style_volume_slider() -> void:
 	grabber.set_content_margin_all(5)
 	var grabber_h := grabber.duplicate()
 	grabber_h.bg_color = Color(0.5, 0.9, 1.0, 1)
-	volume_slider.add_theme_stylebox_override("slider", track)
-	volume_slider.add_theme_stylebox_override("grabber", grabber)
-	volume_slider.add_theme_stylebox_override("grabber_highlight", grabber_h)
+	slider.add_theme_stylebox_override("slider", track)
+	slider.add_theme_stylebox_override("grabber", grabber)
+	slider.add_theme_stylebox_override("grabber_highlight", grabber_h)
 
 
 func _style_music_toggle() -> void:
@@ -181,15 +206,17 @@ func _apply_menu_layout() -> void:
 	_set_label_font(title_label, BASE_TITLE_FONT)
 	title_label.add_theme_color_override("font_color", Color(0.45, 0.85, 0.96, 1))
 	_set_label_font(volume_label, BASE_VOLUME_FONT)
-	_style_action_button(mute_btn, s)
-	_style_action_button(activate_audio_btn, s)
+	_set_label_font(joystick_label, BASE_VOLUME_FONT)
+	_style_mute_toggle(s)
 	_set_label_font(music_label, BASE_MUSIC_FONT)
 	_apply_toggle_layout(music_toggle, s)
 	_style_action_button(fullscreen_btn, s)
 	_set_label_font(hint_label, BASE_HINT_FONT)
 	close_btn.add_theme_font_size_override("font_size", _menu_font(BASE_CLOSE_FONT))
 	close_btn.custom_minimum_size.y = maxf(56.0 if portrait else 48.0, 44.0 * s)
-	volume_slider.custom_minimum_size.y = maxi(36 if portrait else 28, int(round(30.0 * s)))
+	var slider_h := maxi(36 if portrait else 28, int(round(30.0 * s)))
+	volume_slider.custom_minimum_size.y = slider_h
+	joystick_slider.custom_minimum_size.y = slider_h
 
 
 func _menu_font(base_size: int) -> int:
@@ -205,6 +232,18 @@ func _apply_panel_padding(s: float, portrait: bool) -> void:
 	_panel_style.content_margin_top = pad
 	_panel_style.content_margin_right = pad
 	_panel_style.content_margin_bottom = pad
+
+
+func _style_mute_toggle(s: float) -> void:
+	if mute_toggle_btn == null:
+		return
+	var side := maxf(40.0, 36.0 * s)
+	if ViewportLayout.is_portrait:
+		side = maxf(44.0, side)
+	mute_toggle_btn.custom_minimum_size = Vector2(side, side)
+	mute_toggle_btn.add_theme_font_size_override("font_size", _menu_font(BASE_MUSIC_FONT))
+	mute_toggle_btn.flat = true
+	mute_toggle_btn.focus_mode = Control.FOCUS_NONE
 
 
 func _style_action_button(button: Button, s: float) -> void:
@@ -277,6 +316,7 @@ func _open_menu() -> void:
 	ViewportLayout.refresh()
 	menu_panel.show()
 	is_open = true
+	_apply_joystick_settings_visibility()
 	_apply_menu_layout()
 	call_deferred("_apply_menu_layout")
 
@@ -339,20 +379,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _on_mute_pressed() -> void:
-	_master_muted = true
+func _on_mute_toggle_pressed() -> void:
+	_master_muted = not _master_muted
 	_apply_master_audio()
 	_update_volume_label()
+	_sync_mute_icon()
 	if not _loading_settings:
 		PlayerSettings.save_partial({"master_muted": _master_muted})
-
-
-func _on_activate_audio_pressed() -> void:
-	_master_muted = false
-	_apply_master_audio()
-	_update_volume_label()
-	if not _loading_settings:
-		PlayerSettings.save_partial({"master_muted": _master_muted})
+	get_tree().call_group("sound_toggle", "_update_label")
 
 
 func _on_volume_changed(value: float) -> void:
@@ -360,11 +394,21 @@ func _on_volume_changed(value: float) -> void:
 		_master_muted = false
 	_apply_master_audio()
 	_update_volume_label()
+	_sync_mute_icon()
 	if not _loading_settings:
 		PlayerSettings.save_partial({
 			"master_volume_db": value,
 			"master_muted": _master_muted,
 		})
+		get_tree().call_group("sound_toggle", "_update_label")
+
+
+func _on_joystick_scale_changed(value: float) -> void:
+	_update_joystick_label()
+	if _loading_settings:
+		return
+	PlayerSettings.save_partial({"joystick_scale": value})
+	get_tree().call_group("virtual_joystick", "refresh_layout")
 
 
 func _apply_master_audio() -> void:
@@ -377,25 +421,57 @@ func _apply_master_audio() -> void:
 			music.unlock_and_play()
 
 
+func _sync_mute_icon() -> void:
+	if mute_toggle_btn == null:
+		return
+	mute_toggle_btn.text = "🔇" if _master_muted else "🔊"
+
+
 func _on_fullscreen_pressed() -> void:
-	if OS.has_feature("web"):
-		JavaScriptBridge.eval(
-			"(function(){var el=document.documentElement;"
-			+ "if(!document.fullscreenElement&&!document.webkitFullscreenElement){"
-			+ "var req=el.requestFullscreen||el.webkitRequestFullscreen;"
-			+ "if(req){req.call(el);}}else{"
-			+ "var exit=document.exitFullscreen||document.webkitExitFullscreen;"
-			+ "if(exit){exit.call(document);}}})();"
-		)
+	# Prefer DisplayServer so Godot resizes the viewport consistently (incl. web).
+	var mode := DisplayServer.window_get_mode()
+	var going_fullscreen := (
+		mode != DisplayServer.WINDOW_MODE_FULLSCREEN
+		and mode != DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
+	)
+	if going_fullscreen:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
-		var mode := DisplayServer.window_get_mode()
-		if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		else:
-			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	_sync_fullscreen_button(going_fullscreen, true)
+
 	var music := get_tree().get_first_node_in_group("music_manager")
 	if music != null and music.has_method("unlock_and_play"):
 		music.unlock_and_play()
+	call_deferred("_refresh_after_fullscreen")
+
+
+func _sync_fullscreen_button(is_fullscreen: bool = false, force: bool = false) -> void:
+	if fullscreen_btn == null:
+		return
+	var fs := is_fullscreen
+	if not force:
+		var mode := DisplayServer.window_get_mode()
+		fs = (
+			mode == DisplayServer.WINDOW_MODE_FULLSCREEN
+			or mode == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
+		)
+	fullscreen_btn.text = "Salir de pantalla completa" if fs else "Pantalla completa"
+
+
+func _refresh_after_fullscreen() -> void:
+	# Fullscreen resize can arrive 1–2 frames late on web.
+	await get_tree().process_frame
+	await get_tree().process_frame
+	ViewportLayout.refresh()
+	_sync_fullscreen_button()
+	_apply_settings_button_layout()
+	_apply_menu_layout()
+	await get_tree().create_timer(0.15).timeout
+	ViewportLayout.refresh()
+	_sync_fullscreen_button()
+	_apply_settings_button_layout()
+	_apply_menu_layout()
 
 
 func _update_volume_label() -> void:
@@ -403,6 +479,11 @@ func _update_volume_label() -> void:
 		volume_label.text = "Volumen — Silenciado"
 	else:
 		volume_label.text = "Volumen — %d%%" % _volume_percent(volume_slider.value)
+
+
+func _update_joystick_label() -> void:
+	var pct := int(round(joystick_slider.value * 100.0))
+	joystick_label.text = "Joystick — %d%%" % pct
 
 
 func _volume_percent(db: float) -> int:

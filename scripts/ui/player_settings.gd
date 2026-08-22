@@ -4,9 +4,12 @@ const SAVE_PATH := "user://player_settings.json"
 const DEFAULT_VOLUME_PERCENT := 90
 const DEFAULT_PLAY_IN_BACKGROUND := false
 const DEFAULT_MASTER_MUTED := false
+const DEFAULT_JOYSTICK_SCALE := 1.0
 
 const VOLUME_MIN_DB := -40.0
 const VOLUME_MAX_DB := 0.0
+const JOYSTICK_SCALE_MIN := 0.75
+const JOYSTICK_SCALE_MAX := 1.5
 
 
 static func default_volume_db() -> float:
@@ -18,6 +21,7 @@ static func load_all() -> Dictionary:
 		"play_in_background": DEFAULT_PLAY_IN_BACKGROUND,
 		"master_muted": DEFAULT_MASTER_MUTED,
 		"master_volume_db": default_volume_db(),
+		"joystick_scale": DEFAULT_JOYSTICK_SCALE,
 	}
 	if not FileAccess.file_exists(SAVE_PATH):
 		return data
@@ -41,6 +45,12 @@ static func load_all() -> Dictionary:
 			float(parsed["master_volume_db"]),
 			VOLUME_MIN_DB,
 			VOLUME_MAX_DB
+		)
+	if parsed.has("joystick_scale"):
+		data["joystick_scale"] = clampf(
+			float(parsed["joystick_scale"]),
+			JOYSTICK_SCALE_MIN,
+			JOYSTICK_SCALE_MAX
 		)
 	return data
 
@@ -67,5 +77,10 @@ static func save_partial(patch: Dictionary) -> void:
 			"play_in_background": bool(data.get("play_in_background", DEFAULT_PLAY_IN_BACKGROUND)),
 			"master_muted": bool(data.get("master_muted", DEFAULT_MASTER_MUTED)),
 			"master_volume_db": float(data.get("master_volume_db", default_volume_db())),
+			"joystick_scale": clampf(
+				float(data.get("joystick_scale", DEFAULT_JOYSTICK_SCALE)),
+				JOYSTICK_SCALE_MIN,
+				JOYSTICK_SCALE_MAX
+			),
 		})
 	)
