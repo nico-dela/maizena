@@ -120,8 +120,19 @@ func _ready() -> void:
 
 
 func _auto_open_when_backdrop_ready() -> void:
+	await _wait_for_movement_tutorial()
 	await _wait_for_stable_backdrop()
 	open_welcome(false)
+
+
+func _wait_for_movement_tutorial() -> void:
+	while true:
+		var tutorial := get_tree().get_first_node_in_group("movement_tutorial")
+		if tutorial == null or not tutorial.has_method("is_blocking"):
+			break
+		if not tutorial.call("is_blocking"):
+			break
+		await get_tree().process_frame
 
 
 func _wait_for_stable_backdrop() -> void:
@@ -295,7 +306,7 @@ func _build_credits_ui() -> void:
 		root,
 		COLOR_ORANGE,
 		"Proyecto",
-		"Archipiélago Maizena — disco Una Banda de Cosas Tiradas (La Casa Mutante)."
+		"Archipiélago Maizena — banda Maizena. Las cosas (en proceso) · La Casa Mutante."
 	)
 	_add_credits_block(
 		root,
@@ -411,7 +422,7 @@ func _build_infographic_ui() -> void:
 		grid,
 		COLOR_ORANGE,
 		"En esta isla el tiempo pasa en Eras",
-		"como la cantidad de semanas desde que lanzamos el disco 'Una banda de cosas tiradas'"
+		"semanas desde que el archipiélago empezó a contar Eras, mientras Maizena arma Las cosas"
 	)
 	_era_val = era["value"]
 
@@ -718,6 +729,9 @@ func _on_close_pressed() -> void:
 		MaizenaMeta.mark_welcome_seen()
 	_mark_seen_on_close = false
 	get_tree().paused = false
+	var music := get_tree().get_first_node_in_group("music_manager")
+	if music != null and music.has_method("unlock_and_play"):
+		music.unlock_and_play()
 	_notify_presence_refresh()
 
 

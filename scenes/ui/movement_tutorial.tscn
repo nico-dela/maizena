@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/movement_tutorial.gd" id="1_tutorial"]
+
+[node name="MovementTutorial" type="CanvasLayer"]
+script = ExtResource("1_tutorial")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.02, 0.04, 0.1, 0.45)
+
+[node name="Panel" type="PanelContainer" parent="."]
+offset_left = 80.0
+offset_top = 80.0
+offset_right = 500.0
+offset_bottom = 280.0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/Margin/VBox"]
+text = "Archipiélago Maizena"
+horizontal_alignment = 1
+
+[node name="Body" type="Label" parent="Panel/Margin/VBox"]
+text = "Sanjin despierta en la isla de Maizena. Arrastrá el joystick para explorar, hablar con quien encuentres y descubrir el mapa."
+autowrap_mode = 3
+
+[node name="Hint" type="Label" parent="Panel/Margin/VBox"]
+text = "El joystick está abajo a la izquierda."
+horizontal_alignment = 1
+
+[node name="OkButton" type="Button" parent="Panel/Margin/VBox"]
+text = "Entendido"

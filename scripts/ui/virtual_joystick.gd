@@ -1,16 +1,20 @@
 extends Control
-## Fixed virtual stick for mobile. Hidden on desktop even if touch is emulated.
+## Fixed virtual stick for mobile / touch web. Hidden on desktop without touch.
+
+const InputPlatformRes := preload("res://scripts/ui/input_platform.gd")
 
 const DEADZONE := 0.18
 const BASE_DIAMETER := 128.0
 const KNOB_RATIO := 0.42
 const SCREEN_MARGIN := 18.0
-const NAVY := Color(0.04, 0.06, 0.14, 0.78)
-const CYAN := Color(0.35, 0.82, 0.96, 0.9)
+const GB_RING := Color(0.545, 0.584, 0.427, 0.92)
+const GB_RING_BORDER := Color(0.188, 0.384, 0.188, 1.0)
+const GB_KNOB := Color(0.608, 0.737, 0.059, 0.92)
+const GB_KNOB_BORDER := Color(0.059, 0.220, 0.059, 1.0)
 
 var _pointer_id := -1
 var _value := Vector2.ZERO
-var _is_mobile := false
+var _is_touch := false
 
 @onready var _ring: Panel = $Ring
 @onready var _knob: Panel = $Ring/Knob
@@ -18,7 +22,7 @@ var _is_mobile := false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_is_mobile = OS.has_feature("mobile")
+	_is_touch = InputPlatformRes.is_touch_primary()
 	visible = false
 	_style_parts()
 	_ring.gui_input.connect(_on_ring_gui_input)
@@ -42,7 +46,7 @@ func _process(_delta: float) -> void:
 
 
 func _should_show() -> bool:
-	if not _is_mobile:
+	if not _is_touch:
 		return false
 	if DialogueController.input_locked:
 		return false
@@ -54,6 +58,9 @@ func _should_show() -> bool:
 	var welcome := get_tree().get_first_node_in_group("welcome_popup")
 	if welcome != null and welcome.has_method("is_blocking") and welcome.call("is_blocking"):
 		return false
+	var tutorial := get_tree().get_first_node_in_group("movement_tutorial")
+	if tutorial != null and tutorial.has_method("is_blocking") and tutorial.call("is_blocking"):
+		return true
 	return true
 
 
@@ -77,17 +84,18 @@ func _apply_layout() -> void:
 
 func _style_parts() -> void:
 	var ring_style := StyleBoxFlat.new()
-	ring_style.bg_color = NAVY
-	ring_style.border_color = CYAN
-	ring_style.set_border_width_all(2)
-	ring_style.set_corner_radius_all(int(_ring.size.x * 0.5))
+	ring_style.bg_color = GB_RING
+	ring_style.border_color = GB_RING_BORDER
+	ring_style.set_border_width_all(3)
+	var corner := int(_ring.size.x * 0.22)
+	ring_style.set_corner_radius_all(corner)
 	_ring.add_theme_stylebox_override("panel", ring_style)
 
 	var knob_style := StyleBoxFlat.new()
-	knob_style.bg_color = Color(0.35, 0.82, 0.96, 0.82)
-	knob_style.border_color = Color(0.85, 0.95, 1.0, 0.95)
+	knob_style.bg_color = GB_KNOB
+	knob_style.border_color = GB_KNOB_BORDER
 	knob_style.set_border_width_all(2)
-	knob_style.set_corner_radius_all(int(_knob.size.x * 0.5))
+	knob_style.set_corner_radius_all(int(_knob.size.x * 0.22))
 	_knob.add_theme_stylebox_override("panel", knob_style)
 
 
@@ -106,6 +114,7 @@ func _on_ring_gui_input(event: InputEvent) -> void:
 
 func _handle_touch(event: InputEventScreenTouch) -> void:
 	if event.pressed and _pointer_id < 0:
+		_unlock_audio()
 		_pointer_id = event.index
 		_update_from_local(event.position)
 	elif not event.pressed and event.index == _pointer_id:
@@ -119,6 +128,7 @@ func _handle_drag(event: InputEventScreenDrag) -> void:
 
 func _handle_mouse_button(event: InputEventMouseButton) -> void:
 	if event.pressed and _pointer_id < 0:
+		_unlock_audio()
 		_pointer_id = 0
 		_update_from_local(event.position)
 	elif not event.pressed and _pointer_id == 0:
@@ -139,7 +149,22 @@ func _update_from_local(local_pos: Vector2) -> void:
 	else:
 		_value = vec
 	_knob.position = center + _value * max_len - _knob.size * 0.5
+	_notify_tutorial_input(_value)
 	accept_event()
+
+
+func _notify_tutorial_input(vec: Vector2) -> void:
+	if vec.length() < DEADZONE:
+		return
+	var tutorial := get_tree().get_first_node_in_group("movement_tutorial")
+	if tutorial != null and tutorial.has_method("notify_stick_used"):
+		tutorial.notify_stick_used()
+
+
+func _unlock_audio() -> void:
+	var music := get_tree().get_first_node_in_group("music_manager")
+	if music != null and music.has_method("unlock_and_play"):
+		music.unlock_and_play()
 
 
 func _release_pointer() -> void:

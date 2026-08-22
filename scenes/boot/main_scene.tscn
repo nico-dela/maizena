@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://b8k2yg7qykrv4" path="res://scripts/gameplay/main_scene.gd" id="9_main"]
 [ext_resource type="PackedScene" uid="uid://cdomcth8xmar6" path="res://scenes/ui/minimap.tscn" id="10_minimap"]
 [ext_resource type="PackedScene" path="res://scenes/ui/virtual_joystick.tscn" id="11_joy"]
+[ext_resource type="PackedScene" path="res://scenes/ui/movement_tutorial.tscn" id="12_tutorial"]
 
 [node name="MainScene" type="Node2D" unique_id=910432244]
 script = ExtResource("9_main")
@@ -18,7 +19,7 @@ script = ExtResource("9_main")
 [node name="NewWorld" parent="." unique_id=1636943568 instance=ExtResource("2_c1pb6")]
 
 [node name="Player" parent="." unique_id=1271161695 instance=ExtResource("2_p6wng")]
-z_index = 1
+z_index = 2
 position = Vector2(176, 464)
 
 [node name="SettingsMenu" parent="." unique_id=2051298128 instance=ExtResource("3_7mwkq")]
@@ -54,3 +55,5 @@ text = "Noticias"
 
 [node name="WelcomeWorldPopup" parent="." unique_id=683985732 instance=ExtResource("8_welcome")]
 visible = false
+
+[node name="MovementTutorial" parent="." instance=ExtResource("12_tutorial")]
