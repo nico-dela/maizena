@@ -56,6 +56,8 @@ var _background_paused := false
 var _paused_playback_position := 0.0
 var _audio_unlocked := false
 var _pending_start := false
+## Must stay referenced or the JS listener is garbage-collected.
+var _web_visibility_cb: JavaScriptObject
 
 
 func _ready() -> void:
@@ -108,12 +110,20 @@ func _apply_audio_from_settings() -> void:
 
 
 func _setup_web_visibility_pause() -> void:
-	var callback := JavaScriptBridge.create_callback(_on_web_visibility_changed)
-	var js := (
-		"document.addEventListener('visibilitychange', function() { %s(document.hidden); });"
-		% callback
-	)
-	JavaScriptBridge.eval(js, true)
+	# Do not string-interpolate create_callback — str() becomes `<JavaScriptObject#...>`
+	# and JavaScriptBridge.eval then throws SyntaxError: Unexpected token '<'.
+	_web_visibility_cb = JavaScriptBridge.create_callback(_on_web_visibility_js)
+	var document := JavaScriptBridge.get_interface("document")
+	if document == null:
+		return
+	document.addEventListener("visibilitychange", _web_visibility_cb)
+
+
+func _on_web_visibility_js(_args: Array) -> void:
+	var document := JavaScriptBridge.get_interface("document")
+	if document == null:
+		return
+	_on_web_visibility_changed(document.hidden)
 
 
 func _on_web_visibility_changed(hidden: Variant) -> void:
