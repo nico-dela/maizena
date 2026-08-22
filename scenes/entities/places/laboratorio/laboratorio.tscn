@@ -4,8 +4,8 @@
 [ext_resource type="Resource" uid="uid://bg1aqbsjrs2lt" path="res://scenes/entities/places/laboratorio/laboratorio.dialogue" id="2_8debs"]
 [ext_resource type="Texture2D" uid="uid://dnbiyjpwy46sh" path="res://assets/art/tilesets/laboratorio.png" id="3_xu6oo"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_8debs"]
-radius = 52.611786
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57lxb"]
+size = Vector2(96, 40)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_35l1d"]
 atlas = ExtResource("3_xu6oo")
@@ -17,7 +17,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_35l1d")
 }],
-"loop": true,
+"loop": 1,
 "name": &"laboratorio",
 "speed": 5.0
 }]
@@ -27,7 +27,8 @@ script = ExtResource("1_1fh6r")
 dialogue = ExtResource("2_8debs")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1601536798]
-shape = SubResource("CircleShape2D_8debs")
+position = Vector2(0, 26)
+shape = SubResource("RectangleShape2D_57lxb")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2088313280]
 sprite_frames = SubResource("SpriteFrames_2rou7")
