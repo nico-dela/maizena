@@ -5,6 +5,17 @@ const CELL := 16
 const ALLOWED_PROP_SIZES := [16, 24, 32, 48]
 const WORLD_PROPS_DIR := "res://assets/art/props"
 
+## Explicit list so web exports keep residues (DirAccess on res:// often only sees `.import`).
+const WORLD_PROP_PATHS: Array[String] = [
+	"res://assets/art/props/Lentes.png",
+	"res://assets/art/props/Maceta_flor.png",
+	"res://assets/art/props/chupetin.png",
+	"res://assets/art/props/ford_sierra.png",
+	"res://assets/art/props/futbol.png",
+	"res://assets/art/props/remera1.png",
+	"res://assets/art/props/sillon_roto.png",
+]
+
 const SCALE_RANGES := {
 	16: Vector2(0.75, 1.5),
 	24: Vector2(0.6, 1.1),
@@ -15,6 +26,7 @@ const SCALE_RANGES := {
 var world_state: Node = null
 ## { texture: Texture2D, base_size: int } — props de `assets/art/props/`.
 var _world_prop_variants: Array[Dictionary] = []
+var _warned_empty_props := false
 
 
 func _ready() -> void:
@@ -22,13 +34,18 @@ func _ready() -> void:
 	world_state = get_node_or_null("/root/WorldState")
 	_load_world_prop_sources()
 	if world_state:
+		# Only day rollover / absence advances change residue layout — not fog exploration.
 		world_state.world_day_changed.connect(_on_world_shifted)
-		world_state.world_state_changed.connect(_on_world_shifted)
 	_rebuild_residue()
 
 
 func _load_world_prop_sources() -> void:
 	_world_prop_variants.clear()
+	for path in WORLD_PROP_PATHS:
+		_try_append_prop_path(path)
+	if not _world_prop_variants.is_empty():
+		return
+	# Editor / unexpected layouts: scan directory (also accept `.import` remaps).
 	var d := DirAccess.open(WORLD_PROPS_DIR)
 	if d == null:
 		return
@@ -38,21 +55,27 @@ func _load_world_prop_sources() -> void:
 		if d.current_is_dir() or fname.begins_with("."):
 			fname = d.get_next()
 			continue
-		if not fname.to_lower().ends_with(".png"):
+		var resource_name := fname
+		if resource_name.ends_with(".import"):
+			resource_name = resource_name.trim_suffix(".import")
+		if not resource_name.to_lower().ends_with(".png"):
 			fname = d.get_next()
 			continue
-		var path := WORLD_PROPS_DIR.path_join(fname)
-		var tex: Texture2D = load(path) as Texture2D
-		if tex == null:
-			push_warning("WorldResidueSystem: no se pudo cargar %s" % path)
-			fname = d.get_next()
-			continue
-		if fname.begins_with("atlas_"):
-			_append_texture_as_atlas_cells(tex, path)
-		else:
-			_append_whole_prop(tex, path)
+		_try_append_prop_path(WORLD_PROPS_DIR.path_join(resource_name))
 		fname = d.get_next()
 	d.list_dir_end()
+
+
+func _try_append_prop_path(path: String) -> void:
+	var tex: Texture2D = load(path) as Texture2D
+	if tex == null:
+		push_warning("WorldResidueSystem: no se pudo cargar %s" % path)
+		return
+	var fname := path.get_file()
+	if fname.begins_with("atlas_"):
+		_append_texture_as_atlas_cells(tex, path)
+	else:
+		_append_whole_prop(tex, path)
 
 
 func _append_whole_prop(tex: Texture2D, path_for_log: String) -> void:
@@ -102,7 +125,9 @@ func _rebuild_residue() -> void:
 		return
 
 	if _world_prop_variants.is_empty():
-		push_warning("WorldResidueSystem: no hay props válidos en %s" % WORLD_PROPS_DIR)
+		if not _warned_empty_props:
+			_warned_empty_props = true
+			push_warning("WorldResidueSystem: no hay props válidos en %s" % WORLD_PROPS_DIR)
 		return
 
 	var residue_count: int = mini(int(world_state.accumulation_level), MAX_RESIDUE_NODES)
