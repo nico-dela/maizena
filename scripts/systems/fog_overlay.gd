@@ -1,10 +1,21 @@
 extends Node2D
 
 const TILE_SIZE := 16
+## With CanvasLayer.follow_viewport_enabled, fog sorts by world z_index vs NPCs/props.
+## Must sit above InteractiveObjects (typically z=1) and outliers like Spinetto.
+const FOG_Z_INDEX := 4096
 
 @onready var _sprite: Sprite2D = $FogSprite
 
 var _discovery: Node
+
+
+func _ready() -> void:
+	z_as_relative = false
+	z_index = FOG_Z_INDEX
+	if _sprite != null:
+		_sprite.z_as_relative = true
+		_sprite.z_index = 0
 
 
 func bind(discovery: Node) -> void:
@@ -34,6 +45,8 @@ func _refresh() -> void:
 		visible = false
 		return
 	visible = true
+	z_as_relative = false
+	z_index = FOG_Z_INDEX
 	position = bounds.position
 	_sprite.texture = tex
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
