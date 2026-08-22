@@ -76,26 +76,24 @@ size_flags_horizontal = 3
 min_value = -40.0
 max_value = 0.0
 
-[node name="MuteRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551602]
+[node name="MuteRow" type="VBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551602]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="MuteLabel" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551603]
+[node name="MuteButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551603]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_cr101")
 theme_override_font_sizes/font_size = 22
 text = "Silenciar audio"
-horizontal_alignment = 1
 
-[node name="MuteToggle" type="CheckButton" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551604]
+[node name="ActivateAudioButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/MuteRow" unique_id=375551604]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_cr101")
 theme_override_font_sizes/font_size = 22
-button_pressed = false
-text = ""
-flat = true
+text = "Activar audio (iPhone)"
 
 [node name="MusicRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=375551597]
 layout_mode = 2
@@ -118,6 +116,18 @@ theme_override_font_sizes/font_size = 22
 button_pressed = false
 text = ""
 flat = true
+
+[node name="FullscreenRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="FullscreenButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/FullscreenRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_cr101")
+theme_override_font_sizes/font_size = 22
+text = "Pantalla completa"
 
 [node name="Hint" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=2096876301]
 layout_mode = 2

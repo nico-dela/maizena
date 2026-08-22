@@ -22,12 +22,14 @@ const PORTRAIT_FONT_MUL := 1.22
 @onready var volume_slider: HSlider = $Menu/CenterContainer/Panel/Margin/VBox/VolumeRow/VolumeHSlider
 @onready var title_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Titulo
 @onready var volume_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/VolumeLabel
-@onready var mute_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow
-@onready var mute_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/MuteLabel
-@onready var mute_toggle: CheckButton = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/MuteToggle
+@onready var mute_row: VBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow
+@onready var mute_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/MuteButton
+@onready var activate_audio_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/MuteRow/ActivateAudioButton
 @onready var music_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow
 @onready var music_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicLabel
 @onready var music_toggle: CheckButton = $Menu/CenterContainer/Panel/Margin/VBox/MusicRow/MusicToggle
+@onready var fullscreen_row: HBoxContainer = $Menu/CenterContainer/Panel/Margin/VBox/FullscreenRow
+@onready var fullscreen_btn: Button = $Menu/CenterContainer/Panel/Margin/VBox/FullscreenRow/FullscreenButton
 @onready var hint_label: Label = $Menu/CenterContainer/Panel/Margin/VBox/Hint
 
 @export var icon_open: Texture2D
@@ -67,15 +69,17 @@ func _ready() -> void:
 	_master_muted = bool(settings.get("master_muted", false))
 	_loading_settings = false
 	volume_slider.value_changed.connect(_on_volume_changed)
-	mute_toggle.toggled.connect(_on_mute_toggled)
-	_sync_mute_toggle()
+	mute_btn.pressed.connect(_on_mute_pressed)
+	activate_audio_btn.pressed.connect(_on_activate_audio_pressed)
 	_apply_master_audio()
 	_update_volume_label()
 
-	_style_mute_toggle()
 	_style_music_toggle()
 	music_toggle.toggled.connect(_on_background_play_toggled)
 	call_deferred("_bind_background_toggle")
+
+	fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
+	fullscreen_row.visible = true
 
 	menu_dim.gui_input.connect(_on_dim_gui_input)
 	_style_volume_slider()
@@ -113,21 +117,8 @@ func _style_close_button() -> void:
 	close_btn.add_theme_font_override("font", FONT)
 
 
-func _style_mute_toggle() -> void:
-	mute_label.add_theme_font_override("font", FONT)
-	mute_label.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0, 1.0))
-	mute_toggle.text = ""
-	mute_toggle.flat = true
-	mute_toggle.add_theme_font_override("font", FONT)
-	mute_toggle.focus_mode = Control.FOCUS_NONE
 
 
-func _sync_mute_toggle() -> void:
-	if mute_toggle == null:
-		return
-	mute_toggle.set_block_signals(true)
-	mute_toggle.button_pressed = _master_muted
-	mute_toggle.set_block_signals(false)
 
 
 func _style_volume_slider() -> void:
@@ -190,10 +181,11 @@ func _apply_menu_layout() -> void:
 	_set_label_font(title_label, BASE_TITLE_FONT)
 	title_label.add_theme_color_override("font_color", Color(0.45, 0.85, 0.96, 1))
 	_set_label_font(volume_label, BASE_VOLUME_FONT)
-	_set_label_font(mute_label, BASE_MUSIC_FONT)
-	_apply_toggle_layout(mute_toggle, s)
+	_style_action_button(mute_btn, s)
+	_style_action_button(activate_audio_btn, s)
 	_set_label_font(music_label, BASE_MUSIC_FONT)
 	_apply_toggle_layout(music_toggle, s)
+	_style_action_button(fullscreen_btn, s)
 	_set_label_font(hint_label, BASE_HINT_FONT)
 	close_btn.add_theme_font_size_override("font_size", _menu_font(BASE_CLOSE_FONT))
 	close_btn.custom_minimum_size.y = maxf(56.0 if portrait else 48.0, 44.0 * s)
@@ -213,6 +205,25 @@ func _apply_panel_padding(s: float, portrait: bool) -> void:
 	_panel_style.content_margin_top = pad
 	_panel_style.content_margin_right = pad
 	_panel_style.content_margin_bottom = pad
+
+
+func _style_action_button(button: Button, s: float) -> void:
+	if button == null:
+		return
+	button.add_theme_font_override("font", FONT)
+	button.add_theme_font_size_override("font_size", _menu_font(BASE_MUSIC_FONT))
+	button.custom_minimum_size.y = maxf(48.0 if ViewportLayout.is_portrait else 40.0, 40.0 * s)
+	var sb_n := StyleBoxFlat.new()
+	sb_n.bg_color = Color(0.1, 0.16, 0.24, 0.92)
+	sb_n.set_corner_radius_all(5)
+	sb_n.set_border_width_all(1)
+	sb_n.border_color = Color(0.42, 0.76, 0.94, 0.5)
+	var sb_h := sb_n.duplicate()
+	sb_h.bg_color = Color(0.14, 0.22, 0.32, 0.98)
+	button.add_theme_stylebox_override("normal", sb_n)
+	button.add_theme_stylebox_override("hover", sb_h)
+	button.add_theme_stylebox_override("pressed", sb_h)
+	button.add_theme_stylebox_override("focus", sb_n)
 
 
 func _apply_toggle_layout(toggle: CheckButton, s: float) -> void:
@@ -328,8 +339,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _on_mute_toggled(muted: bool) -> void:
-	_master_muted = muted
+func _on_mute_pressed() -> void:
+	_master_muted = true
+	_apply_master_audio()
+	_update_volume_label()
+	if not _loading_settings:
+		PlayerSettings.save_partial({"master_muted": _master_muted})
+
+
+func _on_activate_audio_pressed() -> void:
+	_master_muted = false
 	_apply_master_audio()
 	_update_volume_label()
 	if not _loading_settings:
@@ -339,7 +358,6 @@ func _on_mute_toggled(muted: bool) -> void:
 func _on_volume_changed(value: float) -> void:
 	if not _loading_settings and _master_muted:
 		_master_muted = false
-		_sync_mute_toggle()
 	_apply_master_audio()
 	_update_volume_label()
 	if not _loading_settings:
@@ -354,6 +372,30 @@ func _apply_master_audio() -> void:
 	AudioServer.set_bus_mute(master_bus, _master_muted)
 	if not _master_muted:
 		AudioServer.set_bus_volume_db(master_bus, volume_slider.value)
+		var music := get_tree().get_first_node_in_group("music_manager")
+		if music != null and music.has_method("unlock_and_play"):
+			music.unlock_and_play()
+
+
+func _on_fullscreen_pressed() -> void:
+	if OS.has_feature("web"):
+		JavaScriptBridge.eval(
+			"(function(){var el=document.documentElement;"
+			+ "if(!document.fullscreenElement&&!document.webkitFullscreenElement){"
+			+ "var req=el.requestFullscreen||el.webkitRequestFullscreen;"
+			+ "if(req){req.call(el);}}else{"
+			+ "var exit=document.exitFullscreen||document.webkitExitFullscreen;"
+			+ "if(exit){exit.call(document);}}})();"
+		)
+	else:
+		var mode := DisplayServer.window_get_mode()
+		if mode == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	var music := get_tree().get_first_node_in_group("music_manager")
+	if music != null and music.has_method("unlock_and_play"):
+		music.unlock_and_play()
 
 
 func _update_volume_label() -> void:
