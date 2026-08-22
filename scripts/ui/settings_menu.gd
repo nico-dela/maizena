@@ -95,9 +95,8 @@ func _ready() -> void:
 	music_toggle.toggled.connect(_on_background_play_toggled)
 	call_deferred("_bind_background_toggle")
 
-	fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
-	fullscreen_row.visible = true
-	_sync_fullscreen_button()
+	# Pantalla completa oculto por ahora (web/móvil).
+	fullscreen_row.visible = false
 
 	menu_dim.gui_input.connect(_on_dim_gui_input)
 	_style_volume_slider()
