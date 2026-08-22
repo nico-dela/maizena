@@ -100,22 +100,25 @@ func screen_margin_bottom(base: float) -> float:
 
 func _layout_safe_margins(window: Vector2i, stretch: float, safe_area: Rect2i) -> Vector4:
 	## Returns (top, left, right, bottom) in layout-space units.
+	# Desktop / web: safe-area often reports bogus insets (fullscreen, browser chrome)
+	# and pushes HUD down into a black strip. Only trust it on mobile builds.
+	if not OS.has_feature("mobile"):
+		return Vector4.ZERO
+
 	var s := maxf(stretch, 0.001)
 	var top := float(safe_area.position.y) / s
 	var left := float(safe_area.position.x) / s
 	var right := maxf(0.0, float(window.x - safe_area.end.x) / s)
 	var bottom := maxf(0.0, float(window.y - safe_area.end.y) / s)
 
-	# Fullscreen / web transitions often report bogus insets (full window as "unsafe").
 	var layout_short := minf(float(window.x), float(window.y)) / s
-	var max_inset := layout_short * 0.18
+	var max_inset := layout_short * 0.12
 	if top > max_inset or left > max_inset or right > max_inset or bottom > max_inset:
 		return Vector4.ZERO
-	if OS.has_feature("web"):
-		top = minf(top, 56.0)
-		left = minf(left, 40.0)
-		right = minf(right, 40.0)
-		bottom = minf(bottom, 56.0)
+	top = minf(top, 48.0)
+	left = minf(left, 32.0)
+	right = minf(right, 32.0)
+	bottom = minf(bottom, 48.0)
 	return Vector4(top, left, right, bottom)
 
 
