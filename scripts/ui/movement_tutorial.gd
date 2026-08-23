@@ -3,16 +3,12 @@ extends CanvasLayer
 const InputPlatformRes := preload("res://scripts/ui/input_platform.gd")
 const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 
-const BODY_TOUCH := (
-	"Sanjin despierta en el archipiélago de Maizena. Arrastrá el joystick para explorar, "
-	+ "hablar con quien encuentres y descubrir el mapa."
+const INTRO_GENERAL := (
+	"Sanjin despierta en el archipiélago de Maizena. Explorá el mapa, hablá con quien "
+	+ "encuentres y descubrí sus secretos."
 )
-const BODY_KEYBOARD := (
-	"Sanjin despierta en el archipiélago de Maizena. Usá las flechas del teclado para "
-	+ "explorar, hablar con quien encuentres y descubrir el mapa."
-)
-const HINT_TOUCH := "El joystick está abajo a la izquierda."
-const HINT_KEYBOARD := "Presioná Entendido cuando quieras empezar."
+const CONTROLS_TOUCH := "En celular o tablet: arrastrá el joystick (abajo a la izquierda) para moverte."
+const CONTROLS_KEYBOARD := "En escritorio: usá las flechas del teclado para moverte."
 
 @onready var _dim: ColorRect = $Dim
 @onready var _panel: PanelContainer = $Panel
@@ -24,12 +20,15 @@ const HINT_KEYBOARD := "Presioná Entendido cuando quieras empezar."
 @onready var _ok_btn: Button = $Panel/Margin/VBox/OkButton
 
 var _panel_style: StyleBoxFlat
+var _session_show_pending := true
 
 
 func _ready() -> void:
 	add_to_group("movement_tutorial")
-	layer = 120
+	layer = 130
 	hide()
+	if MaizenaMeta.is_movement_tutorial_seen():
+		_session_show_pending = false
 	_panel_style = _make_panel_style()
 	_panel.add_theme_stylebox_override("panel", _panel_style)
 	_ok_btn.pressed.connect(_complete)
@@ -39,6 +38,7 @@ func _ready() -> void:
 
 func _maybe_show() -> void:
 	if MaizenaMeta.is_movement_tutorial_seen():
+		_session_show_pending = false
 		return
 	_show()
 
@@ -46,11 +46,12 @@ func _maybe_show() -> void:
 func _show() -> void:
 	_apply_layout()
 	show()
+	_session_show_pending = false
 	call_deferred("_apply_layout")
 
 
 func is_blocking() -> bool:
-	return visible
+	return _session_show_pending or visible
 
 
 func notify_stick_used() -> void:
@@ -103,8 +104,8 @@ func _apply_layout() -> void:
 	var layout := ViewportLayout.visible_layout_size()
 	var portrait := ViewportLayout.is_portrait
 	var touch := InputPlatformRes.is_touch_primary()
-	_body.text = BODY_TOUCH if touch else BODY_KEYBOARD
-	_hint.text = HINT_TOUCH if touch else HINT_KEYBOARD
+	_body.text = INTRO_GENERAL
+	_hint.text = CONTROLS_TOUCH if touch else CONTROLS_KEYBOARD
 
 	_title.add_theme_font_override("font", FONT)
 	_body.add_theme_font_override("font", FONT)
