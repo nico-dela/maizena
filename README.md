@@ -43,5 +43,5 @@ Eso ajusta el service worker para priorizar red sobre caché en `index.html`, `.
 
 ## Equipo de desarrollo
 - Tobias Gencarelli
-- Felipe Pagani
 - Nicolas de la Cruz
+- Candela Gencarelli

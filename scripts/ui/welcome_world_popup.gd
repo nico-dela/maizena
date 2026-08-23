@@ -292,7 +292,7 @@ func _build_credits_ui() -> void:
 		root,
 		COLOR_ORANGE,
 		"Proyecto",
-		"Archipiélago Maizena — banda Maizena. Las cosas (en proceso) · La Casa Mutante."
+		"Archipiélago Maizena. Las cosas · La Casa Mutante."
 	)
 	_add_credits_block(
 		root,
@@ -304,7 +304,7 @@ func _build_credits_ui() -> void:
 		root,
 		COLOR_GREEN,
 		"Equipo",
-		"Tobias Gencarelli, Felipe Pagani, Candela Gencarelli, Nicolas de la Cruz."
+		"Tobias Gencarelli, Candela Gencarelli, Nicolas de la Cruz."
 	)
 	_add_credits_block(
 		root,
