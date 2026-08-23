@@ -308,9 +308,9 @@ func _compute_map_side(s: float, layout: Vector2) -> float:
 
 	if portrait:
 		return clampf(
-			layout.x * 0.46,
-			MIN_MAP_SIDE * s,
-			minf(layout.x * 0.58, MAX_MAP_SIDE * s)
+			layout_min * 0.30,
+			MIN_MAP_SIDE * 0.78,
+			minf(layout_min * 0.36, 220.0 * s)
 		)
 
 	if narrow:
