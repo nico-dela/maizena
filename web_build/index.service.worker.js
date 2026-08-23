@@ -4,7 +4,7 @@
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 /** @type {string} */
-const CACHE_VERSION = '1787498018|11269956323';
+const CACHE_VERSION = '1787501262|14513686848';
 /** @type {string} */
 const CACHE_PREFIX = 'Archipiélago Mai-sw-cache-';
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
