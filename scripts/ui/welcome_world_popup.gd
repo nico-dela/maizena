@@ -5,9 +5,6 @@ const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 const BASE_CARD_MIN := Vector2(160, 168)
 const PORTRAIT_FONT_MUL := 1.42
 const PORTRAIT_CARD_MUL := 1.28
-const LANDSCAPE_FONT_MUL := 1.2
-const LANDSCAPE_CARD_MUL := 1.18
-const PHONE_LANDSCAPE_HEIGHT := 500.0
 const REBUILD_SCALE_THRESHOLD := 0.18
 
 const LINKTREE_URL := (
@@ -96,6 +93,7 @@ var _credits_nav_btn: LinkButton
 var _current_view := PopupView.NEWS
 var _applied_layout_scale := 1.0
 var _applied_portrait := false
+var _session_auto_open_pending := true
 
 
 func _ready() -> void:
@@ -178,24 +176,12 @@ func _font_boost() -> float:
 	return ViewportLayout.effective_ui_scale()
 
 
-func _is_phone_landscape() -> bool:
-	return not ViewportLayout.is_portrait and ViewportLayout.visible_layout_size().y < PHONE_LANDSCAPE_HEIGHT
-
-
 func _layout_font_mul() -> float:
-	if ViewportLayout.is_portrait:
-		return PORTRAIT_FONT_MUL
-	if _is_phone_landscape():
-		return LANDSCAPE_FONT_MUL
-	return 1.0
+	return PORTRAIT_FONT_MUL
 
 
 func _layout_card_mul() -> float:
-	if ViewportLayout.is_portrait:
-		return PORTRAIT_CARD_MUL
-	if _is_phone_landscape():
-		return LANDSCAPE_CARD_MUL
-	return 1.0
+	return PORTRAIT_CARD_MUL
 
 
 func _scaled_news_font(base: int) -> int:
@@ -238,10 +224,10 @@ func _make_footer_link(text: String, callback: Callable) -> LinkButton:
 	return link
 
 
-func _apply_footer_link_layout(link: LinkButton, portrait: bool) -> void:
+func _apply_footer_link_layout(link: LinkButton, _portrait: bool) -> void:
 	if link == null:
 		return
-	link.add_theme_font_size_override("font_size", _scaled_news_font(18 if portrait else 15))
+	link.add_theme_font_size_override("font_size", _scaled_news_font(18))
 	link.custom_minimum_size.y = maxf(36.0, 28.0 * _font_boost())
 
 
@@ -254,10 +240,10 @@ func _make_footer_separator() -> Label:
 	return sep
 
 
-func _apply_footer_separator_layout(sep: Label, portrait: bool) -> void:
+func _apply_footer_separator_layout(sep: Label, _portrait: bool) -> void:
 	if sep == null:
 		return
-	sep.add_theme_font_size_override("font_size", _scaled_news_font(20 if portrait else 16))
+	sep.add_theme_font_size_override("font_size", _scaled_news_font(20))
 	sep.custom_minimum_size.x = maxf(12.0, 10.0 * _font_boost())
 
 
@@ -336,7 +322,7 @@ func _build_credits_ui() -> void:
 		)
 	)
 
-	var footer := _lbl(14 if ViewportLayout.is_portrait else 12, COLOR_VALUE)
+	var footer := _lbl(14, COLOR_VALUE)
 	footer.text = "Córdoba, Argentina · © 2026 Kumo Estudio"
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	root.add_child(footer)
@@ -356,11 +342,11 @@ func _add_credits_block(
 	v.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
 	panel.add_child(v)
 
-	var header := _lbl(16 if ViewportLayout.is_portrait else 13, accent)
+	var header := _lbl(16, accent)
 	header.text = title
 	v.add_child(header)
 
-	var body_lbl := _lbl(14 if ViewportLayout.is_portrait else 12, COLOR_VALUE)
+	var body_lbl := _lbl(14, COLOR_VALUE)
 	body_lbl.text = body
 	v.add_child(body_lbl)
 
@@ -402,7 +388,7 @@ func _build_infographic_ui() -> void:
 	var grid := GridContainer.new()
 	var portrait := ViewportLayout.is_portrait
 	grid.columns = 1 if portrait else 2
-	var grid_sep := int(round((18.0 if portrait else 12.0) * _font_boost()))
+	var grid_sep := int(round(18.0 * _font_boost()))
 	grid.add_theme_constant_override("h_separation", grid_sep)
 	grid.add_theme_constant_override("v_separation", grid_sep)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -440,11 +426,11 @@ func _build_infographic_ui() -> void:
 func _card_style_for_layout() -> StyleBoxFlat:
 	var sb := _make_card_stylebox()
 	var boost := _font_boost()
-	var margin := int(round((18.0 if ViewportLayout.is_portrait else 12.0) * boost))
+	var margin := int(round(18.0 * boost))
 	sb.content_margin_left = margin
-	sb.content_margin_top = int(round((14.0 if ViewportLayout.is_portrait else 10.0) * boost))
+	sb.content_margin_top = int(round(14.0 * boost))
 	sb.content_margin_right = margin
-	sb.content_margin_bottom = int(round((14.0 if ViewportLayout.is_portrait else 10.0) * boost))
+	sb.content_margin_bottom = int(round(14.0 * boost))
 	sb.set_border_width_all(maxi(2, int(round(2.0 * boost))))
 	sb.set_corner_radius_all(maxi(6, int(round(8.0 * boost))))
 	return sb
@@ -458,9 +444,9 @@ func _add_news_card(
 	value_font_size: int = -1
 ) -> Dictionary:
 	if value_font_size < 0:
-		value_font_size = 30 if ViewportLayout.is_portrait else 24
-	var header_size := 16 if ViewportLayout.is_portrait else 12
-	var footer_size := 14 if ViewportLayout.is_portrait else 11
+		value_font_size = 30
+	var header_size := 16
+	var footer_size := 14
 
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
@@ -469,7 +455,7 @@ func _add_news_card(
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", int(round((10.0 if ViewportLayout.is_portrait else 8.0) * _font_boost())))
+	v.add_theme_constant_override("separation", int(round(10.0 * _font_boost())))
 	panel.add_child(v)
 
 	var header := _lbl(header_size, accent)
@@ -497,14 +483,14 @@ func _add_saturation_card(grid: GridContainer) -> ProgressBar:
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", int(round((8.0 if ViewportLayout.is_portrait else 6.0) * _font_boost())))
+	v.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
 	panel.add_child(v)
 
-	var header := _lbl(16 if ViewportLayout.is_portrait else 12, COLOR_GREEN)
+	var header := _lbl(16, COLOR_GREEN)
 	header.text = "El indice de saturación de cosas en este momento es:"
 	v.add_child(header)
 
-	var hint := _lbl(14 if ViewportLayout.is_portrait else 11, Color(0.72, 0.78, 0.86, 1.0))
+	var hint := _lbl(14, Color(0.72, 0.78, 0.86, 1.0))
 	hint.text = "Cosas / tope"
 	v.add_child(hint)
 
@@ -523,12 +509,12 @@ func _add_saturation_card(grid: GridContainer) -> ProgressBar:
 	bar.add_theme_stylebox_override("background", bg)
 	v.add_child(bar)
 
-	var cap := _lbl(28 if ViewportLayout.is_portrait else 22, COLOR_VALUE, true)
+	var cap := _lbl(28, COLOR_VALUE, true)
 	cap.text = "0 / %d" % RESIDUE_MAX
 	v.add_child(cap)
 	_field_note = cap
 
-	var footer := _lbl(14 if ViewportLayout.is_portrait else 11, COLOR_GREEN)
+	var footer := _lbl(14, COLOR_GREEN)
 	footer.text = _saturation_message(0)
 	v.add_child(footer)
 	_saturation_footer = footer
@@ -617,39 +603,24 @@ func _apply_responsive_layout() -> void:
 	var portrait := ViewportLayout.is_portrait
 	var boost := _font_boost()
 
-	if portrait:
-		var panel_w := layout.x * 0.98
-		var panel_h := layout.y * 0.95
-		report_panel.offset_left = -panel_w * 0.5
-		report_panel.offset_right = panel_w * 0.5
-		report_panel.offset_top = -panel_h * 0.5
-		report_panel.offset_bottom = panel_h * 0.5
-	elif _is_phone_landscape():
-		var panel_w := layout.x * 0.92
-		var panel_h := layout.y * 0.85
-		report_panel.offset_left = -panel_w * 0.5
-		report_panel.offset_right = panel_w * 0.5
-		report_panel.offset_top = -panel_h * 0.5
-		report_panel.offset_bottom = panel_h * 0.5
-	else:
-		var panel_w := minf(760.0, layout.x * 0.94)
-		var panel_h := minf(680.0, layout.y * 0.92)
-		report_panel.offset_left = -panel_w * 0.5
-		report_panel.offset_right = panel_w * 0.5
-		report_panel.offset_top = -panel_h * 0.5
-		report_panel.offset_bottom = panel_h * 0.5
+	var panel_w := layout.x * (0.98 if portrait else 0.96)
+	var panel_h := layout.y * (0.95 if portrait else 0.92)
+	report_panel.offset_left = -panel_w * 0.5
+	report_panel.offset_right = panel_w * 0.5
+	report_panel.offset_top = -panel_h * 0.5
+	report_panel.offset_bottom = panel_h * 0.5
 
-	var outer_m := int(round((12.0 if portrait else (10.0 if _is_phone_landscape() else 6.0)) * boost))
+	var outer_m := int(round(12.0 * boost))
 	report_margin.add_theme_constant_override("margin_left", outer_m)
 	report_margin.add_theme_constant_override("margin_right", outer_m)
-	report_margin.add_theme_constant_override("margin_top", int(round((8.0 if portrait else 4.0) * boost)))
-	report_margin.add_theme_constant_override("margin_bottom", int(round((6.0 if portrait else 4.0) * boost)))
-	report_vbox.add_theme_constant_override("separation", int(round((8.0 if portrait else 6.0) * boost)))
+	report_margin.add_theme_constant_override("margin_top", int(round(8.0 * boost)))
+	report_margin.add_theme_constant_override("margin_bottom", int(round(6.0 * boost)))
+	report_vbox.add_theme_constant_override("separation", int(round(8.0 * boost)))
 
 	if header_label != null:
 		header_label.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-		header_label.custom_minimum_size.y = float(_scaled_news_font(22 if portrait else 18))
-		header_label.add_theme_font_size_override("normal_font_size", _scaled_news_font(22 if portrait else 18))
+		header_label.custom_minimum_size.y = float(_scaled_news_font(22))
+		header_label.add_theme_font_size_override("normal_font_size", _scaled_news_font(22))
 	if scroll_container != null:
 		scroll_container.custom_minimum_size.y = 0
 		scroll_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -657,14 +628,14 @@ func _apply_responsive_layout() -> void:
 		scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	if close_btn != null:
 		close_btn.size_flags_vertical = Control.SIZE_SHRINK_END
-		close_btn.add_theme_font_size_override("font_size", _scaled_news_font(20 if portrait else 18))
-		close_btn.custom_minimum_size.y = maxf(52.0 if portrait else 46.0, 40.0 * boost)
+		close_btn.add_theme_font_size_override("font_size", _scaled_news_font(20))
+		close_btn.custom_minimum_size.y = maxf(52.0, 40.0 * boost)
 		_apply_close_button_padding(boost)
 	if _footer_links_box != null:
 		_footer_links_box.size_flags_vertical = Control.SIZE_SHRINK_END
 		_footer_links_box.add_theme_constant_override(
 			"separation",
-			int(round((12.0 if portrait else 14.0) * boost))
+			int(round(12.0 * boost))
 		)
 		var link_h := maxf(36.0, 28.0 * boost)
 		_footer_links_box.custom_minimum_size.y = link_h
@@ -685,10 +656,11 @@ func _apply_responsive_layout() -> void:
 
 
 func is_blocking() -> bool:
-	return visible
+	return visible or _session_auto_open_pending
 
 
 func open_welcome(mark_seen_when_closed: bool) -> void:
+	_session_auto_open_pending = false
 	_mark_seen_on_close = mark_seen_when_closed
 	_show_news_view()
 	if dim_overlay != null:

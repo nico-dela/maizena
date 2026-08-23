@@ -3,6 +3,17 @@ extends CanvasLayer
 const InputPlatformRes := preload("res://scripts/ui/input_platform.gd")
 const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 
+const BODY_TOUCH := (
+	"Sanjin despierta en el archipiélago de Maizena. Arrastrá el joystick para explorar, "
+	+ "hablar con quien encuentres y descubrir el mapa."
+)
+const BODY_KEYBOARD := (
+	"Sanjin despierta en el archipiélago de Maizena. Usá las flechas del teclado para "
+	+ "explorar, hablar con quien encuentres y descubrir el mapa."
+)
+const HINT_TOUCH := "El joystick está abajo a la izquierda."
+const HINT_KEYBOARD := "Presioná Entendido cuando quieras empezar."
+
 @onready var _dim: ColorRect = $Dim
 @onready var _panel: PanelContainer = $Panel
 @onready var _margin: MarginContainer = $Panel/Margin
@@ -28,8 +39,6 @@ func _ready() -> void:
 
 func _maybe_show() -> void:
 	if MaizenaMeta.is_movement_tutorial_seen():
-		return
-	if not InputPlatformRes.is_touch_primary():
 		return
 	_show()
 
@@ -93,6 +102,9 @@ func _apply_layout() -> void:
 	var s := ViewportLayout.effective_ui_scale()
 	var layout := ViewportLayout.visible_layout_size()
 	var portrait := ViewportLayout.is_portrait
+	var touch := InputPlatformRes.is_touch_primary()
+	_body.text = BODY_TOUCH if touch else BODY_KEYBOARD
+	_hint.text = HINT_TOUCH if touch else HINT_KEYBOARD
 
 	_title.add_theme_font_override("font", FONT)
 	_body.add_theme_font_override("font", FONT)

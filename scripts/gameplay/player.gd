@@ -20,6 +20,7 @@ var tap_threshold = 10.0
 # Referencia al menú
 var settings_menu = null
 var welcome_popup: Node = null
+var movement_tutorial: Node = null
 var _joystick: Node = null
 var _is_mobile := false
 
@@ -36,6 +37,7 @@ func _ready():
 	$AnimatedSprite2D.play("front_idle")
 	settings_menu = get_tree().get_first_node_in_group("settings_menu")
 	welcome_popup = get_tree().get_first_node_in_group("welcome_popup")
+	movement_tutorial = get_tree().get_first_node_in_group("movement_tutorial")
 	_is_mobile = InputPlatformRes.is_touch_primary()
 	var ui := get_parent().get_node_or_null("UI")
 	if ui != null:
@@ -141,6 +143,9 @@ func _input(event):
 
 	if welcome_popup and welcome_popup.has_method("is_blocking") and welcome_popup.call("is_blocking"):
 		return
+
+	if movement_tutorial and movement_tutorial.has_method("is_blocking") and movement_tutorial.call("is_blocking"):
+		return
 		
 	if DialogueController.input_locked:
 		return
@@ -218,6 +223,8 @@ func _movement_blocked() -> bool:
 	if settings_menu and settings_menu.is_open:
 		return true
 	if welcome_popup and welcome_popup.has_method("is_blocking") and welcome_popup.call("is_blocking"):
+		return true
+	if movement_tutorial and movement_tutorial.has_method("is_blocking") and movement_tutorial.call("is_blocking"):
 		return true
 	if DialogueController.input_locked:
 		return true

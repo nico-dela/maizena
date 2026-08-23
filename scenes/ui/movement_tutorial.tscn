@@ -41,7 +41,7 @@ horizontal_alignment = 1
 [node name="Body" type="Label" parent="Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.88, 0.94, 1, 1)
-text = "Sanjin despierta en la isla de Maizena. Arrastrá el joystick para explorar, hablar con quien encuentres y descubrir el mapa."
+text = "Sanjin despierta en el archipiélago de Maizena. Arrastrá el joystick para explorar, hablar con quien encuentres y descubrir el mapa."
 horizontal_alignment = 1
 autowrap_mode = 3
 
