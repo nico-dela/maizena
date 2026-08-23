@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://wtbpnf36qq6q"]
 
 [ext_resource type="Script" uid="uid://ccb0gio54jpvx" path="res://scripts/ui/settings_menu.gd" id="1_ds00t"]
-[ext_resource type="FontFile" path="res://assets/art/ui/PixelOperator8.ttf" id="2_cr101"]
+[ext_resource type="FontFile" uid="uid://dml6xl8hvh16b" path="res://assets/art/ui/PixelOperator8.ttf" id="2_cr101"]
 [ext_resource type="Texture2D" uid="uid://f1j7bvynm5sw" path="res://assets/art/ui/settings_button.png" id="3_wswnh"]
 
 [node name="Settings" type="CanvasLayer" unique_id=1182201072 groups=["settings_menu"]]
@@ -69,11 +69,9 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="MuteToggleButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow"]
+[node name="MuteToggleButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow" unique_id=2061427618]
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
-text = ""
-flat = false
 
 [node name="VolumeHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox/VolumeRow" unique_id=375551595]
 custom_minimum_size = Vector2(0, 28)
@@ -82,19 +80,19 @@ size_flags_horizontal = 3
 min_value = -40.0
 max_value = 0.0
 
-[node name="JoystickLabel" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox"]
+[node name="JoystickLabel" type="Label" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=1066801880]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_cr101")
 theme_override_font_sizes/font_size = 28
-text = "Joystick — 100%"
+text = "Escala del joystick — 100%"
 horizontal_alignment = 1
 
-[node name="JoystickRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox"]
+[node name="JoystickRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=276874199]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="JoystickHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox/JoystickRow"]
+[node name="JoystickHSlider" type="HSlider" parent="Menu/CenterContainer/Panel/Margin/VBox/JoystickRow" unique_id=1704391491]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -121,16 +119,14 @@ autowrap_mode = 3
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_cr101")
 theme_override_font_sizes/font_size = 22
-button_pressed = false
-text = ""
 flat = true
 
-[node name="FullscreenRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox"]
+[node name="FullscreenRow" type="HBoxContainer" parent="Menu/CenterContainer/Panel/Margin/VBox" unique_id=35492364]
 layout_mode = 2
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="FullscreenButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/FullscreenRow"]
+[node name="FullscreenButton" type="Button" parent="Menu/CenterContainer/Panel/Margin/VBox/FullscreenRow" unique_id=14824280]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_cr101")
