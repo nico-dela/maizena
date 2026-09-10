@@ -7,7 +7,8 @@ signal world_state_changed()
 const SAVE_PATH := "user://world_state.json"
 ## Subir cuando cambie el tamaño/origen del grid de exploración (invalida fog guardado).
 ## v3: explored_cells[map_id] es Dictionary clave→true (O(1) al revelar).
-const EXPLORATION_SAVE_VERSION := 3
+## v4: radio de visión reducido (32px / 2 celdas); limpia blobs del radio viejo.
+const EXPLORATION_SAVE_VERSION := 4
 
 var world_day := 0
 var current_hour := 0.0
