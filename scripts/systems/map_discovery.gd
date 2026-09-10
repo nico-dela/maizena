@@ -4,10 +4,10 @@ class_name MapDiscovery
 signal exploration_updated(map_id: String)
 
 const TILE_SIZE := 16
-const VISION_RADIUS := 140.0
+const VISION_RADIUS := 64.0
 ## ceil(VISION_RADIUS / TILE_SIZE); circle test uses cell-distance squared.
-const RADIUS_CELLS := 9
-const RADIUS_CELLS_SQ := 77
+const RADIUS_CELLS := 4
+const RADIUS_CELLS_SQ := 16
 const WATER_LAYER_AREA_RATIO := 0.82
 const NEW_WORLD_NAME := "NewWorld"
 const KNOWN_MAP_ROOTS: Array[String] = ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
