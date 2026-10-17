@@ -18,12 +18,15 @@
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/systems/time_day_system.gd" id="28_time"]
 [ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/systems/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]
+[ext_resource type="Script" uid="uid://ixyaurb3mek6" path="res://scripts/systems/city_lights.gd" id="30_lamps"]
+[ext_resource type="Script" uid="uid://b00nlxlv1p33r" path="res://scripts/systems/map_dressing.gd" id="31_dress"]
+[ext_resource type="Script" uid="uid://hbxci2qtultp" path="res://scripts/systems/crowd_layer.gd" id="32_crowd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bosque"]
 size = Vector2(32, 32)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_house_w"]
-size = Vector2(160, 112)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pantano"]
+size = Vector2(36, 64)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_house_m1"]
 size = Vector2(144, 128)
@@ -41,6 +44,16 @@ size = Vector2(32, 48)
 script = ExtResource("28_world")
 camera_limit_right = 1216
 camera_limit_bottom = 1024
+map_ambience = "city"
+
+[node name="CityLights" type="Node2D" parent="." unique_id=1819773840]
+script = ExtResource("30_lamps")
+
+[node name="MapDressing" type="Node2D" parent="." unique_id=694253649]
+script = ExtResource("31_dress")
+
+[node name="CrowdLayer" type="Node2D" parent="." unique_id=426606076]
+script = ExtResource("32_crowd")
 
 [node name="TimeOfDaySystem" type="Node" parent="." unique_id=378458499]
 script = ExtResource("28_time")
@@ -62,7 +75,6 @@ script = ExtResource("5_60po5")
 [node name="InteractiveObjects" type="Node" parent="." unique_id=643106436]
 
 [node name="spinetto" parent="InteractiveObjects" unique_id=1878421902 instance=ExtResource("10_f1e0n")]
-z_index = 1
 position = Vector2(469, 377)
 spawn_schedules = Array[Dictionary]([{
 "end": 11.0,
@@ -134,19 +146,18 @@ z_index = 1
 position = Vector2(268, 545)
 spawn_schedules = Array[Dictionary]([])
 
-[node name="bicicleta" parent="InteractiveObjects" instance=ExtResource("19_bici")]
+[node name="bicicleta" parent="InteractiveObjects" unique_id=339211649 instance=ExtResource("19_bici")]
 z_index = 1
 position = Vector2(392, 552)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="laboratorio" parent="InteractiveObjects" unique_id=423673712 instance=ExtResource("20_w5ap8")]
-z_index = 0
 position = Vector2(496, 320)
 spawn_schedules = Array[Dictionary]([])
 
-[node name="cartel_laboratorio" parent="InteractiveObjects" instance=ExtResource("21_cartel_lab")]
+[node name="cartel_laboratorio" parent="InteractiveObjects" unique_id=1499836878 instance=ExtResource("21_cartel_lab")]
 z_index = 1
-position = Vector2(496, 268)
+position = Vector2(532, 368)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="orbe_electrico" parent="InteractiveObjects" unique_id=382298321 instance=ExtResource("25_fwq8m")]
@@ -172,46 +183,50 @@ destination_label = "Bosque"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ciudad/BosqueHotspot" unique_id=456793747]
 shape = SubResource("RectangleShape2D_bosque")
 
-[node name="HouseColliders" type="Node2D" parent="."]
+[node name="PantanoHotspot" type="Area2D" parent="Ciudad" unique_id=1256401631]
+position = Vector2(21, 32)
+script = ExtResource("29_hotspot")
+target_scene_path = "res://scenes/world/pantano_world.tscn"
+spawn_position = Vector2(560, 48)
+destination_label = "Pantano"
 
-[node name="HouseWorldBuilding" type="StaticBody2D" parent="HouseColliders"]
-position = Vector2(224, 488)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ciudad/PantanoHotspot" unique_id=790196247]
+shape = SubResource("RectangleShape2D_pantano")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseWorldBuilding"]
-shape = SubResource("RectangleShape2D_house_w")
+[node name="HouseColliders" type="Node2D" parent="." unique_id=404317174]
 
-[node name="HouseMurallaA" type="StaticBody2D" parent="HouseColliders"]
+[node name="HouseMurallaA" type="StaticBody2D" parent="HouseColliders" unique_id=1041459976]
 position = Vector2(248, 784)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaA"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaA" unique_id=1977134281]
 shape = SubResource("RectangleShape2D_house_m1")
 
-[node name="HouseMurallaB" type="StaticBody2D" parent="HouseColliders"]
+[node name="HouseMurallaB" type="StaticBody2D" parent="HouseColliders" unique_id=1554448551]
 position = Vector2(416, 792)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaB"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaB" unique_id=86053393]
 shape = SubResource("RectangleShape2D_house_m2")
 
-[node name="HouseMurallaC" type="StaticBody2D" parent="HouseColliders"]
+[node name="HouseMurallaC" type="StaticBody2D" parent="HouseColliders" unique_id=2106512911]
 position = Vector2(408, 696)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaC"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaC" unique_id=1786405462]
 shape = SubResource("RectangleShape2D_house_m3")
 
-[node name="HouseMurallaS1" type="StaticBody2D" parent="HouseColliders"]
+[node name="HouseMurallaS1" type="StaticBody2D" parent="HouseColliders" unique_id=261976031]
 position = Vector2(208, 680)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS1" unique_id=712568495]
 shape = SubResource("RectangleShape2D_house_s")
 
-[node name="HouseMurallaS2" type="StaticBody2D" parent="HouseColliders"]
+[node name="HouseMurallaS2" type="StaticBody2D" parent="HouseColliders" unique_id=605985824]
 position = Vector2(256, 680)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS2" unique_id=468486276]
 shape = SubResource("RectangleShape2D_house_s")
 
-[node name="HouseMurallaS3" type="StaticBody2D" parent="HouseColliders"]
+[node name="HouseMurallaS3" type="StaticBody2D" parent="HouseColliders" unique_id=105327902]
 position = Vector2(304, 680)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS3"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HouseColliders/HouseMurallaS3" unique_id=705408722]
 shape = SubResource("RectangleShape2D_house_s")

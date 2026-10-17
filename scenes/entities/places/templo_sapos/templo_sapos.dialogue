@@ -1,5 +1,15 @@
 ~ start
 
+if GameState.miradas_listas() and not GameState.quest_repollo_completed:
+	do GameState.completar_repollo()
+	Sanjin: El repollo está acá. Y se queda.
+	Sanjin: Hambre, enojo, sello. Mirar era el orden.
+	=> END
+
+if GameState.quest_repollo_completed:
+	Sanjin: El repollo sigue en el templo. La isla respira un poco.
+	=> END
+
 if GameState.boji_chose_templo:
 	Sanjin: Boji me mandó acá por el repollo… pero el templo pesa distinto cuando sabés que Las cosas también están en proceso.
 	Sanjin: Ranancio no me dejaría entrar sin puff.

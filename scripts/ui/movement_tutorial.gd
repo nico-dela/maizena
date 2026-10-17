@@ -9,7 +9,8 @@ const INTRO_GENERAL := (
 )
 const CONTROLS_TOUCH := "En celular o tablet: arrastrá el joystick (abajo a la izquierda) para moverte."
 const CONTROLS_KEYBOARD := "En escritorio: usá las flechas del teclado para moverte."
-const CONTROLS_BOOTH := "Mové el joystick. Caminá hacia alguien para hablar. A sigue el diálogo. Start muestra las redes."
+const CONTROLS_PAD := "Con un control: presioná A o B para continuar."
+const CONTROLS_BOOTH := "Mové el joystick o presioná A para empezar. Caminá hacia alguien para hablar. Start muestra las redes."
 const Booth := preload("res://scripts/gameplay/booth.gd")
 
 @onready var _dim: ColorRect = $Dim
@@ -33,8 +34,11 @@ func _ready() -> void:
 		_session_show_pending = false
 	_panel_style = _make_panel_style()
 	_panel.add_theme_stylebox_override("panel", _panel_style)
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_ok_btn.pressed.connect(_complete)
+	_ok_btn.focus_mode = Control.FOCUS_ALL
 	ViewportLayout.layout_changed.connect(_apply_layout)
+	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	call_deferred("_maybe_show")
 
 
@@ -60,7 +64,50 @@ func _show() -> void:
 	_apply_layout()
 	show()
 	_session_show_pending = false
-	call_deferred("_apply_layout")
+	call_deferred("_finish_show")
+
+
+func _finish_show() -> void:
+	if not visible:
+		return
+	_apply_layout()
+	if _ok_btn.visible:
+		_ok_btn.grab_focus()
+
+
+func _on_joy_connection_changed(_device: int, _connected: bool) -> void:
+	if visible:
+		_apply_layout()
+
+
+func _input(event: InputEvent) -> void:
+	if not visible or not _is_dismiss_event(event):
+		return
+	_complete()
+	var viewport := get_viewport()
+	if viewport != null:
+		viewport.set_input_as_handled()
+
+
+func _is_dismiss_event(event: InputEvent) -> bool:
+	if event.is_echo() or not event.is_pressed():
+		return false
+	if event.is_action_pressed("ui_accept") or event.is_action_pressed("ui_cancel"):
+		return true
+	if event is InputEventJoypadButton:
+		var button := (event as InputEventJoypadButton).button_index
+		return button == JOY_BUTTON_A or button == JOY_BUTTON_B
+	return false
+
+
+func _controls_hint() -> String:
+	if Booth.active():
+		return CONTROLS_BOOTH
+	if not Input.get_connected_joypads().is_empty():
+		return CONTROLS_PAD
+	if InputPlatformRes.is_touch_primary():
+		return CONTROLS_TOUCH
+	return CONTROLS_KEYBOARD
 
 
 func is_blocking() -> bool:
@@ -117,14 +164,9 @@ func _apply_layout() -> void:
 	var s := ViewportLayout.effective_ui_scale()
 	var layout := ViewportLayout.visible_layout_size()
 	var portrait := ViewportLayout.is_portrait
-	var touch := InputPlatformRes.is_touch_primary()
 	_body.text = INTRO_GENERAL
-	if Booth.active():
-		_hint.text = CONTROLS_BOOTH
-		_ok_btn.visible = false
-	else:
-		_hint.text = CONTROLS_TOUCH if touch else CONTROLS_KEYBOARD
-		_ok_btn.visible = true
+	_hint.text = _controls_hint()
+	_ok_btn.visible = not Booth.active()
 
 	_title.add_theme_font_override("font", FONT)
 	_body.add_theme_font_override("font", FONT)

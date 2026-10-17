@@ -9,6 +9,11 @@ const SAVE_PATH := "user://world_state.json"
 ## v3: explored_cells[map_id] es Dictionary clave→true (O(1) al revelar).
 ## v4: radio de visión reducido (32px / 2 celdas); limpia blobs del radio viejo.
 const EXPLORATION_SAVE_VERSION := 4
+const FEST_START_HOUR := 22.0
+## 22:00 → 04:30. Después la noche queda clavada, no amanece.
+const FEST_SPAN_HOURS := 6.5
+## Cosas tiradas en cada mapa. Al llegar acá la noche se reinicia.
+const RESIDUE_CAP := 80
 
 var world_day := 0
 var current_hour := 0.0
@@ -19,6 +24,8 @@ var absent_days := 0
 var residue_seed := 1337
 var last_absence_mutation_day := -1
 var explored_cells: Dictionary = {}
+## Unix de arranque de la noche del fest. La hora visible sale de acá, no del reloj de Córdoba.
+var fest_started_unix := 0
 
 var _last_seen_unix := 0
 var _last_seen_unix_day := 0
@@ -27,7 +34,11 @@ var _save_timer := 0.0
 var _clock_timer := 0.0
 
 func _ready():
-	_load_state()
+	if _editor_play_wipes_save():
+		_initialize_defaults()
+		_save_state()
+	else:
+		_load_state()
 	_apply_absence_effects()
 	_sync_time_from_system()
 	_touch_visit()
@@ -51,21 +62,35 @@ func _notification(what: int):
 		_save_state()
 
 func _sync_time_from_system():
-	var hour := _get_cordoba_hour()
+	var hour := get_fest_hour()
 	if abs(hour - current_hour) >= 1.0 / 120.0:
 		current_hour = hour
 		world_time_updated.emit(current_hour)
 
 
-func _get_cordoba_hour() -> float:
-	var weather := get_node_or_null("/root/CordobaWeather")
-	if weather != null and weather.has_method("get_cordoba_local_hour"):
-		return weather.get_cordoba_local_hour()
-	var unix := int(Time.get_unix_time_from_system()) - 3 * 3600
-	var seconds_in_day: int = unix % 86400
-	if seconds_in_day < 0:
-		seconds_in_day += 86400
-	return float(seconds_in_day) / 3600.0
+func get_fest_hour() -> float:
+	var origin := fest_started_unix
+	if origin <= 0:
+		origin = int(Time.get_unix_time_from_system())
+		fest_started_unix = origin
+	var elapsed := (Time.get_unix_time_from_system() - float(origin)) / 3600.0
+	elapsed = clampf(elapsed, 0.0, FEST_SPAN_HOURS)
+	var hour := FEST_START_HOUR + elapsed
+	if hour >= 24.0:
+		hour -= 24.0
+	return hour
+
+
+func wipe_guest_progress() -> void:
+	_initialize_defaults()
+	world_day_changed.emit(world_day)
+	world_state_changed.emit()
+	world_time_updated.emit(current_hour)
+	_save_state()
+
+
+func _editor_play_wipes_save() -> bool:
+	return OS.is_debug_build() and not OS.has_feature("web")
 
 func _check_day_rollover():
 	var unix_day := _get_unix_day()
@@ -236,6 +261,9 @@ func _load_state():
 	last_absence_mutation_day = int(data.get("last_absence_mutation_day", -1))
 	_last_seen_unix = int(data.get("last_seen_unix", int(Time.get_unix_time_from_system())))
 	_last_seen_unix_day = int(data.get("last_seen_unix_day", _get_unix_day()))
+	fest_started_unix = int(data.get("fest_started_unix", 0))
+	if fest_started_unix <= 0:
+		fest_started_unix = int(Time.get_unix_time_from_system())
 	var loaded_exploration_version := int(data.get("exploration_save_version", 0))
 	var raw_explored = data.get("explored_cells", {})
 	if typeof(raw_explored) != TYPE_DICTIONARY:
@@ -257,7 +285,8 @@ func _initialize_defaults():
 	last_absence_mutation_day = -1
 	_last_seen_unix = int(Time.get_unix_time_from_system())
 	_last_seen_unix_day = _get_unix_day()
-	current_hour = _get_cordoba_hour()
+	fest_started_unix = int(Time.get_unix_time_from_system())
+	current_hour = FEST_START_HOUR
 	explored_cells = {}
 
 func _save_state():
@@ -275,6 +304,7 @@ func _save_state():
 		"last_absence_mutation_day": last_absence_mutation_day,
 		"last_seen_unix": _last_seen_unix,
 		"last_seen_unix_day": _last_seen_unix_day,
+		"fest_started_unix": fest_started_unix,
 		"exploration_save_version": EXPLORATION_SAVE_VERSION,
 		"explored_cells": explored_cells,
 	}

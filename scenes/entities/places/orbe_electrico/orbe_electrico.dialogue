@@ -1,5 +1,11 @@
 ~ start
 
+if GameState.quest_repollo_completed:
+	Orbe: El repollo se quedó. Las cosas avanzó un paso.
+	Sanjin: ¿Hasta vos lo sentís?
+	Orbe: Soy un orbe eléctrico. Siento el orden y no lo explico.
+	=> END
+
 if GameState.spinetto_chose_album:
 	Orbe: Antes fue Una Banda de Cosas Tiradas. Ahora pulsa Las cosas.
 	Sanjin: ¿Hasta vos lo sentís?

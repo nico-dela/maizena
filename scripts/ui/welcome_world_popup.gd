@@ -24,6 +24,7 @@ const BACKDROP_WAIT_MS := 2500
 enum PopupView { NEWS, CREDITS, QR }
 
 const QR_TEXTURE: Texture2D = preload("res://assets/art/ui/linktree_qr.png")
+const UNKNOWN_SONG_ICON: Texture2D = preload("res://assets/art/ui/unknown_song.png")
 
 const HEADER_NEWS := (
 	"[center][color=#72cce8]Las noticias[/color] "
@@ -62,6 +63,9 @@ var _hallazgos_footer: Label
 var _era_val: Label
 var _quest_val: Label
 var _quest_footer: Label
+var _field_bar: ProgressBar
+var _field_note: Label
+var _saturation_footer: Label
 
 var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
@@ -99,11 +103,26 @@ func _ready() -> void:
 	_applied_portrait = ViewportLayout.is_portrait
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_on_viewport_layout_changed)
+	call_deferred("_connect_song_changes")
 
 	if OS.has_feature("booth"):
 		_session_auto_open_pending = false
 		return
 	call_deferred("_auto_open_when_backdrop_ready")
+
+
+func _connect_song_changes() -> void:
+	var mm := get_tree().get_first_node_in_group("music_manager")
+	if mm == null or not mm.has_signal("song_changed"):
+		return
+	if not mm.song_changed.is_connected(_on_radio_song_changed):
+		mm.song_changed.connect(_on_radio_song_changed)
+
+
+func _on_radio_song_changed(_title: String) -> void:
+	if not visible:
+		return
+	_refresh_radio_card()
 
 
 func _auto_open_when_backdrop_ready() -> void:
@@ -496,6 +515,7 @@ func _build_infographic_ui() -> void:
 		"semanas desde que el archipiélago empezó a contar Eras, mientras Maizena arma Las cosas"
 	)
 	_era_val = era["value"]
+	_add_saturation_card(grid)
 
 
 func _card_style_for_layout() -> StyleBoxFlat:
@@ -550,6 +570,66 @@ func _add_news_card(
 	return {"value": val, "footer": footer}
 
 
+func _add_saturation_card(grid: GridContainer) -> void:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
+	var card_scale := _font_boost() * _layout_card_mul()
+	panel.custom_minimum_size = BASE_CARD_MIN * card_scale
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
+	panel.add_child(v)
+
+	var header := _lbl(16, COLOR_GREEN)
+	header.text = "El indice de saturación de cosas en este momento es:"
+	v.add_child(header)
+
+	var hint := _lbl(14, Color(0.72, 0.78, 0.86, 1.0))
+	hint.text = "Cosas / tope"
+	v.add_child(hint)
+
+	var cap := int(WorldState.RESIDUE_CAP)
+	var bar := ProgressBar.new()
+	bar.custom_minimum_size = Vector2(0, maxi(18, _scaled_news_font(18)))
+	bar.max_value = float(cap)
+	bar.value = 0.0
+	bar.show_percentage = false
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.28, 0.78, 0.98, 0.95)
+	fill.set_corner_radius_all(3)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.04, 0.07, 0.1, 0.95)
+	bg.set_corner_radius_all(3)
+	bar.add_theme_stylebox_override("fill", fill)
+	bar.add_theme_stylebox_override("background", bg)
+	v.add_child(bar)
+	_field_bar = bar
+
+	var note := _lbl(28, COLOR_VALUE, true)
+	note.text = "0 / %d" % cap
+	v.add_child(note)
+	_field_note = note
+
+	var footer := _lbl(14, COLOR_GREEN)
+	footer.text = _saturation_message(0)
+	v.add_child(footer)
+	_saturation_footer = footer
+	grid.add_child(panel)
+
+
+func _saturation_message(things: int) -> String:
+	var cap := int(WorldState.RESIDUE_CAP)
+	if things >= cap:
+		return "El archipiélago no da más. Hay que empezar de cero."
+	var ratio := float(things) / float(cap)
+	if ratio >= 0.66:
+		return "Saturación alta: cada rincón tiene algo tirado."
+	if ratio >= 0.33:
+		return "Saturación media: el paisaje se va llenando."
+	return "Saturación baja: todavía hay aire entre las cosas."
+
+
 func _add_hallazgos_card(grid: GridContainer) -> Dictionary:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
@@ -584,34 +664,28 @@ func _fill_hallazgos() -> void:
 		_hallazgos_rows.remove_child(child)
 		child.free()
 
-	var icon_size := maxi(16, int(round(22.0 * _font_boost())))
+	var mm := get_tree().get_first_node_in_group("music_manager")
+	var icon_size := maxi(16, _scaled_news_font(16))
 	for relic in SongRelics.RELICS:
 		var song_id := int(relic.get("song_id", -1))
 		var found := MaizenaMeta.has_collected_song(song_id)
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
-		row.alignment = BoxContainer.ALIGNMENT_CENTER
-
-		var icon := TextureRect.new()
-		icon.texture = SongRelics.texture_for(song_id)
-		icon.custom_minimum_size = Vector2(icon_size, icon_size)
-		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		icon.modulate = Color.WHITE if found else Color(0.55, 0.6, 0.68, 0.4)
-		row.add_child(icon)
-
 		if found:
-			var mm := get_tree().get_first_node_in_group("music_manager")
 			var title := ""
 			if mm != null and mm.has_method("get_song_title"):
 				title = str(mm.call("get_song_title", song_id))
-			var title_label := _lbl(14, COLOR_VALUE)
-			title_label.text = title
-			title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			row.add_child(title_label)
-
-		_hallazgos_rows.add_child(row)
+			var line := _lbl(14, COLOR_VALUE)
+			line.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+			line.text = title
+			_hallazgos_rows.add_child(line)
+		else:
+			var icon := TextureRect.new()
+			icon.texture = UNKNOWN_SONG_ICON
+			icon.custom_minimum_size = Vector2(icon_size, icon_size)
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			icon.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+			_hallazgos_rows.add_child(icon)
 
 	if _hallazgos_footer == null:
 		return
@@ -686,6 +760,9 @@ func _clear_infographic_children() -> void:
 	_era_val = null
 	_quest_val = null
 	_quest_footer = null
+	_field_bar = null
+	_field_note = null
+	_saturation_footer = null
 
 
 func _rebuild_infographic() -> void:
@@ -964,31 +1041,47 @@ func _refresh_infographic() -> void:
 	if _song_val == null:
 		return
 
-	var mm := get_tree().get_first_node_in_group("music_manager")
-	var song_title := "…"
-	var song_key := -1
-	if mm != null:
-		song_title = mm.get_current_song_title()
-		song_key = mm.get_current_song_key()
-
-	var plays := 0
-	if song_key >= 0:
-		plays = MaizenaMeta.count_song_plays_in_recent_eras(song_key)
+	_refresh_radio_card()
+	_fill_hallazgos()
+	_fill_saturation()
 
 	var era := MaizenaMeta.get_current_era_number()
-
-	_song_val.text = song_title
-	var radio_line := "Esta canción ya sonó en el archipiélago %d veces" % plays
-	if MaizenaMeta.missing_relic_count() > 0:
-		radio_line += "\nLa radio tiene huecos."
-	_radio_footer.text = radio_line
-	_fill_hallazgos()
 
 	if era < 1:
 		_era_val.text = "Estamos en Pre-Era"
 	else:
 		_era_val.text = "Estamos en la Era %d" % era
 	_fill_side_quest()
+
+
+func _refresh_radio_card() -> void:
+	if _song_val == null or _radio_footer == null:
+		return
+	var mm := get_tree().get_first_node_in_group("music_manager")
+	var song_title := "…"
+	var song_key := -1
+	if mm != null:
+		song_title = mm.get_current_song_title()
+		song_key = mm.get_current_song_key()
+	var plays := 0
+	if song_key >= 0:
+		plays = MaizenaMeta.count_song_plays_in_recent_eras(song_key)
+	_song_val.text = song_title
+	var radio_line := "Esta canción ya sonó en el archipiélago %d veces" % plays
+	if MaizenaMeta.missing_relic_count() > 0:
+		radio_line += "\nLa radio tiene huecos."
+	_radio_footer.text = radio_line
+
+
+func _fill_saturation() -> void:
+	if _field_bar == null or _field_note == null or _saturation_footer == null:
+		return
+	var things := MaizenaMeta.get_visible_residue_count()
+	var cap := int(WorldState.RESIDUE_CAP)
+	_field_bar.max_value = float(cap)
+	_field_bar.value = float(things)
+	_field_note.text = "%d / %d" % [things, cap]
+	_saturation_footer.text = _saturation_message(things)
 
 
 func _fill_side_quest() -> void:

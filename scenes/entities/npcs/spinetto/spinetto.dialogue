@@ -1,5 +1,11 @@
 ~ start
 
+if GameState.get_npc_talk_count("spinetto") >= 1 and GameState.quest_repollo_completed:
+	Spinetto: El repollo se quedó en el templo.
+	Sanjin: No lo saqué.
+	Spinetto: Entonces Las cosas avanzó un paso. Sin arrancarle nada a nadie.
+	=> END
+
 if GameState.get_npc_talk_count("spinetto") >= 1:
 	Spinetto: ¿Volviste, Sanjin? Qué sorpresa.
 	if GameState.spinetto_chose_album:

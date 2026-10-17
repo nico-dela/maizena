@@ -3,6 +3,8 @@ extends Node2D
 ## Root script for each world map scene. Holds camera limits for the player.
 @export var camera_limit_right: int = 640
 @export var camera_limit_bottom: int = 640
+## "", "swamp", "city" o "forest". Lo lee WeatherVisualSystem.
+@export var map_ambience: String = ""
 
 const LAND_LAYER_NAMES := [
 	"ground",
@@ -19,8 +21,26 @@ var _cover_cache: Dictionary = {}
 
 
 func _ready() -> void:
+	_disable_layer_collision("ground")
+	_disable_layer_collision("caminos")
 	_setup_water_collision()
 	_setup_construction_collision()
+	_raise_waterfall()
+
+
+func _raise_waterfall() -> void:
+	# El jugador va en z 2. La cascada queda delante, sin tapar la niebla.
+	var falls := _find_layer_by_name("cascada")
+	if falls == null:
+		return
+	falls.z_as_relative = false
+	falls.z_index = 3
+
+
+func _disable_layer_collision(layer_name: String) -> void:
+	var layer := _find_layer_by_name(layer_name)
+	if layer != null:
+		layer.collision_enabled = false
 
 
 func _setup_water_collision() -> void:

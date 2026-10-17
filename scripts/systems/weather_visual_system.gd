@@ -1,7 +1,7 @@
 extends Node2D
 
-const RAIN_AMOUNT := 120.0
-const STORM_AMOUNT := 220.0
+const RAIN_AMOUNT := 80.0
+const STORM_AMOUNT := 80.0
 const NIGHT_OPACITY_FACTOR := 0.6
 const FOG_HAZE_ALPHA := 0.30
 const RAIN_HAZE_ALPHA := 0.20
@@ -34,7 +34,8 @@ func _ready() -> void:
 		if weather.is_available:
 			_on_weather_updated(weather.condition, weather.precipitation_mm, weather.cloud_cover)
 
-	set_process(true)
+	_apply_map_ambience()
+	_sync_haze_process()
 	set_process_unhandled_input(OS.is_debug_build())
 
 
@@ -94,7 +95,7 @@ func _build_overlay() -> void:
 	_rain.texture = _make_rain_texture()
 	_rain.emitting = false
 	_rain.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	_rain.amount = 300
+	_rain.amount = int(RAIN_AMOUNT)
 	_rain.lifetime = 1.2
 	_rain.one_shot = false
 	_rain.explosiveness = 0.0
@@ -131,6 +132,7 @@ func _enter_tree() -> void:
 		viewport.size_changed.connect(_resize_overlay)
 	if is_node_ready():
 		call_deferred("_resize_overlay")
+		call_deferred("_reapply_weather")
 
 
 func _exit_tree() -> void:
@@ -184,11 +186,13 @@ func refresh_backdrop() -> void:
 
 
 func _on_weather_updated(cond: String, _precipitation_mm: float, _cloud_cover: int) -> void:
+	if not is_inside_tree():
+		return
 	_current_condition = cond
 	var is_fog := cond == "fog"
 	var is_rain := cond == "rain" or cond == "storm"
 
-	_fog.emitting = is_fog
+	_fog.emitting = is_fog or _map_ambience() == "swamp"
 
 	var is_rain_emitting := is_rain
 	_rain.emitting = is_rain_emitting
@@ -203,6 +207,14 @@ func _on_weather_updated(cond: String, _precipitation_mm: float, _cloud_cover: i
 
 	_update_rain_opacity()
 	_update_fog_particles()
+	_sync_haze_process()
+
+
+func _sync_haze_process() -> void:
+	var keep := _map_ambience() == "swamp" or _current_condition != "clear"
+	set_process(keep)
+	if not keep:
+		_update_fog_haze(0.0)
 
 
 func _is_night() -> bool:
@@ -214,39 +226,78 @@ func _is_night() -> bool:
 
 
 func _update_fog_haze(delta: float) -> void:
-	if _news_popup_visible():
+	if _news_popup_visible() or _fog_haze == null:
 		return
-
-	var is_fog := _current_condition == "fog"
-	var is_rain := _current_condition == "rain" or _current_condition == "storm"
-	if not is_fog and not is_rain:
+	var alpha := _haze_alpha(delta)
+	if alpha <= 0.0:
 		_fog_haze.color.a = 0.0
 		return
+	_fog_haze.color = _haze_color(alpha)
 
-	var pulse := 0.0
+
+func _map_ambience() -> String:
+	var time_system := get_parent()
+	if time_system == null:
+		return ""
+	var world := time_system.get_parent()
+	if world == null:
+		return ""
+	var raw: Variant = world.get("map_ambience")
+	if raw == null:
+		return ""
+	return str(raw)
+
+
+func _apply_map_ambience() -> void:
+	if _map_ambience() != "swamp" or _fog == null:
+		return
+	_fog.amount = 36
+	_fog.lifetime = 10.0
+	_fog.initial_velocity_min = 2.0
+	_fog.initial_velocity_max = 8.0
+	_fog.scale_amount_min = 8.0
+	_fog.scale_amount_max = 16.0
+	_base_fog_color = Color(0.62, 0.74, 0.58, 0.16)
+	_fog.color = _base_fog_color
+	_fog.emitting = true
+
+
+func _haze_alpha(delta: float) -> float:
+	var swamp := _map_ambience() == "swamp"
+	var is_fog := _current_condition == "fog"
+	var is_rain := _current_condition == "rain" or _current_condition == "storm"
+	if not swamp and not is_fog and not is_rain:
+		return 0.0
+	var alpha := 0.12 if swamp else 0.0
 	if is_fog:
 		_fog_pulse_time += delta
-		pulse = sin(_fog_pulse_time * 0.55) * FOG_HAZE_PULSE
+		var weather_alpha := FOG_HAZE_ALPHA + sin(_fog_pulse_time * 0.55) * FOG_HAZE_PULSE
+		if _is_night() and not swamp:
+			weather_alpha *= NIGHT_OPACITY_FACTOR
+		alpha = maxf(alpha, weather_alpha)
+	elif is_rain:
+		var rain_alpha := STORM_HAZE_ALPHA if _current_condition == "storm" else RAIN_HAZE_ALPHA
+		if _is_night():
+			rain_alpha *= NIGHT_OPACITY_FACTOR
+		alpha = maxf(alpha, rain_alpha)
+	return alpha
 
-	var alpha: float
-	if is_fog:
-		alpha = FOG_HAZE_ALPHA + pulse
-	elif _current_condition == "storm":
-		alpha = STORM_HAZE_ALPHA
-	else:
-		alpha = RAIN_HAZE_ALPHA
 
+func _haze_color(alpha: float) -> Color:
+	if _map_ambience() == "swamp":
+		return Color(0.45, 0.58, 0.42, alpha)
 	if _is_night():
-		alpha *= NIGHT_OPACITY_FACTOR
-		_fog_haze.color = Color(0.72, 0.76, 0.84, alpha)
-	elif is_rain and not is_fog:
-		_fog_haze.color = Color(0.80, 0.84, 0.90, alpha)
-	else:
-		_fog_haze.color = Color(0.88, 0.90, 0.93, alpha)
+		return Color(0.72, 0.76, 0.84, alpha)
+	if _current_condition == "rain" or _current_condition == "storm":
+		return Color(0.80, 0.84, 0.90, alpha)
+	return Color(0.88, 0.90, 0.93, alpha)
 
 
 func _update_fog_particles() -> void:
 	if not _fog.emitting:
+		return
+	if _map_ambience() == "swamp":
+		_fog.color = Color(_base_fog_color.r, _base_fog_color.g, _base_fog_color.b, _base_fog_color.a)
 		return
 	var alpha := _base_fog_color.a
 	if _is_night():
@@ -281,6 +332,17 @@ func _on_storm_flash() -> void:
 	tween.finished.connect(_schedule_storm_flash)
 
 
+func _reapply_weather() -> void:
+	if not is_inside_tree():
+		return
+	var weather := get_node_or_null("/root/CordobaWeather")
+	if weather != null and weather.is_available:
+		_on_weather_updated(weather.condition, weather.precipitation_mm, weather.cloud_cover)
+
+
 func _news_popup_visible() -> bool:
-	var wp := get_tree().get_first_node_in_group("welcome_popup")
+	var tree := get_tree()
+	if tree == null:
+		return false
+	var wp := tree.get_first_node_in_group("welcome_popup")
 	return wp != null and wp.visible

@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://cdomcth8xmar6" path="res://scenes/ui/minimap.tscn" id="10_minimap"]
 [ext_resource type="PackedScene" path="res://scenes/ui/virtual_joystick.tscn" id="11_joy"]
 [ext_resource type="PackedScene" path="res://scenes/ui/movement_tutorial.tscn" id="12_tutorial"]
+[ext_resource type="PackedScene" path="res://scenes/ui/qr_card/qr_card.tscn" id="13_qr"]
 
 [node name="MainScene" type="Node2D" unique_id=910432244]
 script = ExtResource("9_main")
@@ -58,3 +59,5 @@ text = "Noticias"
 visible = false
 
 [node name="MovementTutorial" parent="." unique_id=1712679142 instance=ExtResource("12_tutorial")]
+
+[node name="QrCard" parent="." instance=ExtResource("13_qr")]

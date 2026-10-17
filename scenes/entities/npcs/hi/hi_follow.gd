@@ -20,6 +20,7 @@ var _bob_time := 0.0
 
 func _ready() -> void:
 	set_physics_process(false)
+	_add_lamp()
 	super._ready()
 	var dm := Engine.get_singleton("DialogueManager")
 	if dm != null and not dm.dialogue_ended.is_connected(_on_follow_dialogue_ended):
@@ -35,6 +36,29 @@ func _on_follow_dialogue_ended(resource: DialogueResource) -> void:
 		return
 	GameState.hi_siguiendo = true
 	_begin_follow()
+
+
+func _add_lamp() -> void:
+	var lamp := PointLight2D.new()
+	lamp.texture = _falloff_texture(48, 3.4)
+	lamp.texture_scale = 1.35
+	lamp.color = Color(0.62, 0.82, 1.0)
+	lamp.energy = 0.55
+	lamp.blend_mode = Light2D.BLEND_MODE_ADD
+	add_child(lamp)
+
+
+func _falloff_texture(size: int, power: float) -> Texture2D:
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var center := Vector2(size * 0.5, size * 0.5)
+	var radius := size * 0.5
+	for x in size:
+		for y in size:
+			var dist := Vector2(x + 0.5, y + 0.5).distance_to(center) / radius
+			var alpha := clampf(1.0 - dist, 0.0, 1.0)
+			alpha = pow(alpha, power)
+			img.set_pixel(x, y, Color(1.0, 1.0, 1.0, alpha))
+	return ImageTexture.create_from_image(img)
 
 
 func _begin_follow() -> void:

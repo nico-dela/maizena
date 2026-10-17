@@ -6,7 +6,8 @@ extends Control
 const BASE_FONT_SIZE := 38
 const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 
-@onready var label: RichTextLabel = $PanelContainer/RichTextLabel
+@onready var label: RichTextLabel = $RichTextLabel
+@onready var _dim: ColorRect = $Dim
 
 var _tween: Tween
 var _pending_title := ""
@@ -18,6 +19,7 @@ func _ready() -> void:
 	label.bbcode_enabled = true
 	label.fit_content = true
 	label.scroll_active = false
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	visible = false
 
@@ -57,7 +59,7 @@ func show_song(title: String) -> void:
 
 
 func show_found(title: String) -> void:
-	_queue_banner("Encontraste: ", title)
+	_queue_banner("Nueva canción: ", title)
 
 
 func _queue_banner(lead: String, title: String) -> void:
@@ -82,7 +84,11 @@ func _onboarding_blocks_banner() -> bool:
 func _play_banner(lead: String, title: String) -> void:
 	label.text = lead + "[color=#F23049]" + title.to_upper() + "[/color]"
 
-	position.y -= slide_distance
+	# Sliding the root Control shifts a full-rect anchor and leaves a gap.
+	_pin_full_rect(self)
+	_pin_full_rect(_dim)
+	_pin_full_rect(label)
+	label.position.y -= slide_distance
 	modulate.a = 0.0
 	visible = true
 
@@ -93,7 +99,7 @@ func _play_banner(lead: String, title: String) -> void:
 	_tween.set_trans(Tween.TRANS_SINE)
 	_tween.set_ease(Tween.EASE_OUT)
 
-	_tween.tween_property(self, "position:y", position.y + slide_distance, 0.3)
+	_tween.tween_property(label, "position:y", label.position.y + slide_distance, 0.3)
 	_tween.parallel().tween_property(self, "modulate:a", 1.0, 0.3)
 
 	_tween.tween_interval(show_time)
@@ -103,4 +109,13 @@ func _play_banner(lead: String, title: String) -> void:
 
 	_tween.finished.connect(func() -> void:
 		visible = false
+		_pin_full_rect(label)
 	)
+
+
+func _pin_full_rect(control: Control) -> void:
+	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	control.offset_left = 0.0
+	control.offset_top = 0.0
+	control.offset_right = 0.0
+	control.offset_bottom = 0.0

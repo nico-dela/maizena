@@ -48,7 +48,6 @@ func _ready() -> void:
 	if Booth.active():
 		time_colors["night"] = Color(0.55, 0.62, 0.92, 1.0)
 		time_colors["midnight"] = Color(0.5, 0.55, 0.85, 1.0)
-		current_time = Booth.BOOTH_HOUR
 
 	world_state = get_node_or_null("/root/WorldState")
 	_weather = get_node_or_null("/root/CordobaWeather")
@@ -57,10 +56,7 @@ func _ready() -> void:
 			_weather.daylight_updated.connect(_on_daylight_updated)
 		if _weather.has_signal("weather_updated"):
 			_weather.weather_updated.connect(_on_weather_updated)
-		if _weather.has_method("get_cordoba_local_hour"):
-			current_time = _weather.get_cordoba_local_hour()
-	elif world_state:
-		current_time = world_state.current_hour
+	_sync_current_time()
 
 	update_time_color()
 	set_process(true)
@@ -75,8 +71,7 @@ func _process(delta: float) -> void:
 	update_time_color()
 
 
-func _on_daylight_updated(_is_day: bool, _sunrise: float, _sunset: float, local_hour: float) -> void:
-	current_time = local_hour
+func _on_daylight_updated(_is_day: bool, _sunrise: float, _sunset: float, _local_hour: float) -> void:
 	update_time_color()
 
 
@@ -85,16 +80,15 @@ func _on_weather_updated(_condition: String, _precipitation_mm: float, _cloud_co
 
 
 func _sync_current_time() -> void:
-	if Booth.active():
-		current_time = Booth.BOOTH_HOUR
+	if world_state != null and world_state.has_method("get_fest_hour"):
+		current_time = world_state.get_fest_hour()
 		return
-	if _weather != null and _weather.has_method("get_cordoba_local_hour"):
-		current_time = _weather.get_cordoba_local_hour()
-	elif world_state:
-		current_time = world_state.current_hour
+	current_time = 22.0
 
 
 func update_time_color() -> void:
+	if not is_inside_tree():
+		return
 	_sync_time_and_emit()
 	_apply_canvas_tint()
 
@@ -180,11 +174,7 @@ func _apply_weather_tint(color: Color) -> Color:
 
 
 func is_daytime() -> bool:
-	if Booth.active():
-		return false
-	if _weather != null and _weather.has_method("get_effective_is_day"):
-		return _weather.get_effective_is_day()
-	return current_time >= 6.0 and current_time < 18.0
+	return false
 
 
 func is_nighttime() -> bool:
@@ -192,5 +182,7 @@ func is_nighttime() -> bool:
 
 
 func _news_popup_visible() -> bool:
+	if not is_inside_tree():
+		return false
 	var wp := get_tree().get_first_node_in_group("welcome_popup")
 	return wp != null and wp.visible

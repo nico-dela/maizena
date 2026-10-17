@@ -20,12 +20,14 @@ var rng = RandomNumberGenerator.new()
 var original_modulate: Color
 var _active_schedule_key := ""
 var _idle_glow_tween: Tween
+var _show_sprite := true
 
 const IDLE_GLOW_PEAK := Color(1.14, 1.1, 0.98)
 const IDLE_GLOW_CYCLE := 1.8
 
 
 func _ready():
+	_show_sprite = animated_sprite == null or animated_sprite.visible
 	original_modulate = modulate
 
 	visible = false
@@ -45,9 +47,12 @@ func _ready():
 	rng.randomize()
 
 	if time_system:
-		time_system.time_updated.connect(_on_time_updated)
 		if not spawn_schedules.is_empty():
 			add_to_group("world_npc")
+		# Boji rebind can land while this _ready is awaiting a frame.
+		if time_system.time_updated.is_connected(_on_time_updated):
+			return
+		time_system.time_updated.connect(_on_time_updated)
 		_evaluate_appearance(time_system.current_time)
 	else:
 		push_warning("No se encontró nodo en grupo time_system: %s" % name)
@@ -154,6 +159,7 @@ func set_active(active: bool):
 
 	if animated_sprite and animated_sprite.sprite_frames:
 		if active:
+			animated_sprite.visible = _show_sprite
 			_play_sprite_animation()
 			_update_idle_glow()
 		else:

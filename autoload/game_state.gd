@@ -2,6 +2,9 @@ extends Node
 
 var quest_hambre_active := false
 var quest_hambre_completed := false
+var quest_repollo_active := false
+var quest_repollo_completed := false
+var mirada_sello := false
 var tiene_comida := false
 var inventory := {}
 var bollo_training_active := false
@@ -11,6 +14,8 @@ var boji_chose_pantano := false
 var boji_chose_siluetos := false
 var boji_chose_templo := false
 var boji_siguiendo := false
+## Mapa donde Boji deambula esta sesión. Vacío hasta que MainScene lo elige.
+var boji_map_path := ""
 var hi_siguiendo := false
 var spinetto_chose_album := false
 var spinetto_chose_island := false
@@ -76,10 +81,13 @@ func mark_npc_talked(id: String) -> void:
 	npc_talk_counts[id] = get_npc_talk_count(id) + 1
 
 
-## Handoff entre personas en el booth. Las canciones quedan en MaizenaMeta.
+## Handoff de la sesión. Las canciones salen de MaizenaMeta (vacío si ya se limpió el save).
 func reset_session() -> void:
 	quest_hambre_active = false
 	quest_hambre_completed = false
+	quest_repollo_active = false
+	quest_repollo_completed = false
+	mirada_sello = false
 	tiene_comida = false
 	inventory.clear()
 	bollo_training_active = false
@@ -89,6 +97,7 @@ func reset_session() -> void:
 	boji_chose_siluetos = false
 	boji_chose_templo = false
 	boji_siguiendo = false
+	boji_map_path = ""
 	hi_siguiendo = false
 	spinetto_chose_album = false
 	spinetto_chose_island = false
@@ -105,7 +114,44 @@ func mision_secundaria_activa() -> Dictionary:
 			"titulo": "El hambre del viejo",
 			"detalle": _detalle_hambre(),
 		}
+	if quest_repollo_completed:
+		return {
+			"titulo": "El repollo morado",
+			"detalle": "El repollo sigue en el templo.",
+		}
+	if quest_repollo_active:
+		return {
+			"titulo": "El repollo morado",
+			"detalle": _detalle_repollo(),
+		}
 	return {"titulo": "", "detalle": ""}
+
+
+func mirada_hambre() -> bool:
+	return quest_hambre_completed
+
+
+func mirada_enojo() -> bool:
+	return silueto1_chose_defend or silueto1_chose_silence or silueto1_chose_ask
+
+
+func miradas_listas() -> bool:
+	return mirada_hambre() and mirada_enojo() and mirada_sello
+
+
+func buscar_repollo() -> void:
+	quest_repollo_active = true
+
+
+func marcar_sello() -> void:
+	mirada_sello = true
+
+
+func completar_repollo() -> void:
+	if not miradas_listas():
+		return
+	quest_repollo_active = false
+	quest_repollo_completed = true
 
 
 func _detalle_hambre() -> String:
@@ -116,6 +162,19 @@ func _detalle_hambre() -> String:
 	if spawner != null and str(spawner.hint_place) != "":
 		place = str(spawner.hint_place)
 	return "Buscá hongos en %s." % place
+
+
+func _detalle_repollo() -> String:
+	var faltan: PackedStringArray = PackedStringArray()
+	if not mirada_hambre():
+		faltan.append("el hambre del viejo")
+	if not mirada_enojo():
+		faltan.append("el enojo de los siluetos")
+	if not mirada_sello:
+		faltan.append("el sello de la piedra")
+	if faltan.is_empty():
+		return "Andá al templo. El repollo se queda ahí."
+	return "Mirá: %s." % ", ".join(faltan)
 
 
 func buscar_comida():

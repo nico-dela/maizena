@@ -1,5 +1,11 @@
 ~ start
 
+if GameState.quest_repollo_completed:
+	Laboratorio: El repollo se quedó en el templo. Las cosas avanzó un paso.
+	Sanjin: Sin sacarlo.
+	Laboratorio: Acá se ordenan las cosas antes de salir al mundo.
+	=> END
+
 if GameState.boji_chose_templo:
 	Laboratorio: Las cosas tardan en acomodarse… el templo y este lugar compiten por el mismo silencio.
 	Sanjin: Entonces no es solo grabar. Es esperar.

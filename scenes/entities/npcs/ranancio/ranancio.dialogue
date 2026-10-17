@@ -1,5 +1,16 @@
 ~ start
 
+if GameState.quest_repollo_active and not GameState.mirada_sello:
+	do GameState.marcar_sello()
+	Ranancio: El repollo no está perdido. Lo guardo yo. ¡Puff!
+	Sanjin: ¿Para que la isla no se desordene?
+	Ranancio: Para que la grieta no escuche. Y eso no. ¡Puff!
+	=> END
+
+if GameState.mirada_sello:
+	Ranancio: El repollo sigue acá. La grieta, callada. ¡Puff!
+	=> END
+
 if GameState.get_npc_talk_count("ranancio") >= 1:
 	Ranancio: ¡Sigo cuidando el templo! ¡Puff!
 	Sanjin: ¿Alguna novedad del repollo?

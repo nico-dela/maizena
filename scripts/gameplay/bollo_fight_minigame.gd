@@ -37,6 +37,19 @@ const INTRO_PAUSE_SEC := 1.0
 const PLAYER_ACTION_PAUSE_SEC := 0.75
 const ENEMY_TURN_PAUSE_SEC := 1.1
 
+const FACE_MOVE_INDEX := {
+	JOY_BUTTON_B: 0,
+	JOY_BUTTON_A: 1,
+	JOY_BUTTON_X: 2,
+	JOY_BUTTON_Y: 3,
+}
+const KEY_MOVE_INDEX := {
+	KEY_L: 0,
+	KEY_K: 1,
+	KEY_J: 2,
+	KEY_I: 3,
+}
+
 @onready var battle_content: Control = $Root/BattleContent
 @onready var battle_field: Control = $Root/BattleContent/BattleField
 @onready var action_panel: Panel = $Root/BattleContent/ActionPanel
@@ -71,8 +84,8 @@ var player_distracted := false
 var rest_used := false
 var fight_started := false
 var fight_ended := false
+var _action_locked := false
 var _saved_ui_phase := UiPhase.TUTORIAL
-var _focused_move_index := 0
 var _enemy_max_hp := ENEMY_MAX_HP
 var _damage_scale := 1.0
 var _enemy_miss_chance := ENEMY_MISS_CHANCE
@@ -169,7 +182,6 @@ func _apply_viewport_layout() -> void:
 	battle_content.scale = Vector2.ONE
 	battle_content.pivot_offset = Vector2.ZERO
 	battle_content.offset_top = ViewportLayout.screen_margin_top(maxf(52.0, 40.0 * s))
-	move_grid.columns = 2
 
 	var field_anchor_y := 0.38 if portrait else 0.5
 	battle_field.anchor_left = 0.5
@@ -182,28 +194,85 @@ func _apply_viewport_layout() -> void:
 	battle_field.offset_bottom = 80.0
 	battle_field.scale = Vector2.ONE
 
-	var move_btn_h := maxf(44.0, 50.0 * s)
-	var grid_h := move_btn_h * 2.0 + 8.0
-	var header_h := 64.0 * s
+	var grid_gap := 10.0
+	var panel_pad := 18.0
+	var max_btn := (vp.x - 24.0 - panel_pad * 2.0 - grid_gap * 2.0) / 3.0
+	var move_btn_h := minf(clampf(104.0 * s, 84.0, 132.0), max_btn)
+	var grid_span := move_btn_h * 3.0 + grid_gap * 2.0
+	var header_h := maxf(84.0, 72.0 * s)
 	var bottom := ViewportLayout.screen_margin_bottom(12.0)
-	var panel_h := header_h + grid_h + bottom
-	var side_margin := 12.0
+	var panel_h := header_h + grid_span + 16.0
+	var panel_w := grid_span + panel_pad * 2.0
 
-	action_panel.offset_left = side_margin
-	action_panel.offset_right = -side_margin
+	action_panel.anchor_left = 0.5
+	action_panel.anchor_right = 0.5
+	action_panel.offset_left = -panel_w * 0.5
+	action_panel.offset_right = panel_w * 0.5
 	action_panel.offset_top = -panel_h
 	action_panel.offset_bottom = -bottom
-	move_grid.offset_top = -(grid_h + 8.0)
+	var label_w := panel_w - 16.0
+	turn_banner.offset_left = -label_w * 0.5
+	turn_banner.offset_right = label_w * 0.5
+	message_label.offset_left = -label_w * 0.5
+	message_label.offset_right = label_w * 0.5
+	message_label.offset_bottom = header_h - 8.0
+	move_grid.columns = 3
+	move_grid.anchor_left = 0.5
+	move_grid.anchor_right = 0.5
+	move_grid.offset_left = -grid_span * 0.5
+	move_grid.offset_right = grid_span * 0.5
+	move_grid.offset_top = -(grid_span + 8.0)
 	move_grid.offset_bottom = -8.0
+	move_grid.add_theme_constant_override("h_separation", int(grid_gap))
+	move_grid.add_theme_constant_override("v_separation", int(grid_gap))
 
 	turn_banner.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
 	message_label.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(16))
 	continue_button.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
 	player_hp_value.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(14))
 	enemy_hp_value.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(14))
+	for child in move_grid.get_children():
+		if child is Button:
+			continue
+		var pad := child as Control
+		pad.custom_minimum_size = Vector2(move_btn_h, move_btn_h)
+		pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for btn in move_buttons:
-		btn.add_theme_font_size_override("font_size", ViewportLayout.scaled_font(18))
-		btn.custom_minimum_size.y = move_btn_h
+		_style_move_button(btn, move_btn_h)
+
+
+func _style_move_button(btn: Button, size: float) -> void:
+	btn.flat = true
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.text = ""
+	btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	btn.expand_icon = true
+	btn.custom_minimum_size = Vector2(size, size)
+	btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	btn.add_theme_constant_override("icon_max_width", int(size))
+	btn.add_theme_constant_override("content_margin_left", 0)
+	btn.add_theme_constant_override("content_margin_top", 0)
+	btn.add_theme_constant_override("content_margin_right", 0)
+	btn.add_theme_constant_override("content_margin_bottom", 0)
+	var empty := StyleBoxEmpty.new()
+	btn.add_theme_stylebox_override("normal", empty)
+	btn.add_theme_stylebox_override("focus", empty)
+	btn.add_theme_stylebox_override("disabled", empty)
+	btn.add_theme_stylebox_override("hover", _circle_style(size, Color(1, 1, 1, 0.12)))
+	btn.add_theme_stylebox_override("pressed", _circle_style(size, Color(1, 1, 1, 0.22)))
+
+
+func _circle_style(size: float, fill: Color) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.bg_color = fill
+	var radius := int(size * 0.5)
+	box.corner_radius_top_left = radius
+	box.corner_radius_top_right = radius
+	box.corner_radius_bottom_right = radius
+	box.corner_radius_bottom_left = radius
+	return box
 
 
 func _fit_tutorial_instructions() -> void:
@@ -228,10 +297,10 @@ func _fit_tutorial_instructions() -> void:
 
 func _collect_move_buttons() -> void:
 	move_buttons.clear()
-	for i in move_grid.get_child_count():
-		var child := move_grid.get_child(i)
-		if child is Button:
-			move_buttons.append(child)
+	for move_name in ["Move0", "Move1", "Move2", "Move3"]:
+		var button := move_grid.get_node_or_null(move_name) as Button
+		if button != null:
+			move_buttons.append(button)
 
 func _bind_actions() -> void:
 	btn_start.pressed.connect(_on_start_pressed)
@@ -267,32 +336,9 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if ui_phase == UiPhase.PLAYER_TURN:
-		if event.is_action_pressed("ui_accept"):
-			_on_move_selected(_focused_move_index)
+		if _try_face_move(event):
 			get_viewport().set_input_as_handled()
-			return
-		if event.is_action_pressed("ui_left"):
-			_focus_move(-1)
-			get_viewport().set_input_as_handled()
-			return
-		if event.is_action_pressed("ui_right"):
-			_focus_move(1)
-			get_viewport().set_input_as_handled()
-			return
-		if event.is_action_pressed("ui_up"):
-			_focus_move(-2)
-			get_viewport().set_input_as_handled()
-			return
-		if event.is_action_pressed("ui_down"):
-			_focus_move(2)
-			get_viewport().set_input_as_handled()
-			return
-		for i in move_buttons.size():
-			var key := KEY_1 + i
-			if event is InputEventKey and event.keycode == key:
-				_on_move_selected(i)
-				get_viewport().set_input_as_handled()
-				return
+		return
 
 func _handle_confirm_exit_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
@@ -321,15 +367,18 @@ func _handle_confirm_exit_input(event: InputEvent) -> void:
 		btn_confirm_yes.grab_focus()
 		get_viewport().set_input_as_handled()
 
-func _focus_move(delta: int) -> void:
-	if move_buttons.is_empty():
-		return
-	var attempts := move_buttons.size()
-	for _i in attempts:
-		_focused_move_index = posmod(_focused_move_index + delta, move_buttons.size())
-		if _is_move_available(_focused_move_index):
-			move_buttons[_focused_move_index].grab_focus()
-			return
+func _try_face_move(event: InputEvent) -> bool:
+	var index := -1
+	if event is InputEventJoypadButton:
+		index = int(FACE_MOVE_INDEX.get((event as InputEventJoypadButton).button_index, -1))
+	elif event is InputEventKey:
+		var key_event := event as InputEventKey
+		index = int(KEY_MOVE_INDEX.get(key_event.keycode, KEY_MOVE_INDEX.get(key_event.physical_keycode, -1)))
+	if index < 0:
+		return false
+	_on_move_selected(index)
+	return true
+
 
 func _set_ui_phase(phase: UiPhase) -> void:
 	ui_phase = phase
@@ -348,9 +397,6 @@ func _set_ui_phase(phase: UiPhase) -> void:
 			continue_button.hide()
 			move_grid.show()
 			_refresh_move_buttons(true)
-			_focused_move_index = _first_available_move_index()
-			if _focused_move_index >= 0:
-				move_buttons[_focused_move_index].grab_focus()
 		UiPhase.ENEMY_TURN:
 			move_grid.hide()
 			_set_move_buttons_enabled(false)
@@ -377,24 +423,13 @@ func _is_move_available(index: int) -> bool:
 	return true
 
 
-func _first_available_move_index() -> int:
-	for i in move_buttons.size():
-		if _is_move_available(i):
-			return i
-	return 0
-
-
 func _refresh_move_buttons(enabled: bool) -> void:
 	for i in move_buttons.size():
 		var button := move_buttons[i]
 		var available := _is_move_available(i)
 		button.disabled = not enabled or not available
-		if i < MOVES.size():
-			var label: String = MOVES[i]["label"]
-			if MOVES[i]["id"] == "rest" and rest_used:
-				button.text = "%s (usado)" % label
-			else:
-				button.text = "%s (%d)" % [label, i + 1]
+		button.text = ""
+		button.modulate = Color(0.45, 0.45, 0.5, 0.55) if not available else Color.WHITE
 
 func _on_start_pressed() -> void:
 	if fight_started or fight_ended:
@@ -421,15 +456,17 @@ func _player_turn() -> void:
 	if _check_end():
 		return
 	player_blocking = false
+	_action_locked = false
 	_set_ui_phase(UiPhase.PLAYER_TURN)
 
 func _on_move_selected(index: int) -> void:
-	if ui_phase != UiPhase.PLAYER_TURN or fight_ended:
+	if _action_locked or ui_phase != UiPhase.PLAYER_TURN or fight_ended:
 		return
 	if index < 0 or index >= MOVES.size():
 		return
 	if not _is_move_available(index):
 		return
+	_action_locked = true
 	_set_move_buttons_enabled(false)
 	_resolve_player_move(MOVES[index])
 

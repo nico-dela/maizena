@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://tr8tgipqivj0" path="res://assets/art/battle/battle_bg.png" id="3_bg"]
 [ext_resource type="Texture2D" uid="uid://35ee4t6t1apt" path="res://assets/art/battle/bollo_battle_front.png" id="4_bollo"]
 [ext_resource type="Texture2D" uid="uid://qe5gptfdtacj" path="res://assets/art/battle/sanjin_battle_back.png" id="5_sanjin"]
+[ext_resource type="Texture2D" uid="uid://dxuqa10hb5m0f" path="res://assets/art/battle/battle_move_icons.png" id="6_icons"]
 
 [sub_resource type="StyleBoxFlat" id="panel_dark"]
 bg_color = Color(0.05, 0.05, 0.09, 0.94)
@@ -55,6 +56,22 @@ corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
+
+[sub_resource type="AtlasTexture" id="icon_punch"]
+atlas = ExtResource("6_icons")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="icon_kick"]
+atlas = ExtResource("6_icons")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="icon_block"]
+atlas = ExtResource("6_icons")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="icon_rest"]
+atlas = ExtResource("6_icons")
+region = Rect2(0, 32, 32, 32)
 
 [sub_resource type="Theme" id="fight_theme"]
 default_font = ExtResource("2_font")
@@ -285,35 +302,68 @@ offset_right = -12.0
 offset_bottom = -8.0
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
-columns = 2
+columns = 3
 
-[node name="Move0" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
-custom_minimum_size = Vector2(0, 56)
+[node name="Pad0" type="Control" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
-text = "GOLPE (1)"
-
-[node name="Move1" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
-text = "PATADA (2)"
-
-[node name="Move2" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
-custom_minimum_size = Vector2(0, 56)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
-text = "BLOQUEAR (3)"
+mouse_filter = 2
 
 [node name="Move3" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
-custom_minimum_size = Vector2(0, 56)
+custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
-text = "DESCANSAR (4)"
+focus_mode = 0
+flat = true
+icon = SubResource("icon_rest")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Pad1" type="Control" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Move2" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+flat = true
+icon = SubResource("icon_block")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Pad2" type="Control" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Move0" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+flat = true
+icon = SubResource("icon_punch")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Pad3" type="Control" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Move1" type="Button" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+focus_mode = 0
+flat = true
+icon = SubResource("icon_kick")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Pad4" type="Control" parent="Root/BattleContent/ActionPanel/MoveGrid"]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="ContinueButton" type="Button" parent="Root/BattleContent/ActionPanel"]
 visible = false
@@ -376,7 +426,9 @@ Bloquear reduce el daño del siguiente golpe.
 Descansar solo se puede usar una vez.
 Puedes salir cuando quieras (botón SALIR).
 
-Toca un botón · PC: 1-4, Esc para salir"
+Toca el icono, o usa los botones del control:
+△ descansar (I) · □ bloquear (J) · ○ golpe (L) · × patada (K)
+Esc para salir"
 autowrap_mode = 3
 
 [node name="StartButton" type="Button" parent="Root/TutorialPanel"]

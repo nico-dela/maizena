@@ -27,6 +27,7 @@ Sanjin: ¿Y por qué seguís acá?
 	Silueto 1: Qué valiente… ¿Podrás, Sanjin? ¿O solo querés creerlo?
 	Sanjin: Alguien tiene que intentarlo.
 	Silueto 1: Entonces empezá por vos. La máscara pesa.
+	Silueto 1: El repollo morado contiene este enojo. Por eso no sale del templo.
 	=> END
 
 - Guardar silencio
@@ -34,6 +35,7 @@ Sanjin: ¿Y por qué seguís acá?
 	Sanjin: …
 	Silueto 1: Ah. Esa respuesta la conozco.
 	Silueto 1: El silencio también cansa, ¿sabés?
+	Silueto 1: El repollo morado contiene este enojo. Por eso no sale del templo.
 	=> END
 
 - Preguntar qué les pasó
@@ -42,4 +44,5 @@ Sanjin: ¿Y por qué seguís acá?
 	Silueto 1: El enojo. Demasiado, por demasiado tiempo.
 	Sanjin: ¿Se puede revertir?
 	Silueto 1: Si supiéramos eso, no seríamos sombras.
+	Silueto 1: El repollo morado contiene este enojo. Por eso no sale del templo.
 	=> END

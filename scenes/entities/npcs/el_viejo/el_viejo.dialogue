@@ -5,6 +5,9 @@ if GameState.quest_hambre_completed:
 	Sanjin: ¿Te sentís mejor?
 	El viejo: Lo bastante como para mirar la isla otra vez.
 	El viejo: No te alejes mucho, Sanjin. Acá todo cambia cuando no mirás.
+	if not GameState.quest_repollo_active and not GameState.quest_repollo_completed:
+		El viejo: Boji busca el repollo morado. Sin eso, la isla se desordena.
+		Sanjin: Voy a mirar.
 	=> END
 
 if GameState.has_item("hongos"):

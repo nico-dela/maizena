@@ -45,6 +45,10 @@ func _reload_session() -> void:
 		return
 	_reloading = true
 	_idle_sec = 0.0
+	var reload := get_parent().get_node_or_null("FestReload")
+	if reload != null and reload.has_method("reload_guest"):
+		reload.reload_guest()
+		return
 	GameState.reset_session()
 	DialogueController.input_locked = false
 	get_tree().paused = false

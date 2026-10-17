@@ -13,7 +13,8 @@ const SCREEN_EDGE_PAD := 6.0
 
 var _cooldown_until_msec: int = 0
 var _travel_pending: bool = false
-var _mouse_over: bool = false
+var _player_inside := false
+var _mouse_over := false
 var _player: Node2D
 var _hint_layer: CanvasLayer
 var _hint_panel: PanelContainer
@@ -37,7 +38,9 @@ func _ready() -> void:
 	# El aviso vive en una CanvasLayer para no heredar el zoom de la cámara.
 	_build_hint()
 	ViewportLayout.layout_changed.connect(_apply_hint_scale)
-	set_process(true)
+	body_exited.connect(_on_body_exited)
+	set_process(false)
+	call_deferred("_sync_presence")
 
 
 func _process(_delta: float) -> void:
@@ -144,7 +147,43 @@ func _is_player_near() -> bool:
 func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
+	_player_inside = true
+	_set_tracking(true)
 	_begin_travel()
+
+
+func _on_body_exited(body: Node2D) -> void:
+	if not body.is_in_group("player"):
+		return
+	_player_inside = false
+	_set_tracking(_mouse_over)
+
+
+func _sync_presence() -> void:
+	_player_inside = false
+	for body in get_overlapping_bodies():
+		if body.is_in_group("player"):
+			_player_inside = true
+			break
+	_set_tracking(_player_inside or _mouse_over)
+	if _player_inside:
+		_try_travel_overlap()
+
+
+func _set_tracking(active: bool) -> void:
+	set_process(active)
+	if not active and _hint_panel != null:
+		_hint_panel.visible = false
+
+
+func _on_mouse_entered() -> void:
+	_mouse_over = true
+	_set_tracking(true)
+
+
+func _on_mouse_exited() -> void:
+	_mouse_over = false
+	_set_tracking(_player_inside)
 
 
 func _try_travel_overlap() -> void:
@@ -177,11 +216,3 @@ func _begin_travel() -> void:
 	_cooldown_until_msec = Time.get_ticks_msec() + 500
 	# Must defer: body_entered runs during physics query flush.
 	main.call_deferred("travel_to", packed, spawn_position)
-
-
-func _on_mouse_entered() -> void:
-	_mouse_over = true
-
-
-func _on_mouse_exited() -> void:
-	_mouse_over = false

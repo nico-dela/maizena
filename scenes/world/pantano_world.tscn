@@ -14,13 +14,25 @@
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/systems/time_day_system.gd" id="28_time"]
 [ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/systems/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]
+[ext_resource type="Script" uid="uid://b00nlxlv1p33r" path="res://scripts/systems/map_dressing.gd" id="31_dress"]
+[ext_resource type="Script" uid="uid://hbxci2qtultp" path="res://scripts/systems/crowd_layer.gd" id="32_crowd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bosque"]
 size = Vector2(32, 32)
 
-[node name="NewWorld" type="Node2D" unique_id=1636943568]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ciudad"]
+size = Vector2(64, 36)
+
+[node name="NewWorld2" type="Node2D" unique_id=1636943568]
 script = ExtResource("28_world")
 camera_limit_bottom = 1280
+map_ambience = "swamp"
+
+[node name="MapDressing" type="Node2D" parent="." unique_id=1061531372]
+script = ExtResource("31_dress")
+
+[node name="CrowdLayer" type="Node2D" parent="." unique_id=411014387]
+script = ExtResource("32_crowd")
 
 [node name="TimeOfDaySystem" type="Node" parent="." unique_id=551068781]
 script = ExtResource("28_time")
@@ -64,7 +76,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="ranancio" parent="InteractiveObjects" unique_id=1376135273 instance=ExtResource("15_6v6tw")]
 z_index = 1
-position = Vector2(480, 400)
+position = Vector2(245, 299)
 spawn_schedules = Array[Dictionary]([{
 "end": 8.5,
 "probability": 0.95,
@@ -106,7 +118,7 @@ position = Vector2(575, 974)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="piedra_grieta" parent="InteractiveObjects" unique_id=723286548 instance=ExtResource("23_8pxje")]
-z_index = 0
+z_index = 1
 position = Vector2(133, 929.00006)
 scale = Vector2(1.5, 1.5)
 spawn_schedules = Array[Dictionary]([])
@@ -127,3 +139,13 @@ destination_label = "Bosque"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Pantano Sur/BosqueHotspot" unique_id=456793747]
 shape = SubResource("RectangleShape2D_bosque")
+
+[node name="CiudadHotspot" type="Area2D" parent="Pantano Sur" unique_id=1954052991]
+position = Vector2(608, 48)
+script = ExtResource("29_hotspot")
+target_scene_path = "res://scenes/world/ciudad_world.tscn"
+spawn_position = Vector2(48, 32)
+destination_label = "Ciudad"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pantano Sur/CiudadHotspot" unique_id=1148268042]
+shape = SubResource("RectangleShape2D_ciudad")

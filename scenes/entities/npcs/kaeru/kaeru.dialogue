@@ -4,6 +4,8 @@ if GameState.get_npc_talk_count("kaeru") >= 1:
 	Kaeru: Un caballo ciego siempre se asusta a sí mismo.
 	Sanjin: Todavía pienso en eso.
 	Kaeru: Pensar es el primer paso. Caminar es el segundo.
+	if GameState.quest_repollo_completed:
+		Kaeru: Y el repollo se quedó. Mirar también asusta menos.
 	=> END
 
 Kaeru: Un caballo ciego siempre se asusta a sí mismo.
@@ -13,5 +15,7 @@ Sanjin: ¿Y de adentro?
 Kaeru: Del eco. De lo que no querés mirar.
 Sanjin: En esta isla hay mucho eco.
 Kaeru: Entonces caminá despacio. [wait=0.3]
+if GameState.quest_repollo_completed:
+	Kaeru: El repollo se quedó en el templo. El eco baja si mirás.
 
 => END

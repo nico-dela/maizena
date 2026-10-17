@@ -20,19 +20,22 @@ enum SONGS {
 	NADIE
 }
 
-const TRACKS := {
-	SONGS.COLORES: preload("res://assets/audio/music/Colores.ogg"),
-	SONGS.CUMBIA: preload("res://assets/audio/music/Cumbia_naruto.ogg"),
-	SONGS.GRUA: preload("res://assets/audio/music/Grua.ogg"),
-	SONGS.RECIEN: preload("res://assets/audio/music/Recien_me_levanto.ogg"),
-	SONGS.REPOLLO: preload("res://assets/audio/music/Repollo_Morado.ogg"),
-	SONGS.RESAKA: preload("res://assets/audio/music/Resaka.ogg"),
-	SONGS.TODO: preload("res://assets/audio/music/Todo_lo_que_necesito.ogg"),
-	SONGS.MEDIAS: preload("res://assets/audio/music/Tus_medias.ogg"),
-	SONGS.MATAR: preload("res://assets/audio/music/Matar_al_sol.ogg"),
-	SONGS.AMIGOS: preload("res://assets/audio/music/Los_amigos.ogg"),
-	SONGS.NADIE: preload("res://assets/audio/music/Nadie_me_enseno_a_vivir.ogg")
+const TRACK_PATHS := {
+	SONGS.COLORES: "res://assets/audio/music/Colores.ogg",
+	SONGS.CUMBIA: "res://assets/audio/music/Cumbia_naruto.ogg",
+	SONGS.GRUA: "res://assets/audio/music/Grua.ogg",
+	SONGS.RECIEN: "res://assets/audio/music/Recien_me_levanto.ogg",
+	SONGS.REPOLLO: "res://assets/audio/music/Repollo_Morado.ogg",
+	SONGS.RESAKA: "res://assets/audio/music/Resaka.ogg",
+	SONGS.TODO: "res://assets/audio/music/Todo_lo_que_necesito.ogg",
+	SONGS.MEDIAS: "res://assets/audio/music/Tus_medias.ogg",
+	SONGS.MATAR: "res://assets/audio/music/Matar_al_sol.ogg",
+	SONGS.AMIGOS: "res://assets/audio/music/Los_amigos.ogg",
+	SONGS.NADIE: "res://assets/audio/music/Nadie_me_enseno_a_vivir.ogg",
 }
+
+const RELIC_DUCK_DB := -16.0
+const RELIC_DUCK_FADE_SEC := 0.7
 
 const SONG_TITLES := {
 	SONGS.COLORES: "Colores",
@@ -56,6 +59,10 @@ var _background_paused := false
 var _paused_playback_position := 0.0
 var _audio_unlocked := false
 var _pending_start := false
+var _playlist_started := false
+var _relic_proximity := 0.0
+var _relic_proximity_target := 0.0
+var _loaded_tracks: Dictionary = {}
 ## Must stay referenced or the JS listener is garbage-collected.
 var _web_visibility_cb: JavaScriptObject
 var _seen_output_devices: PackedStringArray = PackedStringArray()
@@ -95,9 +102,10 @@ func unlock_and_play() -> void:
 		)
 	_audio_unlocked = true
 	_poke_web_audio()
-	if _pending_start or not player.playing:
-		_pending_start = false
-		_play_next()
+	if _playlist_started:
+		return
+	_pending_start = false
+	_play_next()
 
 
 func _apply_audio_from_settings() -> void:
@@ -231,7 +239,7 @@ func _poke_web_audio() -> void:
 func _create_playlist() -> void:
 	var last_song := current_song if current_index >= 0 else -1
 	playlist.clear()
-	for song_id in TRACKS.keys():
+	for song_id in TRACK_PATHS.keys():
 		if _is_song_unlocked(int(song_id)):
 			playlist.append(int(song_id))
 	playlist.shuffle()
@@ -257,7 +265,28 @@ func note_song_unlocked(song_id: int) -> void:
 
 
 func get_track(song_id: int) -> AudioStream:
-	return TRACKS.get(song_id) as AudioStream
+	if _loaded_tracks.has(song_id):
+		return _loaded_tracks[song_id] as AudioStream
+	var path := str(TRACK_PATHS.get(song_id, ""))
+	if path.is_empty():
+		return null
+	var stream := load(path) as AudioStream
+	if stream == null:
+		return null
+	_loaded_tracks[song_id] = stream
+	return stream
+
+
+func _process(delta: float) -> void:
+	if is_equal_approx(_relic_proximity, _relic_proximity_target):
+		return
+	var step := delta / RELIC_DUCK_FADE_SEC
+	_relic_proximity = move_toward(_relic_proximity, _relic_proximity_target, step)
+	_apply_player_volume()
+
+
+func set_relic_proximity(amount: float) -> void:
+	_relic_proximity_target = clampf(amount, 0.0, 1.0)
 
 
 func get_song_title(song_id: int) -> String:
@@ -316,7 +345,7 @@ func _play_next() -> void:
 func _start_current_song() -> void:
 	current_song = int(playlist[current_index])
 
-	var source: AudioStream = TRACKS.get(current_song)
+	var source := get_track(current_song)
 	if source == null:
 		push_error("MusicManager: no hay stream para la canción %s" % current_song)
 		return
@@ -325,14 +354,27 @@ func _start_current_song() -> void:
 		(stream as AudioStreamOggVorbis).loop = false
 	player.stop()
 	player.stream = stream
-	player.volume_db = 0.0
 	player.stream_paused = false
+	_apply_player_volume()
 	player.play()
+	_playlist_started = true
 	_background_paused = false
 	_paused_playback_position = 0.0
+	_preload_next_track()
 
 	MaizenaMeta.record_song_play(current_song)
 	song_changed.emit(SONG_TITLES[current_song])
+
+
+func _apply_player_volume() -> void:
+	player.volume_db = lerpf(0.0, RELIC_DUCK_DB, _relic_proximity)
+
+
+func _preload_next_track() -> void:
+	if playlist.is_empty():
+		return
+	var next_index := posmod(current_index + 1, playlist.size())
+	get_track(int(playlist[next_index]))
 
 
 func get_current_song_title() -> String:

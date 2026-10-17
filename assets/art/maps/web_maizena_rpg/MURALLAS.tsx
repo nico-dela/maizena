@@ -373,7 +373,6 @@
   <objectgroup draworder="index" id="2">
    <object id="1" x="3.0625" y="0" width="9.8125" height="16.4375"/>
    <object id="2" x="12.0625" y="1.9375" width="4.0625" height="14.125"/>
-   <object id="3" x="4.9375" y="23.4375"/>
   </objectgroup>
  </tile>
  <tile id="142">

@@ -10,19 +10,25 @@ const FogOverlayScene := preload("res://scenes/world/world_resources/fog_overlay
 const SongRelicSpawnerScript := preload("res://scripts/systems/song_relic_spawner.gd")
 const Booth = preload("res://scripts/gameplay/booth.gd")
 const BoothSession := preload("res://scripts/gameplay/booth_session.gd")
+const FestReloadScript := preload("res://scripts/gameplay/fest_reload.gd")
 # Above world (0) and weather (5), below HUD UI (10) / settings (20).
 const FOG_LAYER := 6
+const WARM_WORLD_PATHS: Array[String] = [
+	"res://scenes/world/ciudad_world.tscn",
+	"res://scenes/world/pantano_world.tscn",
+]
 
 @onready var _player: Node2D = $Player
 
 var _fade_rect: ColorRect
 var _travel_busy := false
-## Mapas ya visitados. No se liberan: Godot comparte el byte array del TileMapLayer
-## con la escena en caché, y queue_free lo trunca.
+## Solo el mapa recién dejado. El anterior se libera para no retener los tres mundos.
 var _parked_worlds: Dictionary = {}
 var _map_discovery: Node
 var _fog_overlay: Node2D
 var _fog_layer: CanvasLayer
+var _boji_hold: Node2D
+var _boji_visit := 0
 
 
 func _ready() -> void:
@@ -31,11 +37,18 @@ func _ready() -> void:
 	var relics := SongRelicSpawnerScript.new()
 	relics.name = "SongRelicSpawner"
 	add_child(relics)
+	var reload := FestReloadScript.new()
+	reload.name = "FestReload"
+	add_child(reload)
 	if Booth.active():
 		var session := BoothSession.new()
 		session.name = "BoothSession"
 		add_child(session)
+	_boji_hold = Node2D.new()
+	_boji_hold.name = "BojiHold"
+	add_child(_boji_hold)
 	call_deferred("_apply_initial_camera_limits")
+	call_deferred("_warm_other_worlds")
 
 
 func _setup_map_discovery() -> void:
@@ -80,12 +93,21 @@ func get_map_discovery() -> Node:
 	return _map_discovery
 
 
+func set_crt_scan_clear(clear: bool) -> void:
+	if _fog_layer != null:
+		_fog_layer.visible = not clear
+	var world := get_node_or_null(WORLD_NODE_NAME)
+	if world != null:
+		_set_weather_layer_visible(world, not clear)
+
+
 func _apply_initial_camera_limits() -> void:
 	var world := get_node_or_null(WORLD_NODE_NAME)
 	if world != null and _player != null and _player.has_method("apply_camera_limits_from_world"):
 		_player.apply_camera_limits_from_world(world)
 	_notify_hongos_spawner()
 	_notify_song_relics()
+	_place_boji_for_world(world)
 
 
 ## El fundido vive en su propia CanvasLayer y sigue corriendo con el árbol pausado.
@@ -157,6 +179,7 @@ func _swap_world(packed: PackedScene, spawn: Vector2) -> Node:
 	_refresh_minimap()
 	_refresh_map_discovery()
 	_place_hi_follower()
+	_place_boji_for_world(new_world)
 	return new_world
 
 
@@ -166,8 +189,23 @@ func _park_world(world: Node) -> void:
 	if path.is_empty():
 		world.queue_free()
 		return
+	_release_parked_except(path)
 	world.name = "ParkedWorld"
+	world.process_mode = Node.PROCESS_MODE_DISABLED
 	_parked_worlds[path] = world
+
+
+func _release_parked_except(keep_path: String) -> void:
+	var drop: Array[String] = []
+	for key in _parked_worlds.keys():
+		var parked_path := str(key)
+		if parked_path != keep_path:
+			drop.append(parked_path)
+	for parked_path in drop:
+		var parked: Node = _parked_worlds[parked_path]
+		_parked_worlds.erase(parked_path)
+		if is_instance_valid(parked):
+			parked.queue_free()
 
 
 func _take_parked_world(packed: PackedScene) -> Node:
@@ -178,11 +216,74 @@ func _take_parked_world(packed: PackedScene) -> Node:
 	_parked_worlds.erase(path)
 	if not is_instance_valid(parked):
 		return null
+	parked.process_mode = Node.PROCESS_MODE_INHERIT
 	return parked
 
 
 func _instantiate_world(packed: PackedScene) -> Node:
 	return packed.instantiate()
+
+
+## La primera visita arma colisión de agua y casas. En web no se precalienta:
+## los tres mapas a la vez tumban la pestaña. En escritorio, un solo vecino.
+func _warm_other_worlds() -> void:
+	if OS.has_feature("web"):
+		return
+	await get_tree().process_frame
+	for path in WARM_WORLD_PATHS:
+		if _parked_worlds.has(path) or _live_world_path() == path:
+			continue
+		var packed := load(path) as PackedScene
+		if packed == null:
+			push_error("MainScene: no se pudo precalentar %s" % path)
+			continue
+		if _parked_worlds.has(path) or _live_world_path() == path:
+			continue
+		var world := _instantiate_world(packed)
+		world.name = "ParkedWorld"
+		_hide_warming_world(world)
+		add_child(world)
+		await get_tree().process_frame
+		if world.get_parent() == self:
+			remove_child(world)
+		_show_warming_world(world)
+		world.process_mode = Node.PROCESS_MODE_DISABLED
+		_parked_worlds[path] = world
+		return
+
+
+func _hide_warming_world(world: Node) -> void:
+	if world is CanvasItem:
+		(world as CanvasItem).visible = false
+	var tint := world.get_node_or_null("TimeOfDaySystem/CanvasModulate")
+	if tint is CanvasItem:
+		(tint as CanvasItem).visible = false
+	_set_weather_layer_visible(world, false)
+
+
+func _show_warming_world(world: Node) -> void:
+	if world is CanvasItem:
+		(world as CanvasItem).visible = true
+	var tint := world.get_node_or_null("TimeOfDaySystem/CanvasModulate")
+	if tint is CanvasItem:
+		(tint as CanvasItem).visible = true
+	_set_weather_layer_visible(world, true)
+
+
+func _set_weather_layer_visible(world: Node, shown: bool) -> void:
+	var weather := world.get_node_or_null("TimeOfDaySystem/WeatherVisualSystem")
+	if weather == null:
+		return
+	for child in weather.get_children():
+		if child is CanvasLayer:
+			(child as CanvasLayer).visible = shown
+
+
+func _live_world_path() -> String:
+	var world := get_node_or_null(WORLD_NODE_NAME)
+	if world == null:
+		return ""
+	return str(world.scene_file_path)
 
 
 ## Espera a que el mapa viejo se libere antes de mostrar el nuevo: los dos CanvasModulate
@@ -239,6 +340,74 @@ func _place_hi_follower() -> void:
 	var follower := get_tree().get_first_node_in_group("hi_follower")
 	if follower != null and follower.has_method("snap_beside_player"):
 		follower.call("snap_beside_player")
+
+
+func _place_boji_for_world(world: Node) -> void:
+	if world == null:
+		return
+	_ensure_boji_map()
+	var boji := _find_boji()
+	if boji == null:
+		return
+	if str(world.scene_file_path) != GameState.boji_map_path:
+		_hold_boji(boji)
+		return
+	var parent := world.get_node_or_null("InteractiveObjects")
+	if parent == null:
+		parent = world
+	if boji.get_parent() != parent:
+		_reparent_detached(boji, parent)
+	_boji_visit += 1
+	var home := HongosSpawner.find_walkable_position(
+		world, [], 0.0, true, "", HongosSpawner.RELIC_BLOCK_LAYER_NAMES
+	)
+	if boji.has_method("relocate"):
+		boji.call("relocate", home, _boji_visit)
+
+
+func _ensure_boji_map() -> void:
+	if not GameState.boji_map_path.is_empty():
+		return
+	var maps: Array = HongosSpawner.MAPS
+	if maps.is_empty():
+		return
+	var pick: Dictionary = maps[randi() % maps.size()]
+	GameState.boji_map_path = str(pick.get("path", ""))
+
+
+func _find_boji() -> Node:
+	if _boji_hold != null:
+		var held := _boji_hold.get_node_or_null("boji")
+		if held != null:
+			return held
+	var live := get_node_or_null("%s/InteractiveObjects/boji" % WORLD_NODE_NAME)
+	if live != null:
+		return live
+	for parked_variant in _parked_worlds.values():
+		var parked := parked_variant as Node
+		if parked == null or not is_instance_valid(parked):
+			continue
+		var npc := parked.get_node_or_null("InteractiveObjects/boji")
+		if npc != null:
+			return npc
+	return null
+
+
+## Boji nace dentro del mundo instanciado, así que su owner es esa raíz.
+## Al sacarlo (BojiHold u otro mapa) hay que soltar el owner o Godot avisa
+## que el owner ya no es ancestro del nuevo padre.
+func _reparent_detached(node: Node, parent: Node) -> void:
+	node.owner = null
+	node.reparent(parent)
+
+
+func _hold_boji(boji: Node) -> void:
+	if _boji_hold == null:
+		return
+	if boji.get_parent() != _boji_hold:
+		_reparent_detached(boji, _boji_hold)
+	if boji.has_method("hold_off_map"):
+		boji.call("hold_off_map")
 
 
 func _notify_hongos_spawner() -> void:

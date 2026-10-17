@@ -16,10 +16,27 @@ var _song_relics: Array = []
 
 
 func _ready() -> void:
-	_load()
+	if _editor_play_wipes_save():
+		wipe_guest_progress()
+	else:
+		_load()
 	if "--maizena-reset-welcome" in OS.get_cmdline_args():
 		welcome_popup_seen = false
 		_save()
+
+
+func wipe_guest_progress() -> void:
+	welcome_popup_seen = false
+	movement_tutorial_seen = false
+	bollo_wins = 0
+	_play_log.clear()
+	_collected_songs.clear()
+	_song_relics.clear()
+	_save()
+
+
+func _editor_play_wipes_save() -> bool:
+	return OS.is_debug_build() and not OS.has_feature("web")
 
 
 func get_current_era_number() -> int:
@@ -124,7 +141,7 @@ func get_visible_residue_count() -> int:
 	var ws: Node = get_node_or_null("/root/WorldState")
 	if ws == null:
 		return 0
-	return mini(int(ws.accumulation_level), 80)
+	return mini(int(ws.accumulation_level), int(ws.RESIDUE_CAP))
 
 
 func _load() -> void:

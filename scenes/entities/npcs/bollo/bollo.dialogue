@@ -1,5 +1,8 @@
 ~ start
 
+if GameState.quest_repollo_completed:
+	Bollo: El repollo se quedó en el templo. La isla pesa menos.
+
 if MaizenaMeta.get_bollo_wins() >= 1:
 	Bollo: Sanjin, gracias por entrenarme. Cada vez me acerco un poco más a tu nivel.
 	Sanjin: No te confíes demasiado.

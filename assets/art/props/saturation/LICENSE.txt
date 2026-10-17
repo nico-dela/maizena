@@ -1,0 +1,8 @@
+Kenney Roguelike/RPG pack and Sports pack
+Author: Kenney Vleugels (Kenney)
+Source: https://kenney.nl/assets/roguelike-rpg-pack
+Source: https://kenney.nl/assets/sports-pack
+License: CC0 1.0 Universal — public domain. Attribution is not required.
+
+Individual 16×16 props cut from those packs for map saturation.
+The island's own drawings (lentes, maceta, chupetín, Ford Sierra, fútbol, remera, sillón) stay in assets/art/props/.

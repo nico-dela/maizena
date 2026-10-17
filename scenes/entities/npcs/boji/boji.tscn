@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dd260wyj55xsf"]
 
-[ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/gameplay/interactive_object.gd" id="1_1fh6r"]
+[ext_resource type="Script" uid="uid://c8bojiwandr1" path="res://scenes/entities/npcs/boji/boji_wander.gd" id="1_1fh6r"]
 [ext_resource type="Resource" uid="uid://d155cjm3ai77v" path="res://scenes/entities/npcs/boji/boji.dialogue" id="2_ny5g2"]
 [ext_resource type="Texture2D" uid="uid://ces1pu4moqw0a" path="res://assets/art/characters/boji.png" id="2_sheet"]
 

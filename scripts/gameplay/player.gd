@@ -172,7 +172,6 @@ func _physics_process(_delta):
 			is_moving_to_tap = false
 			tap_position = null
 		play_anim(0)
-		move_and_slide()
 		return
 
 	velocity = Vector2.ZERO
@@ -229,7 +228,20 @@ func _movement_blocked() -> bool:
 		return true
 	if DialogueController.input_locked:
 		return true
+	if _qr_blocking():
+		return true
 	return GameState.bollo_training_active
+
+
+var _qr_card: Node = null
+
+
+func _qr_blocking() -> bool:
+	if _qr_card == null or not is_instance_valid(_qr_card):
+		_qr_card = get_tree().get_first_node_in_group("qr_card")
+	if _qr_card == null:
+		return false
+	return _qr_card.has_method("is_blocking") and bool(_qr_card.call("is_blocking"))
 
 
 func _apply_click_hold_move() -> void:

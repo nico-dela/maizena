@@ -1,5 +1,11 @@
 ~ start
 
+if GameState.quest_repollo_completed:
+	Boji: El repollo sigue en el templo. Eso era.
+	Sanjin: No lo saqué.
+	Boji: Bien. La búsqueda era el orden.
+	=> END
+
 if GameState.get_npc_talk_count("boji") >= 1:
 	Boji: Sanjin… ¿avanzaste con el repollo morado?
 	if GameState.boji_chose_pantano:
@@ -14,6 +20,14 @@ if GameState.get_npc_talk_count("boji") >= 1:
 	else:
 		Sanjin: Todavía estoy investigando.
 		Boji: Bueno. El repollo no se va a encontrar solo.
+	if not GameState.mirada_hambre():
+		Boji: Al viejo todavía le pesa el hambre. Mirá eso primero.
+	if not GameState.mirada_enojo():
+		Boji: Los siluetos siguen sin cara. El enojo también es parte.
+	if not GameState.mirada_sello:
+		Boji: Ranancio o la piedra. El sello no se toca: se mira.
+	if GameState.miradas_listas():
+		Boji: Ya miraste las tres. Andá al templo. El repollo se queda ahí.
 	=> END
 
 Boji: Sanjin… necesitamos encontrar el repollo morado.
@@ -23,18 +37,21 @@ Sanjin: ¿Dónde empezamos?
 Boji: Podemos ir por varios lados. Vos elegí.
 
 - Buscar en el pantano
+	do GameState.buscar_repollo()
 	do GameState.boji_chose_pantano = true
 	Sanjin: Voy a revisar el pantano primero.
 	Boji: Cuidado con el barro… y con lo que flota.
 	=> END
 
 - Hablar con los siluetos
+	do GameState.buscar_repollo()
 	do GameState.boji_chose_siluetos = true
 	Sanjin: Capaz los siluetos saben algo.
 	Boji: Saben burlarse, eso seguro. Pero a veces sueltan verdades.
 	=> END
 
 - Ir al templo de los sapos
+	do GameState.buscar_repollo()
 	do GameState.boji_chose_templo = true
 	Sanjin: Mejor preguntar en el templo.
 	Boji: Ranancio no suelta el repollo fácil… pero vale la pena intentar.

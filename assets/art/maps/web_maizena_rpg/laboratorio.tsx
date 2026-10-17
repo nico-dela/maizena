@@ -50,16 +50,6 @@
    </object>
   </objectgroup>
  </tile>
- <tile id="49">
-  <objectgroup draworder="index" id="2">
-   <object id="1" x="7.875" y="7.5625"/>
-  </objectgroup>
- </tile>
- <tile id="50">
-  <objectgroup draworder="index" id="2">
-   <object id="1" x="8" y="8.3125"/>
-  </objectgroup>
- </tile>
  <tile id="51">
   <objectgroup draworder="index" id="2">
    <object id="1" x="-0.125" y="-0.0625" width="16.375" height="16.3125"/>

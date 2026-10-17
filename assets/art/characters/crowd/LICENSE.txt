@@ -1,0 +1,14 @@
+Ninja Adventure character sheets
+Author: pixel-boy
+Source: https://github.com/pixel-boy/NinjaAdventure
+Also published at: https://pixel-boy.itch.io/ninja-adventure-asset-pack
+License: CC0 1.0 Universal — public domain. Attribution is not required.
+
+Files from that pack:
+- ninja_blue.png
+- samurai_blue.png
+- samurai_green.png
+
+Each sheet is 64×112, frames of 16×16.
+Columns: down, up, left, right.
+Rows 0–3: idle and walk. Later rows are combat and were not used.

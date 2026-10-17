@@ -14,6 +14,9 @@
 [ext_resource type="Script" uid="uid://cdgic2yxgg760" path="res://scripts/systems/time_day_system.gd" id="28_time"]
 [ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/systems/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]
+[ext_resource type="Script" uid="uid://byd1xo4sknxrd" path="res://scripts/systems/firefly_layer.gd" id="30_flies"]
+[ext_resource type="Script" uid="uid://hbxci2qtultp" path="res://scripts/systems/crowd_layer.gd" id="31_crowd"]
+[ext_resource type="Script" path="res://scripts/systems/mountain_cover.gd" id="32_cima"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oi80u"]
 size = Vector2(64, 36)
@@ -23,6 +26,16 @@ size = Vector2(36, 64)
 
 [node name="NewWorld" type="Node2D" unique_id=1636943568]
 script = ExtResource("28_world")
+map_ambience = "forest"
+
+[node name="Fireflies" type="Node2D" parent="." unique_id=1478666040]
+script = ExtResource("30_flies")
+
+[node name="CrowdLayer" type="Node2D" parent="." unique_id=2068864756]
+script = ExtResource("31_crowd")
+
+[node name="MountainCover" type="Node" parent="."]
+script = ExtResource("32_cima")
 
 [node name="TimeOfDaySystem" type="Node" parent="." unique_id=1708585194]
 script = ExtResource("28_time")
@@ -44,6 +57,7 @@ script = ExtResource("5_60po5")
 [node name="InteractiveObjects" type="Node" parent="." unique_id=643106436]
 
 [node name="cartel_sanjin" parent="InteractiveObjects" unique_id=1033152148 instance=ExtResource("6_odkj4")]
+z_index = 1
 position = Vector2(152, 440)
 spawn_schedules = Array[Dictionary]([])
 
@@ -108,7 +122,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="cartel_arboles" parent="InteractiveObjects" unique_id=636104785 instance=ExtResource("21_6xm8j")]
 z_index = 1
-position = Vector2(262, 86)
+position = Vector2(169, 39)
 spawn_schedules = Array[Dictionary]([])
 
 [node name="cartel_playa_sur" parent="InteractiveObjects" unique_id=162991114 instance=ExtResource("27_13e4m")]
