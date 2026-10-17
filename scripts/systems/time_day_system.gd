@@ -1,6 +1,8 @@
 extends Node
 class_name TimeOfDaySystem
 
+const Booth = preload("res://scripts/gameplay/booth.gd")
+
 signal time_updated(current_hour: float, is_day: bool)
 
 var time_colors := {
@@ -43,6 +45,11 @@ func _ready() -> void:
 		canvas_modulate.name = "CanvasModulate"
 		call_deferred("add_child", canvas_modulate)
 
+	if Booth.active():
+		time_colors["night"] = Color(0.55, 0.62, 0.92, 1.0)
+		time_colors["midnight"] = Color(0.5, 0.55, 0.85, 1.0)
+		current_time = Booth.BOOTH_HOUR
+
 	world_state = get_node_or_null("/root/WorldState")
 	_weather = get_node_or_null("/root/CordobaWeather")
 	if _weather != null:
@@ -78,6 +85,9 @@ func _on_weather_updated(_condition: String, _precipitation_mm: float, _cloud_co
 
 
 func _sync_current_time() -> void:
+	if Booth.active():
+		current_time = Booth.BOOTH_HOUR
+		return
 	if _weather != null and _weather.has_method("get_cordoba_local_hour"):
 		current_time = _weather.get_cordoba_local_hour()
 	elif world_state:
@@ -154,6 +164,8 @@ func _compute_night_color(hour: float, dusk_end: float) -> Color:
 
 
 func _apply_weather_tint(color: Color) -> Color:
+	if Booth.active():
+		return color
 	if _weather == null or not _weather.is_available:
 		return color
 	var cond: String = _weather.condition
@@ -168,6 +180,8 @@ func _apply_weather_tint(color: Color) -> Color:
 
 
 func is_daytime() -> bool:
+	if Booth.active():
+		return false
 	if _weather != null and _weather.has_method("get_effective_is_day"):
 		return _weather.get_effective_is_day()
 	return current_time >= 6.0 and current_time < 18.0

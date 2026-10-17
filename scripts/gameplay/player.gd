@@ -27,6 +27,7 @@ var _is_mobile := false
 @onready var _body_collision: CollisionShape2D = $CollisionShape2D
 
 const InputPlatformRes := preload("res://scripts/ui/input_platform.gd")
+const Booth := preload("res://scripts/gameplay/booth.gd")
 
 var _map_discovery: Node = null
 var _map_limits := Rect2(0.0, 0.0, 640.0, 640.0)
@@ -151,7 +152,7 @@ func _input(event):
 		return
 
 	# Mobile usa el stick fijo; tap-to-move tapaba el sprite.
-	if _is_mobile:
+	if _is_mobile or Booth.active():
 		return
 	
 	# Detectar tap/clic en la pantalla
@@ -192,7 +193,7 @@ func _physics_process(_delta):
 		var joy := _joystick_vector()
 		if joy != Vector2.ZERO:
 			velocity = joy.normalized() * SPEED
-		elif not _is_mobile:
+		elif not _is_mobile and not Booth.active():
 			_apply_click_hold_move()
 
 	if velocity != Vector2.ZERO:

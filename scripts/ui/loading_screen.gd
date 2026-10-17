@@ -52,6 +52,7 @@ var _is_web := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	preload("res://scripts/gameplay/booth.gd").apply_display()
 	_started_at = _now_sec()
 	_is_web = OS.has_feature("web")
 	tip_label.text = _pick_tip()

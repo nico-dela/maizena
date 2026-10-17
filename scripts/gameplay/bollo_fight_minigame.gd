@@ -306,12 +306,12 @@ func _handle_confirm_exit_input(event: InputEvent) -> void:
 		elif key_event.keycode == KEY_N:
 			_confirm_exit_no()
 			get_viewport().set_input_as_handled()
-		elif key_event.keycode == KEY_LEFT:
-			btn_confirm_no.grab_focus()
-			get_viewport().set_input_as_handled()
-		elif key_event.keycode == KEY_RIGHT:
-			btn_confirm_yes.grab_focus()
-			get_viewport().set_input_as_handled()
+	if event.is_action_pressed("ui_left"):
+		btn_confirm_no.grab_focus()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("ui_right"):
+		btn_confirm_yes.grab_focus()
+		get_viewport().set_input_as_handled()
 
 func _focus_move(delta: int) -> void:
 	if move_buttons.is_empty():

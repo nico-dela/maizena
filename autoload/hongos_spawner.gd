@@ -37,6 +37,15 @@ const BLOCK_LAYER_NAMES: Array[String] = [
 	"elevaciones",
 	"Cascada",
 ]
+## El agua queda debajo del pasto en estos mapas; no bloquea una celda de Ground.
+const RELIC_BLOCK_LAYER_NAMES: Array[String] = [
+	"Arboles",
+	"Construcciones",
+	"construcciones",
+	"Muralla",
+	"Elevaciones",
+	"elevaciones",
+]
 
 var hongos_spawned := false
 ## Texto para el diálogo del viejo, p.ej. "el bosque".
@@ -116,6 +125,9 @@ func _spawn_at(world: Node, pos: Vector2) -> void:
 
 
 func _on_hongos_removed() -> void:
+	# El mapa se aparca al viajar; el hongo sigue siendo hijo de ese mundo.
+	if is_instance_valid(_active_hongos) and _active_hongos.get_parent() != null:
+		return
 	hongos_spawned = false
 	_active_hongos = null
 
@@ -150,61 +162,108 @@ func _resolve_world_scene_path(world: Node) -> String:
 
 
 func _find_walkable_position(world: Node) -> Vector2:
+	return find_walkable_position(world)
+
+
+func find_walkable_position(
+	world: Node,
+	avoid: Array = [],
+	min_separation: float = 0.0,
+	respect_player: bool = true,
+	preferred_layer: String = "",
+	block_names: Array = []
+) -> Vector2:
 	var layers := _collect_tile_layers(world)
 	if layers.is_empty():
-		return _fallback_position(world)
+		return _fallback_away(world, avoid)
 
-	var walk_layer := _pick_walk_layer(layers)
+	var walk_layer := _pick_walk_layer(layers, preferred_layer)
 	if walk_layer == null:
-		return _fallback_position(world)
+		return _fallback_away(world, avoid)
 
+	var names: Array = block_names if not block_names.is_empty() else BLOCK_LAYER_NAMES
 	var block_layers: Array[TileMapLayer] = []
 	for layer in layers:
 		if layer == walk_layer:
 			continue
-		if str(layer.name) in BLOCK_LAYER_NAMES:
+		if str(layer.name) in names:
 			block_layers.append(layer)
 
 	var used: Array[Vector2i] = walk_layer.get_used_cells()
 	if used.is_empty():
-		return _fallback_position(world)
+		return _fallback_away(world, avoid)
 
 	var player := get_tree().get_first_node_in_group("player") as Node2D
 	var limits := _world_limits(world)
+	var attempts := maxi(MAX_ATTEMPTS, avoid.size() * 16)
 
-	for _i in range(MAX_ATTEMPTS):
+	for _i in range(attempts):
 		var cell: Vector2i = used[_rng.randi_range(0, used.size() - 1)]
 		if not _cell_in_inner_bounds(walk_layer, cell):
 			continue
 		if _cell_blocked(walk_layer, cell, block_layers):
 			continue
-		var local := walk_layer.map_to_local(cell)
-		var global := walk_layer.to_global(local)
-		if not limits.has_point(global):
-			continue
-		if player != null and global.distance_to(player.global_position) < MIN_PLAYER_DISTANCE:
+		var global := walk_layer.to_global(walk_layer.map_to_local(cell))
+		if not _accepts_point(global, limits, player, respect_player, avoid, min_separation):
 			continue
 		if not _physics_clear(world, global):
 			continue
 		return global
 
-	# Último intento: cualquier celda de walk sin física.
-	for _i in range(min(used.size(), MAX_ATTEMPTS)):
+	for _i in range(mini(used.size(), attempts)):
 		var cell2: Vector2i = used[_rng.randi_range(0, used.size() - 1)]
 		if _cell_blocked(walk_layer, cell2, block_layers):
 			continue
 		var global2 := walk_layer.to_global(walk_layer.map_to_local(cell2))
-		if player != null and global2.distance_to(player.global_position) < MIN_PLAYER_DISTANCE:
+		if respect_player and player != null and global2.distance_to(player.global_position) < MIN_PLAYER_DISTANCE:
+			continue
+		if not _is_separated(global2, avoid, min_separation):
 			continue
 		return global2
 
-	return _fallback_position(world)
+	return _fallback_away(world, avoid)
 
 
-func _pick_walk_layer(layers: Array[TileMapLayer]) -> TileMapLayer:
-	for preferred in WALK_LAYER_NAMES:
+func _accepts_point(
+	point: Vector2,
+	limits: Rect2,
+	player: Node2D,
+	respect_player: bool,
+	avoid: Array,
+	min_separation: float
+) -> bool:
+	if not limits.has_point(point):
+		return false
+	if respect_player and player != null and point.distance_to(player.global_position) < MIN_PLAYER_DISTANCE:
+		return false
+	return _is_separated(point, avoid, min_separation)
+
+
+func _is_separated(point: Vector2, avoid: Array, min_separation: float) -> bool:
+	if min_separation <= 0.0:
+		return true
+	for other in avoid:
+		if typeof(other) != TYPE_VECTOR2:
+			continue
+		if point.distance_to(other) < min_separation:
+			return false
+	return true
+
+
+func _fallback_away(world: Node, avoid: Array) -> Vector2:
+	var fallback := _fallback_position(world)
+	fallback.x += float(avoid.size()) * 24.0
+	return fallback
+
+
+func _pick_walk_layer(layers: Array[TileMapLayer], preferred: String = "") -> TileMapLayer:
+	if not preferred.is_empty():
 		for layer in layers:
 			if str(layer.name) == preferred and not layer.get_used_cells().is_empty():
+				return layer
+	for preferred_name in WALK_LAYER_NAMES:
+		for layer in layers:
+			if str(layer.name) == preferred_name and not layer.get_used_cells().is_empty():
 				return layer
 	for layer in layers:
 		if not layer.get_used_cells().is_empty():

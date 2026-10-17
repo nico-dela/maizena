@@ -95,8 +95,11 @@ func _ready() -> void:
 	music_toggle.toggled.connect(_on_background_play_toggled)
 	call_deferred("_bind_background_toggle")
 
-	# Pantalla completa oculto por ahora (web/móvil).
-	fullscreen_row.visible = false
+	# En web el navegador ya ofrece pantalla completa; en escritorio el botón sí.
+	fullscreen_row.visible = not OS.has_feature("web")
+	if fullscreen_row.visible:
+		fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
+		_sync_fullscreen_button()
 
 	menu_dim.gui_input.connect(_on_dim_gui_input)
 	_style_volume_slider()
@@ -131,7 +134,7 @@ func _style_close_button() -> void:
 	close_btn.add_theme_stylebox_override("normal", sb_n)
 	close_btn.add_theme_stylebox_override("hover", sb_h)
 	close_btn.add_theme_stylebox_override("pressed", sb_h)
-	close_btn.add_theme_stylebox_override("focus", sb_n)
+	close_btn.add_theme_stylebox_override("focus", _focus_style(sb_n))
 	close_btn.add_theme_font_override("font", FONT)
 
 
@@ -176,7 +179,13 @@ func _style_music_toggle() -> void:
 	music_toggle.text = ""
 	music_toggle.flat = true
 	music_toggle.add_theme_font_override("font", FONT)
-	music_toggle.focus_mode = Control.FOCUS_NONE
+	music_toggle.focus_mode = Control.FOCUS_ALL
+	var sb_n := StyleBoxFlat.new()
+	sb_n.bg_color = Color(0.1, 0.16, 0.24, 0.92)
+	sb_n.set_corner_radius_all(5)
+	sb_n.set_border_width_all(1)
+	sb_n.border_color = Color(0.42, 0.76, 0.94, 0.5)
+	music_toggle.add_theme_stylebox_override("focus", _focus_style(sb_n))
 
 
 func _bind_background_toggle() -> void:
@@ -253,7 +262,7 @@ func _style_mute_toggle(s: float) -> void:
 	mute_toggle_btn.custom_minimum_size = Vector2(side, side)
 	mute_toggle_btn.text = ""
 	mute_toggle_btn.flat = false
-	mute_toggle_btn.focus_mode = Control.FOCUS_NONE
+	mute_toggle_btn.focus_mode = Control.FOCUS_ALL
 	mute_toggle_btn.expand_icon = true
 	mute_toggle_btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	mute_toggle_btn.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -268,7 +277,7 @@ func _style_mute_toggle(s: float) -> void:
 	mute_toggle_btn.add_theme_stylebox_override("normal", sb_n)
 	mute_toggle_btn.add_theme_stylebox_override("hover", sb_h)
 	mute_toggle_btn.add_theme_stylebox_override("pressed", sb_h)
-	mute_toggle_btn.add_theme_stylebox_override("focus", sb_n)
+	mute_toggle_btn.add_theme_stylebox_override("focus", _focus_style(sb_n))
 	_sync_mute_icon()
 
 
@@ -288,7 +297,7 @@ func _style_action_button(button: Button, s: float) -> void:
 	button.add_theme_stylebox_override("normal", sb_n)
 	button.add_theme_stylebox_override("hover", sb_h)
 	button.add_theme_stylebox_override("pressed", sb_h)
-	button.add_theme_stylebox_override("focus", sb_n)
+	button.add_theme_stylebox_override("focus", _focus_style(sb_n))
 
 
 func _apply_toggle_layout(toggle: CheckButton, s: float) -> void:
@@ -346,7 +355,76 @@ func _open_menu() -> void:
 	_sync_settings_button_interactive()
 	_apply_joystick_settings_visibility()
 	_apply_menu_layout()
+	_wire_menu_focus()
 	call_deferred("_apply_menu_layout")
+	call_deferred("_focus_first_setting")
+
+
+func _focus_style(base: StyleBoxFlat) -> StyleBoxFlat:
+	var focused := base.duplicate() as StyleBoxFlat
+	focused.set_border_width_all(3)
+	focused.border_color = Color(0.85, 0.98, 1.0, 1.0)
+	focused.bg_color = Color(0.16, 0.28, 0.4, 0.98)
+	return focused
+
+
+func _nav_targets() -> Array[Control]:
+	var targets: Array[Control] = []
+	for control: Control in [
+		volume_slider, mute_toggle_btn, joystick_slider, music_toggle, fullscreen_btn, close_btn
+	]:
+		if control != null and control.is_visible_in_tree():
+			targets.append(control)
+	return targets
+
+
+func _wire_menu_focus() -> void:
+	var targets := _nav_targets()
+	var last := targets.size() - 1
+	for i in targets.size():
+		var control := targets[i]
+		control.focus_mode = Control.FOCUS_ALL
+		var prev := targets[maxi(i - 1, 0)]
+		var next := targets[mini(i + 1, last)]
+		control.focus_neighbor_top = control.get_path_to(prev)
+		control.focus_neighbor_bottom = control.get_path_to(next)
+		control.focus_previous = control.get_path_to(prev)
+		control.focus_next = control.get_path_to(next)
+		control.focus_neighbor_left = control.get_path_to(control)
+		control.focus_neighbor_right = control.get_path_to(control)
+		if control is Slider:
+			_watch_slider_focus(control)
+	_refresh_hint()
+
+
+func _watch_slider_focus(slider: Slider) -> void:
+	if bool(slider.get_meta("nav_focus_watched", false)):
+		return
+	slider.set_meta("nav_focus_watched", true)
+	slider.focus_entered.connect(_on_slider_focus_changed.bind(slider))
+	slider.focus_exited.connect(_on_slider_focus_changed.bind(slider))
+
+
+func _on_slider_focus_changed(slider: Slider) -> void:
+	slider.modulate = Color(1.2, 1.25, 1.05) if slider.has_focus() else Color.WHITE
+
+
+func _focus_first_setting() -> void:
+	if not is_open:
+		return
+	var targets := _nav_targets()
+	if targets.is_empty():
+		return
+	targets[0].grab_focus()
+
+
+func _refresh_hint() -> void:
+	if hint_label == null:
+		return
+	if Input.get_connected_joypads().is_empty():
+		hint_label.text = "Esc · abrir / cerrar"
+	else:
+		hint_label.text = "Stick · mover    ← → · valor    A · aceptar"
 
 
 func _close_menu() -> void:
@@ -359,6 +437,10 @@ func _close_menu() -> void:
 
 func _sync_settings_button_interactive() -> void:
 	if settings_button == null:
+		return
+	if OS.has_feature("booth"):
+		settings_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		settings_button.visible = false
 		return
 	# Gear sits as a sibling; ignore it while the modal is open so it cannot eat clicks.
 	settings_button.mouse_filter = (
@@ -400,6 +482,8 @@ func _is_menu_toggle(event: InputEvent) -> bool:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if OS.has_feature("booth"):
+		return
 	if _is_menu_toggle(event):
 		if is_open:
 			_close_menu()
@@ -407,17 +491,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif _can_open_menu():
 			_show_menu()
 			get_viewport().set_input_as_handled()
-		return
-
-	if not menu_panel.visible:
-		return
-
-	if event.is_action_pressed("ui_up"):
-		volume_slider.value += volume_slider.step
-		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("ui_down"):
-		volume_slider.value -= volume_slider.step
-		get_viewport().set_input_as_handled()
 
 
 func _on_mute_toggle_pressed() -> void:
@@ -453,6 +526,8 @@ func _on_joystick_scale_changed(value: float) -> void:
 
 
 func _apply_master_audio() -> void:
+	if OS.has_feature("booth"):
+		return
 	var master_bus := AudioServer.get_bus_index("Master")
 	AudioServer.set_bus_mute(master_bus, _master_muted)
 	if not _master_muted:

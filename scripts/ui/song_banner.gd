@@ -10,6 +10,7 @@ const FONT: FontFile = preload("res://assets/art/ui/PixelOperator8.ttf")
 
 var _tween: Tween
 var _pending_title := ""
+var _pending_lead := "Reproduciendo: "
 var _watching_onboarding := false
 
 
@@ -38,10 +39,11 @@ func _process(_delta: float) -> void:
 		return
 	if _onboarding_blocks_banner():
 		return
+	var lead := _pending_lead
 	var title := _pending_title
 	_pending_title = ""
 	_watching_onboarding = false
-	_play_banner(title)
+	_play_banner(lead, title)
 
 
 func _apply_viewport_layout() -> void:
@@ -51,11 +53,20 @@ func _apply_viewport_layout() -> void:
 
 
 func show_song(title: String) -> void:
+	_queue_banner("Reproduciendo: ", title)
+
+
+func show_found(title: String) -> void:
+	_queue_banner("Encontraste: ", title)
+
+
+func _queue_banner(lead: String, title: String) -> void:
 	if _onboarding_blocks_banner():
+		_pending_lead = lead
 		_pending_title = title
 		_watching_onboarding = true
 		return
-	_play_banner(title)
+	_play_banner(lead, title)
 
 
 func _onboarding_blocks_banner() -> bool:
@@ -68,8 +79,8 @@ func _onboarding_blocks_banner() -> bool:
 	return false
 
 
-func _play_banner(title: String) -> void:
-	label.text = "Reproduciendo: [color=#F23049]" + title.to_upper() + "[/color]"
+func _play_banner(lead: String, title: String) -> void:
+	label.text = lead + "[color=#F23049]" + title.to_upper() + "[/color]"
 
 	position.y -= slide_distance
 	modulate.a = 0.0

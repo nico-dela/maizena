@@ -7,6 +7,9 @@ const FADE_OUT_TIME := 0.22
 const FADE_IN_TIME := 0.3
 
 const FogOverlayScene := preload("res://scenes/world/world_resources/fog_overlay.tscn")
+const SongRelicSpawnerScript := preload("res://scripts/systems/song_relic_spawner.gd")
+const Booth = preload("res://scripts/gameplay/booth.gd")
+const BoothSession := preload("res://scripts/gameplay/booth_session.gd")
 # Above world (0) and weather (5), below HUD UI (10) / settings (20).
 const FOG_LAYER := 6
 
@@ -14,6 +17,9 @@ const FOG_LAYER := 6
 
 var _fade_rect: ColorRect
 var _travel_busy := false
+## Mapas ya visitados. No se liberan: Godot comparte el byte array del TileMapLayer
+## con la escena en caché, y queue_free lo trunca.
+var _parked_worlds: Dictionary = {}
 var _map_discovery: Node
 var _fog_overlay: Node2D
 var _fog_layer: CanvasLayer
@@ -22,6 +28,13 @@ var _fog_layer: CanvasLayer
 func _ready() -> void:
 	_build_fade_overlay()
 	_setup_map_discovery()
+	var relics := SongRelicSpawnerScript.new()
+	relics.name = "SongRelicSpawner"
+	add_child(relics)
+	if Booth.active():
+		var session := BoothSession.new()
+		session.name = "BoothSession"
+		add_child(session)
 	call_deferred("_apply_initial_camera_limits")
 
 
@@ -72,6 +85,7 @@ func _apply_initial_camera_limits() -> void:
 	if world != null and _player != null and _player.has_method("apply_camera_limits_from_world"):
 		_player.apply_camera_limits_from_world(world)
 	_notify_hongos_spawner()
+	_notify_song_relics()
 
 
 ## El fundido vive en su propia CanvasLayer y sigue corriendo con el árbol pausado.
@@ -112,6 +126,7 @@ func travel_to(packed: PackedScene, spawn: Vector2) -> void:
 	var new_world := _swap_world(packed, spawn)
 	await _settle_new_world(new_world)
 	_notify_hongos_spawner()
+	_notify_song_relics()
 	await _fade_to(0.0, FADE_IN_TIME)
 	_travel_busy = false
 
@@ -119,11 +134,13 @@ func travel_to(packed: PackedScene, spawn: Vector2) -> void:
 func _swap_world(packed: PackedScene, spawn: Vector2) -> Node:
 	var old_world := get_node_or_null(WORLD_NODE_NAME)
 	if old_world != null:
-		old_world.name = "OldWorld"
-		old_world.queue_free()
+		_park_world(old_world)
 
-	var new_world := packed.instantiate()
+	var new_world := _take_parked_world(packed)
+	if new_world == null:
+		new_world = _instantiate_world(packed)
 	new_world.name = WORLD_NODE_NAME
+	_drop_duplicate_boji(new_world)
 	add_child(new_world)
 	move_child(new_world, 0)
 
@@ -139,7 +156,33 @@ func _swap_world(packed: PackedScene, spawn: Vector2) -> Node:
 
 	_refresh_minimap()
 	_refresh_map_discovery()
+	_place_boji_follower()
 	return new_world
+
+
+func _park_world(world: Node) -> void:
+	var path := str(world.scene_file_path)
+	remove_child(world)
+	if path.is_empty():
+		world.queue_free()
+		return
+	world.name = "ParkedWorld"
+	_parked_worlds[path] = world
+
+
+func _take_parked_world(packed: PackedScene) -> Node:
+	var path := str(packed.resource_path)
+	if path.is_empty() or not _parked_worlds.has(path):
+		return null
+	var parked: Node = _parked_worlds[path]
+	_parked_worlds.erase(path)
+	if not is_instance_valid(parked):
+		return null
+	return parked
+
+
+func _instantiate_world(packed: PackedScene) -> Node:
+	return packed.instantiate()
 
 
 ## Espera a que el mapa viejo se libere antes de mostrar el nuevo: los dos CanvasModulate
@@ -183,7 +226,28 @@ func _try_unlock_audio() -> void:
 		music.unlock_and_play()
 
 
+func _drop_duplicate_boji(world: Node) -> void:
+	if not GameState.boji_siguiendo:
+		return
+	var planted := world.get_node_or_null("InteractiveObjects/boji")
+	var follower := get_tree().get_first_node_in_group("boji_follower")
+	if planted != null and planted != follower:
+		planted.free()
+
+
+func _place_boji_follower() -> void:
+	var follower := get_tree().get_first_node_in_group("boji_follower")
+	if follower != null and follower.has_method("snap_beside_player"):
+		follower.call("snap_beside_player")
+
+
 func _notify_hongos_spawner() -> void:
 	var spawner := get_node_or_null("/root/HongosSpawner")
 	if spawner != null and spawner.has_method("try_spawn_in_current_world"):
 		spawner.call_deferred("try_spawn_in_current_world")
+
+
+func _notify_song_relics() -> void:
+	var spawner := get_node_or_null("SongRelicSpawner")
+	if spawner != null and spawner.has_method("refresh"):
+		spawner.call_deferred("refresh")

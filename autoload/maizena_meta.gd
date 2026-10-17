@@ -10,6 +10,8 @@ const PLAY_LOG_MAX := 400
 var welcome_popup_seen := false
 var movement_tutorial_seen := false
 var _play_log: Array = []
+var _collected_songs: Array[int] = []
+var _song_relics: Array = []
 
 
 func _ready() -> void:
@@ -72,6 +74,42 @@ func is_movement_tutorial_seen() -> bool:
 	return movement_tutorial_seen
 
 
+func get_collected_songs() -> Array[int]:
+	return _collected_songs.duplicate()
+
+
+func has_collected_song(song_id: int) -> bool:
+	return _collected_songs.has(song_id)
+
+
+func collect_song(song_id: int) -> void:
+	if _collected_songs.has(song_id):
+		return
+	_collected_songs.append(song_id)
+	_save()
+
+
+func get_song_relics() -> Array:
+	return _song_relics.duplicate(true)
+
+
+func set_song_relics(relics: Array) -> void:
+	_song_relics = relics.duplicate(true)
+	_save()
+
+
+func missing_relic_count() -> int:
+	if _song_relics.is_empty():
+		return SongRelics.count()
+	var missing := 0
+	for relic in _song_relics:
+		if typeof(relic) != TYPE_DICTIONARY:
+			continue
+		if not has_collected_song(int(relic.get("song", -1))):
+			missing += 1
+	return missing
+
+
 func get_visible_residue_count() -> int:
 	var ws: Node = get_node_or_null("/root/WorldState")
 	if ws == null:
@@ -90,6 +128,8 @@ func _load() -> void:
 		return
 	welcome_popup_seen = bool(data.get("welcome_popup_seen", false))
 	movement_tutorial_seen = bool(data.get("movement_tutorial_seen", false))
+	_load_collected_songs(data.get("collected_songs", []))
+	_load_song_relics(data.get("song_relics", []))
 	var raw_log = data.get("play_log", [])
 	if typeof(raw_log) == TYPE_ARRAY:
 		_play_log.clear()
@@ -113,5 +153,44 @@ func _save() -> void:
 		"welcome_popup_seen": welcome_popup_seen,
 		"movement_tutorial_seen": movement_tutorial_seen,
 		"play_log": serializable,
+		"collected_songs": _collected_song_ids(),
+		"song_relics": _song_relics.duplicate(true),
 	}
 	f.store_string(JSON.stringify(data))
+
+
+func _collected_song_ids() -> Array:
+	var songs: Array = []
+	for song_id in _collected_songs:
+		songs.append(song_id)
+	return songs
+
+
+func _load_collected_songs(raw: Variant) -> void:
+	_collected_songs.clear()
+	if typeof(raw) != TYPE_ARRAY:
+		return
+	for item in raw:
+		if typeof(item) != TYPE_INT and typeof(item) != TYPE_FLOAT:
+			continue
+		var song_id := int(item)
+		if not _collected_songs.has(song_id):
+			_collected_songs.append(song_id)
+
+
+func _load_song_relics(raw: Variant) -> void:
+	_song_relics.clear()
+	if typeof(raw) != TYPE_ARRAY:
+		return
+	for item in raw:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		if not item.has("map_id"):
+			continue
+		_song_relics.append({
+			"song": int(item.get("song", -1)),
+			"map_id": str(item.get("map_id", "")),
+			"x": float(item.get("x", 0.0)),
+			"y": float(item.get("y", 0.0)),
+			"placed": bool(item["placed"]) if item.has("placed") else true,
+		})

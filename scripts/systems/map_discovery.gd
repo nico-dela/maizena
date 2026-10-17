@@ -4,11 +4,14 @@ class_name MapDiscovery
 signal exploration_updated(map_id: String)
 
 const TILE_SIZE := 16
-const VISION_RADIUS := 32.0
+## 8 tiles: cubre agua, techos y bordes a los que no se puede entrar.
+const VISION_RADIUS := 128.0
+## Velo gris azulado: se lee el mapa, no un apagón.
+const FOG_UNEXPLORED := Color(0.10, 0.12, 0.16, 0.58)
+const FOG_EDGE_ALPHA := 0.28
 ## ceil(VISION_RADIUS / TILE_SIZE); circle test uses cell-distance squared.
-## At camera zoom x4 this is ~128 screen px radius — small enough that fog stays on-screen.
-const RADIUS_CELLS := 2
-const RADIUS_CELLS_SQ := 4
+const RADIUS_CELLS := 8
+const RADIUS_CELLS_SQ := 64
 const WATER_LAYER_AREA_RATIO := 0.82
 const NEW_WORLD_NAME := "NewWorld"
 const KNOWN_MAP_ROOTS: Array[String] = ["Bosque encantado 1", "Ciudad", "Pantano Sur"]
@@ -28,7 +31,7 @@ var _explored: Dictionary = {}
 
 func _ready() -> void:
 	exploration_image = Image.create(1, 1, false, Image.FORMAT_RGBA8)
-	exploration_image.fill(Color(0.0, 0.0, 0.0, 1.0))
+	exploration_image.fill(FOG_UNEXPLORED)
 	exploration_texture = ImageTexture.create_from_image(exploration_image)
 
 
@@ -53,7 +56,7 @@ func setup_from_world(world: Node) -> void:
 		maxi(1, int(ceil(world_bounds.size.y / float(TILE_SIZE))))
 	)
 	exploration_image = Image.create(_grid_size.x, _grid_size.y, false, Image.FORMAT_RGBA8)
-	exploration_image.fill(Color(0.0, 0.0, 0.0, 1.0))
+	exploration_image.fill(FOG_UNEXPLORED)
 	_explored.clear()
 	_pending_cells.clear()
 	_apply_saved_cells(WorldState.get_explored_cells(map_id))
@@ -132,7 +135,7 @@ func build_minimap_fog_image(map_size: Vector2, bounds: Rect2, cam_zoom: float) 
 		or cam_zoom <= 0.0
 	):
 		var blank := Image.create(w, h, false, Image.FORMAT_RGBA8)
-		blank.fill(Color(0.0, 0.0, 0.0, 1.0))
+		blank.fill(FOG_UNEXPLORED)
 		return blank
 
 	var center := bounds.get_center()
@@ -147,7 +150,7 @@ func build_minimap_fog_image(map_size: Vector2, bounds: Rect2, cam_zoom: float) 
 	var rh := y1 - y0 + 1
 	if rw <= 0 or rh <= 0:
 		var blank2 := Image.create(w, h, false, Image.FORMAT_RGBA8)
-		blank2.fill(Color(0.0, 0.0, 0.0, 1.0))
+		blank2.fill(FOG_UNEXPLORED)
 		return blank2
 
 	var cropped := exploration_image.get_region(Rect2i(x0, y0, rw, rh))
@@ -170,10 +173,10 @@ func _apply_saved_cells(keys: Array) -> void:
 func _paint_cell(cell: Vector2i) -> void:
 	## Center clear + cheap ortho soft edge (no diagonal reads).
 	exploration_image.set_pixel(cell.x, cell.y, Color(0.0, 0.0, 0.0, 0.0))
-	_soften_neighbor(cell.x - 1, cell.y, 0.35)
-	_soften_neighbor(cell.x + 1, cell.y, 0.35)
-	_soften_neighbor(cell.x, cell.y - 1, 0.35)
-	_soften_neighbor(cell.x, cell.y + 1, 0.35)
+	_soften_neighbor(cell.x - 1, cell.y, FOG_EDGE_ALPHA)
+	_soften_neighbor(cell.x + 1, cell.y, FOG_EDGE_ALPHA)
+	_soften_neighbor(cell.x, cell.y - 1, FOG_EDGE_ALPHA)
+	_soften_neighbor(cell.x, cell.y + 1, FOG_EDGE_ALPHA)
 
 
 func _soften_neighbor(x: int, y: int, target_alpha: float) -> void:
@@ -181,7 +184,7 @@ func _soften_neighbor(x: int, y: int, target_alpha: float) -> void:
 		return
 	var current := exploration_image.get_pixel(x, y).a
 	if current > target_alpha:
-		exploration_image.set_pixel(x, y, Color(0.0, 0.0, 0.0, target_alpha))
+		exploration_image.set_pixel(x, y, Color(FOG_UNEXPLORED.r, FOG_UNEXPLORED.g, FOG_UNEXPLORED.b, target_alpha))
 
 
 func _world_to_cell(world_pos: Vector2) -> Vector2i:

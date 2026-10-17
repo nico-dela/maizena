@@ -58,6 +58,7 @@ var _audio_unlocked := false
 var _pending_start := false
 ## Must stay referenced or the JS listener is garbage-collected.
 var _web_visibility_cb: JavaScriptObject
+var _seen_output_devices: PackedStringArray = PackedStringArray()
 
 
 func _ready() -> void:
@@ -74,6 +75,7 @@ func _ready() -> void:
 		_setup_web_visibility_pause()
 	else:
 		call_deferred("_play_next")
+	_arm_output_rebind()
 
 
 func is_play_in_background() -> bool:
@@ -92,12 +94,18 @@ func unlock_and_play() -> void:
 			true
 		)
 	_audio_unlocked = true
+	_poke_web_audio()
 	if _pending_start or not player.playing:
 		_pending_start = false
 		_play_next()
 
 
 func _apply_audio_from_settings() -> void:
+	if OS.has_feature("booth"):
+		var booth_bus := AudioServer.get_bus_index("Master")
+		AudioServer.set_bus_mute(booth_bus, false)
+		AudioServer.set_bus_volume_db(booth_bus, -8.0)
+		return
 	var settings := PlayerSettings.load_all()
 	var master_bus := AudioServer.get_bus_index("Master")
 	var muted := bool(settings.get("master_muted", false))
@@ -151,6 +159,7 @@ func _resume_from_background() -> void:
 	if not _background_paused:
 		return
 	_background_paused = false
+	_poke_web_audio()
 	if player.stream == null:
 		return
 	if player.playing:
@@ -159,16 +168,100 @@ func _resume_from_background() -> void:
 		player.play(_paused_playback_position)
 
 
+## Parlantes Bluetooth (p. ej. JBL) dejan el stream de Godot mudo hasta que otra app abre el dispositivo.
+func _arm_output_rebind() -> void:
+	if not OS.has_feature("web"):
+		_seen_output_devices = AudioServer.get_output_device_list()
+	for delay in [1.0, 4.0]:
+		get_tree().create_timer(delay).timeout.connect(_reopen_output_device)
+	var watch := Timer.new()
+	watch.wait_time = 3.0
+	watch.autostart = true
+	watch.timeout.connect(_rebind_output_if_device_changed)
+	add_child(watch)
+
+
+func _rebind_output_if_device_changed() -> void:
+	if OS.has_feature("web"):
+		return
+	var devices := AudioServer.get_output_device_list()
+	if not _output_devices_changed(devices):
+		return
+	_seen_output_devices = devices
+	_reopen_output_device()
+
+
+func _output_devices_changed(devices: PackedStringArray) -> bool:
+	if devices.size() != _seen_output_devices.size():
+		return true
+	for i in devices.size():
+		if devices[i] != _seen_output_devices[i]:
+			return true
+	return false
+
+
+func _reopen_output_device() -> void:
+	if OS.has_feature("web"):
+		_poke_web_audio()
+		return
+	var selected := str(AudioServer.output_device)
+	AudioServer.output_device = "Default"
+	if selected != "" and selected != "Default":
+		AudioServer.output_device = selected
+	_restart_player_stream()
+
+
+func _restart_player_stream() -> void:
+	if _background_paused or player.stream == null or not player.playing:
+		return
+	var pos := player.get_playback_position()
+	player.stop()
+	player.play(pos)
+
+
+func _poke_web_audio() -> void:
+	if not OS.has_feature("web"):
+		return
+	JavaScriptBridge.eval(
+		"(function(){var ctx=typeof GodotAudio!=='undefined'&&GodotAudio.ctx;if(!ctx)return;ctx.resume();var buffer=ctx.createBuffer(1,1,ctx.sampleRate);var src=ctx.createBufferSource();src.buffer=buffer;src.connect(ctx.destination);src.start();})();",
+		true
+	)
+
+
 func _create_playlist() -> void:
 	var last_song := current_song if current_index >= 0 else -1
 	playlist.clear()
 	for song_id in TRACKS.keys():
-		playlist.append(int(song_id))
+		if _is_song_unlocked(int(song_id)):
+			playlist.append(int(song_id))
 	playlist.shuffle()
 	if playlist.size() > 1 and last_song >= 0 and playlist[0] == last_song:
 		playlist[0] = playlist[1]
 		playlist[1] = last_song
 	current_index = -1
+
+
+func _is_song_unlocked(song_id: int) -> bool:
+	if SongRelics.is_always_available(song_id):
+		return true
+	return MaizenaMeta.has_collected_song(song_id)
+
+
+func note_song_unlocked(song_id: int) -> void:
+	if not _is_song_unlocked(song_id):
+		return
+	if playlist.has(song_id):
+		return
+	var at := clampi(current_index + 1, 0, playlist.size())
+	playlist.insert(at, song_id)
+
+
+func get_track(song_id: int) -> AudioStream:
+	return TRACKS.get(song_id) as AudioStream
+
+
+func get_song_title(song_id: int) -> String:
+	return str(SONG_TITLES.get(song_id, ""))
 
 
 func _play_next() -> void:

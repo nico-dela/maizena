@@ -100,6 +100,11 @@ func screen_margin_bottom(base: float) -> float:
 
 func _layout_safe_margins(window: Vector2i, stretch: float, safe_area: Rect2i) -> Vector4:
 	## Returns (top, left, right, bottom) in layout-space units.
+	if OS.has_feature("booth"):
+		var booth_scale := maxf(stretch, 0.001)
+		var booth_span := minf(float(window.x), float(window.y)) / booth_scale
+		var inset := booth_span * 0.06
+		return Vector4(inset, inset, inset, inset)
 	# Desktop / web: safe-area often reports bogus insets (fullscreen, browser chrome)
 	# and pushes HUD down into a black strip. Only trust it on mobile builds.
 	if not OS.has_feature("mobile"):

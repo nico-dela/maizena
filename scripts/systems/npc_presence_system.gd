@@ -1,6 +1,6 @@
 extends Node
 
-## Garantiza varios NPCs visibles a la vez en horas concurridas del día.
+## Con el evento de asamblea, muestra a todo NPC con horario. Si no, garantiza un mínimo visible.
 
 func _ready() -> void:
 	await get_tree().process_frame
@@ -26,8 +26,14 @@ func refresh_presence() -> void:
 
 
 func _ensure_presence(hour: float) -> void:
-	var min_count := _min_npcs_for_hour(hour)
 	var npcs := get_tree().get_nodes_in_group("world_npc")
+	if GameState.evento_todos_presentes:
+		for npc in npcs:
+			if npc.has_method("force_present"):
+				npc.call("force_present")
+		return
+
+	var min_count := _min_npcs_for_hour(hour)
 	var visible_count := 0
 	for npc in npcs:
 		if npc.visible:

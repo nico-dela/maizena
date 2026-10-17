@@ -65,6 +65,10 @@ func _on_time_updated(current_hour: float, _is_day: bool):
 
 
 func _evaluate_appearance(current_hour: float):
+	if GameState.evento_todos_presentes:
+		set_active(true)
+		return
+
 	if spawn_schedules.is_empty():
 		set_active(true)
 		return
@@ -126,6 +130,9 @@ func is_in_schedule(current_hour: float) -> bool:
 
 func force_present() -> void:
 	if is_active:
+		return
+	if GameState.evento_todos_presentes:
+		set_active(true)
 		return
 	var hour := time_system.current_time if time_system else 0.0
 	var schedule := _find_active_schedule(hour)

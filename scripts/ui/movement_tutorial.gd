@@ -9,6 +9,8 @@ const INTRO_GENERAL := (
 )
 const CONTROLS_TOUCH := "En celular o tablet: arrastrá el joystick (abajo a la izquierda) para moverte."
 const CONTROLS_KEYBOARD := "En escritorio: usá las flechas del teclado para moverte."
+const CONTROLS_BOOTH := "Mové el joystick. Caminá hacia alguien para hablar. A sigue el diálogo. Start muestra las redes."
+const Booth := preload("res://scripts/gameplay/booth.gd")
 
 @onready var _dim: ColorRect = $Dim
 @onready var _panel: PanelContainer = $Panel
@@ -27,7 +29,7 @@ func _ready() -> void:
 	add_to_group("movement_tutorial")
 	layer = 130
 	hide()
-	if MaizenaMeta.is_movement_tutorial_seen():
+	if not Booth.active() and MaizenaMeta.is_movement_tutorial_seen():
 		_session_show_pending = false
 	_panel_style = _make_panel_style()
 	_panel.add_theme_stylebox_override("panel", _panel_style)
@@ -37,10 +39,21 @@ func _ready() -> void:
 
 
 func _maybe_show() -> void:
+	if Booth.active():
+		_show()
+		return
 	if MaizenaMeta.is_movement_tutorial_seen():
 		_session_show_pending = false
 		return
 	_show()
+
+
+func _process(_delta: float) -> void:
+	if not Booth.active() or not visible:
+		return
+	var stick := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	if stick.length() > 0.35:
+		_complete()
 
 
 func _show() -> void:
@@ -60,7 +73,8 @@ func notify_stick_used() -> void:
 
 
 func _complete() -> void:
-	MaizenaMeta.mark_movement_tutorial_seen()
+	if not Booth.active():
+		MaizenaMeta.mark_movement_tutorial_seen()
 	hide()
 
 
@@ -105,7 +119,12 @@ func _apply_layout() -> void:
 	var portrait := ViewportLayout.is_portrait
 	var touch := InputPlatformRes.is_touch_primary()
 	_body.text = INTRO_GENERAL
-	_hint.text = CONTROLS_TOUCH if touch else CONTROLS_KEYBOARD
+	if Booth.active():
+		_hint.text = CONTROLS_BOOTH
+		_ok_btn.visible = false
+	else:
+		_hint.text = CONTROLS_TOUCH if touch else CONTROLS_KEYBOARD
+		_ok_btn.visible = true
 
 	_title.add_theme_font_override("font", FONT)
 	_body.add_theme_font_override("font", FONT)

@@ -10,19 +10,92 @@ var npc_talk_counts := {}
 var boji_chose_pantano := false
 var boji_chose_siluetos := false
 var boji_chose_templo := false
+var boji_siguiendo := false
 var spinetto_chose_album := false
 var spinetto_chose_island := false
 var silueto1_chose_defend := false
 var silueto1_chose_silence := false
 var silueto1_chose_ask := false
+## Evento asamblea: horarios no esconden NPCs.
+var evento_todos_presentes := true
+var quest_canciones_active := true
+var quest_canciones_completed := false
+var canciones_encontradas: Array[int] = []
 
 const BOLLO_FIGHT_SCENE_PATH := "res://scenes/minigames/bollo_fight_minigame.tscn"
+
+func _ready() -> void:
+	call_deferred("_sync_canciones_from_meta")
+
+
+func _sync_canciones_from_meta() -> void:
+	canciones_encontradas.clear()
+	for song_id in MaizenaMeta.get_collected_songs():
+		canciones_encontradas.append(int(song_id))
+	_refresh_canciones_quest()
+
+
+func encontrar_cancion(song_id: int) -> void:
+	if canciones_encontradas.has(song_id):
+		return
+	canciones_encontradas.append(song_id)
+	MaizenaMeta.collect_song(song_id)
+	_refresh_canciones_quest()
+	_notify_song_unlocked(song_id)
+
+
+func _refresh_canciones_quest() -> void:
+	quest_canciones_completed = canciones_encontradas.size() >= SongRelics.count()
+	quest_canciones_active = not quest_canciones_completed
+
+
+func _notify_song_unlocked(song_id: int) -> void:
+	var mm := get_tree().get_first_node_in_group("music_manager")
+	if mm != null and mm.has_method("note_song_unlocked"):
+		mm.call("note_song_unlocked", song_id)
+	var title := ""
+	if mm != null and mm.has_method("get_song_title"):
+		title = str(mm.call("get_song_title", song_id))
+	var banner := _song_banner()
+	if banner != null and banner.has_method("show_found") and not title.is_empty():
+		banner.call("show_found", title)
+
+
+func _song_banner() -> Node:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return null
+	return scene.get_node_or_null("UI/SongBanner")
+
 
 func get_npc_talk_count(id: String) -> int:
 	return int(npc_talk_counts.get(id, 0))
 
 func mark_npc_talked(id: String) -> void:
 	npc_talk_counts[id] = get_npc_talk_count(id) + 1
+
+
+## Handoff entre personas en el booth. Las canciones quedan en MaizenaMeta.
+func reset_session() -> void:
+	quest_hambre_active = false
+	quest_hambre_completed = false
+	tiene_comida = false
+	inventory.clear()
+	bollo_training_active = false
+	bollo_training_completed = false
+	npc_talk_counts.clear()
+	boji_chose_pantano = false
+	boji_chose_siluetos = false
+	boji_chose_templo = false
+	boji_siguiendo = false
+	spinetto_chose_album = false
+	spinetto_chose_island = false
+	silueto1_chose_defend = false
+	silueto1_chose_silence = false
+	silueto1_chose_ask = false
+	evento_todos_presentes = true
+	_dismiss_active_dialogue_balloons()
+	_sync_canciones_from_meta()
 
 func buscar_comida():
 	quest_hambre_active = true

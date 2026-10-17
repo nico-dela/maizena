@@ -18,11 +18,12 @@ const COLOR_ORANGE := Color(0.98, 0.58, 0.22, 1.0)
 const COLOR_GREEN := Color(0.45, 0.9, 0.48, 1.0)
 const COLOR_CORAL := Color(0.96, 0.45, 0.42, 1.0)
 const COLOR_VALUE := Color(0.98, 0.98, 1.0, 1.0)
-const RESIDUE_MAX := 80
 
 const BACKDROP_WAIT_MS := 2500
 
-enum PopupView { NEWS, CREDITS }
+enum PopupView { NEWS, CREDITS, QR }
+
+const QR_TEXTURE: Texture2D = preload("res://assets/art/ui/linktree_qr.png")
 
 const HEADER_NEWS := (
 	"[center][color=#72cce8]Las noticias[/color] "
@@ -33,19 +34,16 @@ const HEADER_CREDITS := (
 	"[center][color=#72cce8]Créditos[/color] "
 	+ "[color=#f07828]Maizena.tv[/color][/center]"
 )
+const HEADER_QR := (
+	"[center][color=#72cce8]Seguinos[/color] "
+	+ "[color=#f07828]Maizena.tv[/color][/center]"
+)
 
 const CREDIT_SONG_TITLES := [
 	"Colores",
-	"La cumbia de Naruto",
-	"Grua",
-	"Recien me levanto",
-	"Repollo Morado",
 	"Resaka",
 	"Todo lo que necesito",
-	"Tus medias",
-	"Matar al sol",
 	"Los amigos",
-	"Nadie me enseñó a vivir",
 ]
 
 @onready var dim_overlay: ColorRect = $CenterRoot/Dim
@@ -59,27 +57,9 @@ const CREDIT_SONG_TITLES := [
 
 var _song_val: Label
 var _radio_footer: Label
+var _hallazgos_rows: VBoxContainer
+var _hallazgos_footer: Label
 var _era_val: Label
-var _field_bar: ProgressBar
-var _field_note: Label
-var _saturation_footer: Label
-var _npc_val: Label
-
-const NPC_SKIP_PREFIXES := ["cartel_"]
-const NPC_SKIP_NAMES := ["laboratorio", "templo_sapos", "piedra_grieta", "bicicleta"]
-const NPC_DISPLAY_NAMES := {
-	"bollo": "Bollo",
-	"boji": "Boji",
-	"hi": "Hi",
-	"spinetto": "Spinetto",
-	"silueto_1": "Silueto",
-	"silueto_2": "Silueto",
-	"michis": "Michis",
-	"kaeru": "Kaeru",
-	"ranancio": "Ranancio",
-	"el_viejo": "El Viejo",
-	"orbe_electrico": "Orbe",
-}
 
 var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
@@ -89,11 +69,14 @@ var _footer_link: LinkButton
 var _footer_separator: Label
 var _footer_spacer: Control
 var _credits_root: VBoxContainer
+var _qr_root: VBoxContainer
+var _qr_image: TextureRect
 var _credits_nav_btn: LinkButton
 var _current_view := PopupView.NEWS
 var _applied_layout_scale := 1.0
 var _applied_portrait := false
 var _session_auto_open_pending := true
+var _news_scroll_hold := 0.0
 
 
 func _ready() -> void:
@@ -108,12 +91,16 @@ func _ready() -> void:
 	close_btn.pressed.connect(_on_close_pressed)
 	_build_infographic_ui()
 	_build_credits_ui()
+	_build_qr_ui()
 	_show_news_view()
 	_applied_layout_scale = ViewportLayout.effective_ui_scale()
 	_applied_portrait = ViewportLayout.is_portrait
 	_apply_responsive_layout()
 	ViewportLayout.layout_changed.connect(_on_viewport_layout_changed)
 
+	if OS.has_feature("booth"):
+		_session_auto_open_pending = false
+		return
 	call_deferred("_auto_open_when_backdrop_ready")
 
 
@@ -218,7 +205,18 @@ func _make_footer_link(text: String, callback: Callable) -> LinkButton:
 	link.add_theme_font_size_override("font_size", _scaled_news_font(16))
 	link.add_theme_color_override("font_color", Color(0.45, 0.80, 0.91, 1.0))
 	link.add_theme_color_override("font_hover_color", Color(0.65, 0.92, 1.0, 1.0))
-	link.focus_mode = Control.FOCUS_NONE
+	link.focus_mode = Control.FOCUS_ALL
+	link.add_theme_color_override("font_focus_color", Color(1, 1, 1, 1))
+	var focus := StyleBoxFlat.new()
+	focus.bg_color = Color(0.16, 0.28, 0.4, 0.98)
+	focus.border_color = Color(0.85, 0.98, 1.0, 1.0)
+	focus.set_border_width_all(2)
+	focus.set_corner_radius_all(4)
+	focus.content_margin_left = 8
+	focus.content_margin_right = 8
+	focus.content_margin_top = 4
+	focus.content_margin_bottom = 4
+	link.add_theme_stylebox_override("focus", focus)
 	link.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	link.pressed.connect(callback)
 	return link
@@ -270,14 +268,77 @@ func _setup_footer_links() -> void:
 	vbox.add_child(spacer)
 	vbox.move_child(links_box, close_btn.get_index())
 	vbox.move_child(spacer, close_btn.get_index())
+	_wire_news_focus()
 
 
 func _on_linktree_pressed() -> void:
-	_open_external_url(LINKTREE_URL)
+	if OS.has_feature("web"):
+		OS.shell_open(LINKTREE_URL)
+		return
+	if _current_view == PopupView.QR:
+		_show_news_view()
+	else:
+		_show_qr_view()
 
 
-func _open_external_url(url: String) -> void:
-	OS.shell_open(url)
+func _build_qr_ui() -> void:
+	var root := VBoxContainer.new()
+	root.visible = false
+	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.alignment = BoxContainer.ALIGNMENT_CENTER
+	root.add_theme_constant_override("separation", int(round(14.0 * _font_boost())))
+	scroll_container.add_child(root)
+	_qr_root = root
+
+	var frame := PanelContainer.new()
+	frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var frame_style := StyleBoxFlat.new()
+	frame_style.bg_color = Color.WHITE
+	frame_style.set_content_margin_all(16)
+	frame.add_theme_stylebox_override("panel", frame_style)
+	root.add_child(frame)
+
+	var image := TextureRect.new()
+	image.texture = QR_TEXTURE
+	image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	image.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	frame.add_child(image)
+	_qr_image = image
+
+	var caption := _lbl(16, COLOR_VALUE)
+	caption.text = "Escaneá con el celular para entrar a las redes."
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	root.add_child(caption)
+	_apply_qr_size()
+
+
+func _apply_qr_size() -> void:
+	if _qr_image == null:
+		return
+	var layout := ViewportLayout.visible_layout_size()
+	var side := clampf(minf(layout.x, layout.y) * 0.46, 180.0, 420.0)
+	_qr_image.custom_minimum_size = Vector2(side, side)
+
+
+func _show_qr_view() -> void:
+	_current_view = PopupView.QR
+	header_label.text = HEADER_QR
+	infographic_root.visible = false
+	if _credits_root != null:
+		_credits_root.visible = false
+	if _qr_root != null:
+		_qr_root.visible = true
+	if _footer_link != null:
+		_footer_link.text = "Volver a las noticias"
+	if scroll_container != null:
+		scroll_container.scroll_vertical = 0
+	_apply_qr_size()
+
+
+func _open_qr() -> void:
+	open_welcome(false)
+	_show_qr_view()
 
 
 func _build_credits_ui() -> void:
@@ -359,6 +420,10 @@ func _show_news_view() -> void:
 	infographic_root.visible = true
 	if _credits_root != null:
 		_credits_root.visible = false
+	if _qr_root != null:
+		_qr_root.visible = false
+	if _footer_link != null:
+		_footer_link.text = "Seguinos en las redes"
 	if _credits_nav_btn != null:
 		_credits_nav_btn.text = "Créditos"
 	if scroll_container != null:
@@ -369,8 +434,12 @@ func _show_credits_view() -> void:
 	_current_view = PopupView.CREDITS
 	header_label.text = HEADER_CREDITS
 	infographic_root.visible = false
+	if _qr_root != null:
+		_qr_root.visible = false
 	if _credits_root != null:
 		_credits_root.visible = true
+	if _footer_link != null:
+		_footer_link.text = "Seguinos en las redes"
 	if _credits_nav_btn != null:
 		_credits_nav_btn.text = "Volver a las noticias"
 	if scroll_container != null:
@@ -404,6 +473,10 @@ func _build_infographic_ui() -> void:
 	_song_val = radio["value"]
 	_radio_footer = radio["footer"]
 
+	var hallazgos := _add_hallazgos_card(grid)
+	_hallazgos_rows = hallazgos["rows"]
+	_hallazgos_footer = hallazgos["footer"]
+
 	var era := _add_news_card(
 		grid,
 		COLOR_ORANGE,
@@ -411,16 +484,6 @@ func _build_infographic_ui() -> void:
 		"semanas desde que el archipiélago empezó a contar Eras, mientras Maizena arma Las cosas"
 	)
 	_era_val = era["value"]
-
-	_field_bar = _add_saturation_card(grid)
-
-	var npc := _add_news_card(
-		grid,
-		COLOR_CORAL,
-		"A esta hora están en la isla:",
-		"podés interactuar con ellxs y tratar de entenderlos. Se van y vuelven según el rato del día"
-	)
-	_npc_val = npc["value"]
 
 
 func _card_style_for_layout() -> StyleBoxFlat:
@@ -475,7 +538,7 @@ func _add_news_card(
 	return {"value": val, "footer": footer}
 
 
-func _add_saturation_card(grid: GridContainer) -> ProgressBar:
+func _add_hallazgos_card(grid: GridContainer) -> Dictionary:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
 	var card_scale := _font_boost() * _layout_card_mul()
@@ -486,41 +549,65 @@ func _add_saturation_card(grid: GridContainer) -> ProgressBar:
 	v.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
 	panel.add_child(v)
 
-	var header := _lbl(16, COLOR_GREEN)
-	header.text = "El indice de saturación de cosas en este momento es:"
+	var header := _lbl(16, COLOR_YELLOW)
+	header.text = "Hallazgos"
 	v.add_child(header)
 
-	var hint := _lbl(14, Color(0.72, 0.78, 0.86, 1.0))
-	hint.text = "Cosas / tope"
-	v.add_child(hint)
+	var rows := VBoxContainer.new()
+	rows.add_theme_constant_override("separation", int(round(6.0 * _font_boost())))
+	v.add_child(rows)
 
-	var bar := ProgressBar.new()
-	bar.custom_minimum_size = Vector2(0, maxi(18, _scaled_news_font(18)))
-	bar.max_value = float(RESIDUE_MAX)
-	bar.value = 0.0
-	bar.show_percentage = false
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color(0.28, 0.78, 0.98, 0.95)
-	fill.set_corner_radius_all(3)
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(0.04, 0.07, 0.1, 0.95)
-	bg.set_corner_radius_all(3)
-	bar.add_theme_stylebox_override("fill", fill)
-	bar.add_theme_stylebox_override("background", bg)
-	v.add_child(bar)
-
-	var cap := _lbl(28, COLOR_VALUE, true)
-	cap.text = "0 / %d" % RESIDUE_MAX
-	v.add_child(cap)
-	_field_note = cap
-
-	var footer := _lbl(14, COLOR_GREEN)
-	footer.text = _saturation_message(0)
+	var footer := _lbl(14, COLOR_YELLOW)
+	footer.text = "Te faltan 0 objetos que guardan una canción."
 	v.add_child(footer)
-	_saturation_footer = footer
 
 	grid.add_child(panel)
-	return bar
+	return {"rows": rows, "footer": footer}
+
+
+func _fill_hallazgos() -> void:
+	if _hallazgos_rows == null:
+		return
+	for child in _hallazgos_rows.get_children():
+		_hallazgos_rows.remove_child(child)
+		child.free()
+
+	var icon_size := maxi(16, int(round(22.0 * _font_boost())))
+	for relic in SongRelics.RELICS:
+		var song_id := int(relic.get("song_id", -1))
+		var found := MaizenaMeta.has_collected_song(song_id)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+
+		var icon := TextureRect.new()
+		icon.texture = SongRelics.texture_for(song_id)
+		icon.custom_minimum_size = Vector2(icon_size, icon_size)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		icon.modulate = Color.WHITE if found else Color(0.55, 0.6, 0.68, 0.4)
+		row.add_child(icon)
+
+		if found:
+			var mm := get_tree().get_first_node_in_group("music_manager")
+			var title := ""
+			if mm != null and mm.has_method("get_song_title"):
+				title = str(mm.call("get_song_title", song_id))
+			var title_label := _lbl(14, COLOR_VALUE)
+			title_label.text = title
+			title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(title_label)
+
+		_hallazgos_rows.add_child(row)
+
+	if _hallazgos_footer == null:
+		return
+	var missing := MaizenaMeta.missing_relic_count()
+	if missing <= 0:
+		_hallazgos_footer.text = "Ya no falta ninguna canción."
+	else:
+		_hallazgos_footer.text = "Te faltan %d objetos que guardan una canción." % missing
 
 
 func _style_close_button() -> void:
@@ -534,7 +621,12 @@ func _style_close_button() -> void:
 	close_btn.add_theme_stylebox_override("normal", sb_n)
 	close_btn.add_theme_stylebox_override("hover", sb_h)
 	close_btn.add_theme_stylebox_override("pressed", sb_h)
-	close_btn.add_theme_stylebox_override("focus", sb_n)
+	var sb_f := sb_n.duplicate() as StyleBoxFlat
+	sb_f.set_border_width_all(3)
+	sb_f.border_color = Color(0.85, 0.98, 1.0, 1.0)
+	sb_f.bg_color = Color(0.16, 0.28, 0.4, 0.98)
+	close_btn.add_theme_stylebox_override("focus", sb_f)
+	close_btn.focus_mode = Control.FOCUS_ALL
 
 	close_btn.add_theme_font_size_override("font_size", _scaled_news_font(22))
 	_apply_close_button_padding(_font_boost())
@@ -577,11 +669,9 @@ func _clear_infographic_children() -> void:
 	_infographic_grid = null
 	_song_val = null
 	_radio_footer = null
+	_hallazgos_rows = null
+	_hallazgos_footer = null
 	_era_val = null
-	_field_bar = null
-	_field_note = null
-	_saturation_footer = null
-	_npc_val = null
 
 
 func _rebuild_infographic() -> void:
@@ -649,6 +739,7 @@ func _apply_responsive_layout() -> void:
 	if _footer_spacer != null:
 		_footer_spacer.size_flags_vertical = Control.SIZE_SHRINK_END
 		_footer_spacer.custom_minimum_size.y = maxf(4.0, 6.0 * boost)
+	_apply_qr_size()
 	if infographic_root != null:
 		infographic_root.custom_minimum_size.x = 0.0 if portrait else 320.0
 	if _infographic_grid != null:
@@ -675,7 +766,9 @@ func open_welcome(mark_seen_when_closed: bool) -> void:
 	_sync_backdrop_before_show()
 	visible = true
 	show()
+	_wire_news_focus()
 	call_deferred("_apply_responsive_layout")
+	call_deferred("_focus_news_start")
 
 
 func _sync_backdrop_before_show() -> void:
@@ -697,6 +790,9 @@ func open_from_settings() -> void:
 
 func _on_close_pressed() -> void:
 	hide()
+	_news_scroll_hold = 0.0
+	if get_viewport() != null:
+		get_viewport().gui_release_focus()
 	if _mark_seen_on_close:
 		MaizenaMeta.mark_welcome_seen()
 	_mark_seen_on_close = false
@@ -708,6 +804,9 @@ func _on_close_pressed() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if OS.has_feature("booth"):
+		_handle_booth_qr(event)
+		return
 	if event.is_action_pressed("ui_world_news") and _can_toggle_news():
 		if visible:
 			_on_close_pressed()
@@ -722,6 +821,115 @@ func _unhandled_input(event: InputEvent) -> void:
 			_show_news_view()
 		else:
 			_on_close_pressed()
+		get_viewport().set_input_as_handled()
+
+
+func _process(delta: float) -> void:
+	if not visible or scroll_container == null or not scroll_container.has_focus():
+		_news_scroll_hold = 0.0
+		return
+	var direction := 0
+	if Input.is_action_pressed("ui_down"):
+		direction = 1
+	elif Input.is_action_pressed("ui_up"):
+		direction = -1
+	if direction == 0:
+		_news_scroll_hold = 0.0
+		return
+	_news_scroll_hold += delta
+	if _news_scroll_hold < 0.28:
+		return
+	if not _scroll_news(direction):
+		_news_scroll_hold = 0.0
+		if direction > 0 and _footer_link != null:
+			_footer_link.grab_focus()
+		return
+	_news_scroll_hold = 0.16
+
+
+func _wire_news_focus() -> void:
+	if scroll_container == null or close_btn == null:
+		return
+	if _footer_link == null or _credits_nav_btn == null:
+		return
+	if not scroll_container.gui_input.is_connected(_on_news_scroll_input):
+		scroll_container.gui_input.connect(_on_news_scroll_input)
+	var list_focus := StyleBoxFlat.new()
+	list_focus.bg_color = Color(0, 0, 0, 0)
+	list_focus.border_color = Color(0.85, 0.98, 1.0, 0.9)
+	list_focus.set_border_width_all(2)
+	list_focus.set_corner_radius_all(6)
+	scroll_container.add_theme_stylebox_override("focus", list_focus)
+	_point_focus(scroll_container, scroll_container, _footer_link, scroll_container, scroll_container)
+	_point_focus(_footer_link, scroll_container, close_btn, _footer_link, _credits_nav_btn)
+	_point_focus(_credits_nav_btn, scroll_container, close_btn, _footer_link, _credits_nav_btn)
+	_point_focus(close_btn, _footer_link, close_btn, close_btn, close_btn)
+
+
+func _point_focus(control: Control, top: Control, bottom: Control, left: Control, right: Control) -> void:
+	control.focus_mode = Control.FOCUS_ALL
+	control.focus_neighbor_top = control.get_path_to(top)
+	control.focus_neighbor_bottom = control.get_path_to(bottom)
+	control.focus_neighbor_left = control.get_path_to(left)
+	control.focus_neighbor_right = control.get_path_to(right)
+
+
+func _focus_news_start() -> void:
+	if not visible or scroll_container == null:
+		return
+	scroll_container.grab_focus()
+
+
+func _on_news_scroll_input(event: InputEvent) -> void:
+	if not scroll_container.has_focus():
+		return
+	var direction := 0
+	if event.is_action_pressed("ui_down"):
+		direction = 1
+	elif event.is_action_pressed("ui_up"):
+		direction = -1
+	else:
+		return
+	if direction < 0:
+		_scroll_news(direction)
+		scroll_container.accept_event()
+		_news_scroll_hold = 0.0
+		return
+	if _scroll_news(direction):
+		scroll_container.accept_event()
+		_news_scroll_hold = 0.0
+
+
+func _scroll_news(direction: int) -> bool:
+	var bar := scroll_container.get_v_scroll_bar()
+	if bar == null:
+		return false
+	var limit := int(bar.max_value - bar.page)
+	if limit <= 0:
+		return false
+	var step := maxi(48, int(scroll_container.size.y * 0.35))
+	var before := scroll_container.scroll_vertical
+	var next := clampi(before + direction * step, 0, limit)
+	if next == before:
+		return false
+	scroll_container.scroll_vertical = next
+	return true
+
+
+func _handle_booth_qr(event: InputEvent) -> void:
+	if not _can_toggle_news():
+		return
+	var tutorial := get_tree().get_first_node_in_group("movement_tutorial")
+	if tutorial != null and tutorial.has_method("is_blocking") and tutorial.call("is_blocking"):
+		return
+	if event.is_action_pressed("ui_menu"):
+		if visible:
+			_on_close_pressed()
+		else:
+			_open_qr()
+		get_viewport().set_input_as_handled()
+	elif visible and event.is_action_pressed("ui_cancel"):
+		_on_close_pressed()
 		get_viewport().set_input_as_handled()
 
 
@@ -753,44 +961,19 @@ func _refresh_infographic() -> void:
 	if song_key >= 0:
 		plays = MaizenaMeta.count_song_plays_in_recent_eras(song_key)
 
-	var things := MaizenaMeta.get_visible_residue_count()
 	var era := MaizenaMeta.get_current_era_number()
 
 	_song_val.text = song_title
-	_radio_footer.text = "Esta canción ya sonó en el archipiélago %d veces" % plays
+	var radio_line := "Esta canción ya sonó en el archipiélago %d veces" % plays
+	if MaizenaMeta.missing_relic_count() > 0:
+		radio_line += "\nLa radio tiene huecos."
+	_radio_footer.text = radio_line
+	_fill_hallazgos()
 
 	if era < 1:
 		_era_val.text = "Estamos en Pre-Era"
 	else:
 		_era_val.text = "Estamos en la Era %d" % era
-
-	_field_bar.value = float(things)
-	_field_note.text = "%d / %d" % [things, RESIDUE_MAX]
-	_saturation_footer.text = _saturation_message(things)
-
-	if _npc_val != null:
-		_npc_val.text = _get_visible_npc_text()
-
-
-func _saturation_message(things: int) -> String:
-	var ratio := float(things) / float(RESIDUE_MAX)
-	if ratio >= 0.82:
-		return "Al borde de la explosión: el archipiélago está a reventar."
-	if ratio >= 0.6:
-		return "Saturación alta: cada rincón tiene algo tirado."
-	if ratio >= 0.35:
-		return "Saturación media: el paisaje se va llenando."
-	return "Saturación baja: todavía hay aire entre las cosas."
-
-
-func _get_interactive_objects() -> Node:
-	var root := get_tree().current_scene
-	if root == null:
-		return null
-	var world := root.get_node_or_null("NewWorld")
-	if world == null:
-		return null
-	return world.get_node_or_null("InteractiveObjects")
 
 
 func _notify_presence_refresh() -> void:
@@ -803,41 +986,3 @@ func _notify_presence_refresh() -> void:
 	var presence := world.get_node_or_null("NpcPresenceSystem")
 	if presence != null and presence.has_method("refresh_presence"):
 		presence.call("refresh_presence")
-
-
-func _get_visible_npc_text() -> String:
-	var names: Array[String] = []
-	var objects := _get_interactive_objects()
-
-	if objects != null:
-		for child in objects.get_children():
-			if not _is_trackable_npc(child):
-				continue
-			if not child.visible:
-				continue
-			var display := _format_npc_name(str(child.name))
-			if display.is_empty() or names.has(display):
-				continue
-			names.append(display)
-
-	if names.is_empty():
-		return "Nadie en pantalla ahora"
-	return ", ".join(names)
-
-
-func _is_trackable_npc(node: Node) -> bool:
-	var node_name := str(node.name)
-	for prefix in NPC_SKIP_PREFIXES:
-		if node_name.begins_with(prefix):
-			return false
-	if node_name in NPC_SKIP_NAMES:
-		return false
-	return node is StaticBody2D or node.has_method("set_active")
-
-
-func _format_npc_name(node_name: String) -> String:
-	if NPC_DISPLAY_NAMES.has(node_name):
-		return NPC_DISPLAY_NAMES[node_name]
-	if node_name.begins_with("silueto"):
-		return "Silueto"
-	return node_name.capitalize().replace("_", " ")
