@@ -140,7 +140,7 @@ func _swap_world(packed: PackedScene, spawn: Vector2) -> Node:
 	if new_world == null:
 		new_world = _instantiate_world(packed)
 	new_world.name = WORLD_NODE_NAME
-	_drop_duplicate_boji(new_world)
+	_drop_duplicate_hi(new_world)
 	add_child(new_world)
 	move_child(new_world, 0)
 
@@ -156,7 +156,7 @@ func _swap_world(packed: PackedScene, spawn: Vector2) -> Node:
 
 	_refresh_minimap()
 	_refresh_map_discovery()
-	_place_boji_follower()
+	_place_hi_follower()
 	return new_world
 
 
@@ -226,17 +226,17 @@ func _try_unlock_audio() -> void:
 		music.unlock_and_play()
 
 
-func _drop_duplicate_boji(world: Node) -> void:
-	if not GameState.boji_siguiendo:
+func _drop_duplicate_hi(world: Node) -> void:
+	if not GameState.hi_siguiendo:
 		return
-	var planted := world.get_node_or_null("InteractiveObjects/boji")
-	var follower := get_tree().get_first_node_in_group("boji_follower")
+	var planted := world.get_node_or_null("InteractiveObjects/hi")
+	var follower := get_tree().get_first_node_in_group("hi_follower")
 	if planted != null and planted != follower:
 		planted.free()
 
 
-func _place_boji_follower() -> void:
-	var follower := get_tree().get_first_node_in_group("boji_follower")
+func _place_hi_follower() -> void:
+	var follower := get_tree().get_first_node_in_group("hi_follower")
 	if follower != null and follower.has_method("snap_beside_player"):
 		follower.call("snap_beside_player")
 

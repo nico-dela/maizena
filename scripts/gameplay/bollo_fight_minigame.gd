@@ -73,6 +73,14 @@ var fight_started := false
 var fight_ended := false
 var _saved_ui_phase := UiPhase.TUTORIAL
 var _focused_move_index := 0
+var _enemy_max_hp := ENEMY_MAX_HP
+var _damage_scale := 1.0
+var _enemy_miss_chance := ENEMY_MISS_CHANCE
+var _player_miss_scale := 1.0
+var _bollo_can_ko := true
+var _dodge_weight := 2
+var _taunt_weight := 2
+var _heavy_weight := 3
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -397,8 +405,9 @@ func _on_start_pressed() -> void:
 	_begin_battle()
 
 func _begin_battle() -> void:
+	_apply_fight_profile()
 	player_hp = PLAYER_MAX_HP
-	enemy_hp = ENEMY_MAX_HP
+	enemy_hp = _enemy_max_hp
 	player_blocking = false
 	bollo_dodging = false
 	player_distracted = false
@@ -454,7 +463,7 @@ func _resolve_player_attack(move: Dictionary) -> void:
 		_dodge_feedback(enemy_sprite)
 		return
 
-	var miss_chance: float = move.get("miss_chance", 0.15)
+	var miss_chance: float = float(move.get("miss_chance", 0.15)) * _player_miss_scale
 	if player_distracted:
 		miss_chance += DISTRACTED_MISS_BONUS
 		player_distracted = false
@@ -512,12 +521,12 @@ func _resolve_enemy_move(move: Dictionary) -> void:
 			message_label.text = "¡Bollo te provoca! Tu próximo golpe puede fallar."
 			_taunt_feedback(enemy_sprite)
 		_:
-			if randf() < ENEMY_MISS_CHANCE:
+			if randf() < _enemy_miss_chance:
 				message_label.text = "¡Bollo falló su %s!" % move["name"].to_lower()
 				_miss_feedback(enemy_sprite)
 				return
 
-			var damage := randi_range(move["damage_min"], move["damage_max"])
+			var damage := _scaled_enemy_damage(move)
 			if player_blocking:
 				damage = int(round(damage * BLOCK_DAMAGE_FACTOR))
 				message_label.text = "¡Bollo usó %s! Bloqueaste. -%d HP." % [move["name"], damage]
@@ -527,17 +536,81 @@ func _resolve_enemy_move(move: Dictionary) -> void:
 				message_label.text = "¡Bollo usó %s! -%d HP." % [move["name"], damage]
 
 			player_hp = maxi(player_hp - damage, 0)
+			if not _bollo_can_ko:
+				player_hp = maxi(player_hp, 1)
 			_hit_feedback(player_sprite, Color(0.85, 1.0, 0.9, 1.0))
 			_update_hp_bars(true, false)
+
+
+func _apply_fight_profile() -> void:
+	var wins := MaizenaMeta.get_bollo_wins()
+	var profile := _profile_for_wins(wins)
+	_enemy_max_hp = int(profile["hp"])
+	_damage_scale = float(profile["damage_scale"])
+	_enemy_miss_chance = float(profile["miss"])
+	_player_miss_scale = float(profile["player_miss_scale"])
+	_bollo_can_ko = bool(profile["lethal"])
+	_dodge_weight = int(profile["dodge"])
+	_taunt_weight = int(profile["taunt"])
+	_heavy_weight = int(profile["heavy"])
+	enemy_hp_bar.max_value = _enemy_max_hp
+
+
+func _profile_for_wins(wins: int) -> Dictionary:
+	if wins <= 0:
+		return {
+			"hp": 40,
+			"damage_scale": 0.35,
+			"miss": 0.45,
+			"player_miss_scale": 0.0,
+			"dodge": 0,
+			"taunt": 0,
+			"heavy": 0,
+			"lethal": false,
+		}
+	var t := clampf(float(wins) / 6.0, 0.0, 1.0)
+	return {
+		"hp": int(round(lerpf(40.0, 85.0, t))),
+		"damage_scale": lerpf(0.35, 0.85, t),
+		"miss": lerpf(0.45, 0.22, t),
+		"player_miss_scale": t,
+		"dodge": int(round(lerpf(0.0, 2.0, t))),
+		"taunt": int(round(lerpf(0.0, 2.0, t))),
+		"heavy": int(round(lerpf(0.0, 2.0, t))),
+		"lethal": true,
+	}
+
+
+func _scaled_enemy_damage(move: Dictionary) -> int:
+	var raw := randi_range(int(move["damage_min"]), int(move["damage_max"]))
+	var scaled := maxi(int(round(float(raw) * _damage_scale)), 1)
+	if str(move.get("kind", "")) == "heavy":
+		scaled = mini(scaled, 16)
+	return scaled
+
+
+func _move_weight(move: Dictionary) -> int:
+	match str(move.get("kind", "")):
+		"dodge":
+			return _dodge_weight
+		"taunt":
+			return _taunt_weight
+		"heavy":
+			return _heavy_weight
+		_:
+			return int(move["weight"])
+
 
 func _pick_enemy_move() -> Dictionary:
 	var total_weight := 0
 	for move in ENEMY_MOVES:
-		total_weight += move["weight"]
+		total_weight += _move_weight(move)
+	if total_weight <= 0:
+		return ENEMY_MOVES[0]
 	var roll := randi_range(1, total_weight)
 	var cumulative := 0
 	for move in ENEMY_MOVES:
-		cumulative += move["weight"]
+		cumulative += _move_weight(move)
 		if roll <= cumulative:
 			return move
 	return ENEMY_MOVES[0]
@@ -567,7 +640,7 @@ func _end_fight(victory: bool, msg: String) -> void:
 
 func _update_hp_bars(animate_player: bool = false, animate_enemy: bool = false) -> void:
 	player_hp_value.text = "%d/%d" % [player_hp, PLAYER_MAX_HP]
-	enemy_hp_value.text = "%d/%d" % [enemy_hp, ENEMY_MAX_HP]
+	enemy_hp_value.text = "%d/%d" % [enemy_hp, _enemy_max_hp]
 	if animate_player:
 		_tween_hp_bar(player_hp_bar, player_hp)
 	else:
@@ -577,7 +650,7 @@ func _update_hp_bars(animate_player: bool = false, animate_enemy: bool = false) 
 	else:
 		enemy_hp_bar.value = enemy_hp
 	_apply_hp_bar_color(player_hp_bar, player_hp, PLAYER_MAX_HP)
-	_apply_hp_bar_color(enemy_hp_bar, enemy_hp, ENEMY_MAX_HP)
+	_apply_hp_bar_color(enemy_hp_bar, enemy_hp, _enemy_max_hp)
 
 func _tween_hp_bar(bar: ProgressBar, target_hp: int) -> void:
 	var tween := create_tween()

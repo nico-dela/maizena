@@ -9,6 +9,7 @@ const PLAY_LOG_MAX := 400
 
 var welcome_popup_seen := false
 var movement_tutorial_seen := false
+var bollo_wins := 0
 var _play_log: Array = []
 var _collected_songs: Array[int] = []
 var _song_relics: Array = []
@@ -74,6 +75,15 @@ func is_movement_tutorial_seen() -> bool:
 	return movement_tutorial_seen
 
 
+func get_bollo_wins() -> int:
+	return bollo_wins
+
+
+func record_bollo_win() -> void:
+	bollo_wins += 1
+	_save()
+
+
 func get_collected_songs() -> Array[int]:
 	return _collected_songs.duplicate()
 
@@ -128,6 +138,7 @@ func _load() -> void:
 		return
 	welcome_popup_seen = bool(data.get("welcome_popup_seen", false))
 	movement_tutorial_seen = bool(data.get("movement_tutorial_seen", false))
+	bollo_wins = maxi(int(data.get("bollo_wins", 0)), 0)
 	_load_collected_songs(data.get("collected_songs", []))
 	_load_song_relics(data.get("song_relics", []))
 	var raw_log = data.get("play_log", [])
@@ -152,6 +163,7 @@ func _save() -> void:
 	var data := {
 		"welcome_popup_seen": welcome_popup_seen,
 		"movement_tutorial_seen": movement_tutorial_seen,
+		"bollo_wins": bollo_wins,
 		"play_log": serializable,
 		"collected_songs": _collected_song_ids(),
 		"song_relics": _song_relics.duplicate(true),

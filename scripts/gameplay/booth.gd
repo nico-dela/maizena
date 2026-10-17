@@ -3,11 +3,8 @@ extends RefCounted
 ## Windows fest build (export feature "booth"). Web never sees this.
 
 const HEADPHONE_DB := -8.0
-const VOLUME_STEP_DB := 2.0
 const STICK_DEADZONE := 0.28
 const BOOTH_HOUR := 21.5
-
-const PlayerSettings = preload("res://scripts/ui/player_settings.gd")
 
 
 static func active() -> bool:
@@ -41,22 +38,6 @@ static func apply_headphone_mix() -> void:
 	if not active():
 		return
 	_set_master_db(HEADPHONE_DB)
-
-
-static func nudge_volume(delta_db: float) -> float:
-	var bus := AudioServer.get_bus_index("Master")
-	if bus < 0:
-		return HEADPHONE_DB
-	var current := AudioServer.get_bus_volume_db(bus)
-	var next := clampf(current + delta_db, PlayerSettings.VOLUME_MIN_DB, PlayerSettings.VOLUME_MAX_DB)
-	_set_master_db(next)
-	return next
-
-
-static func volume_percent(db: float) -> int:
-	if db <= PlayerSettings.VOLUME_MIN_DB:
-		return 0
-	return int(round(inverse_lerp(PlayerSettings.VOLUME_MIN_DB, PlayerSettings.VOLUME_MAX_DB, db) * 100.0))
 
 
 static func _set_master_db(db: float) -> void:

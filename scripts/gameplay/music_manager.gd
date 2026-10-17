@@ -264,6 +264,42 @@ func get_song_title(song_id: int) -> String:
 	return str(SONG_TITLES.get(song_id, ""))
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_echo() or _song_change_blocked():
+		return
+	var step := 0
+	if event.is_action_pressed("song_next"):
+		step = 1
+	elif event.is_action_pressed("song_previous"):
+		step = -1
+	if step == 0:
+		return
+	_audio_unlocked = true
+	_pending_start = false
+	_poke_web_audio()
+	skip_song(step)
+	get_viewport().set_input_as_handled()
+
+
+func _song_change_blocked() -> bool:
+	if GameState.bollo_training_active:
+		return true
+	var settings := get_tree().get_first_node_in_group("settings_menu")
+	return settings != null and bool(settings.get("is_open"))
+
+
+func skip_song(step: int) -> void:
+	if playlist.is_empty():
+		_create_playlist()
+	if playlist.is_empty():
+		return
+	if current_index < 0:
+		current_index = 0 if step > 0 else playlist.size() - 1
+	else:
+		current_index = posmod(current_index + step, playlist.size())
+	_start_current_song()
+
+
 func _play_next() -> void:
 	if playlist.is_empty():
 		_create_playlist()
@@ -272,7 +308,12 @@ func _play_next() -> void:
 	if current_index >= playlist.size():
 		_create_playlist()
 		current_index = 0
+	if playlist.is_empty():
+		return
+	_start_current_song()
 
+
+func _start_current_song() -> void:
 	current_song = int(playlist[current_index])
 
 	var source: AudioStream = TRACKS.get(current_song)

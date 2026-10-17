@@ -16,10 +16,10 @@
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oi80u"]
-size = Vector2(32, 32)
+size = Vector2(64, 36)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5jrns"]
-size = Vector2(32, 32)
+size = Vector2(36, 64)
 
 [node name="NewWorld" type="Node2D" unique_id=1636943568]
 script = ExtResource("28_world")
@@ -119,7 +119,7 @@ spawn_schedules = Array[Dictionary]([])
 [node name="Bosque encantado 1" parent="." unique_id=623475497 instance=ExtResource("28_oi80u")]
 
 [node name="CiudadHotspot" type="Area2D" parent="Bosque encantado 1" unique_id=917625069]
-position = Vector2(408, 5)
+position = Vector2(408, 21)
 script = ExtResource("29_hotspot")
 target_scene_path = "uid://cg5lbuu3ujug7"
 spawn_position = Vector2(400, 992)
@@ -129,7 +129,7 @@ destination_label = "Ciudad"
 shape = SubResource("RectangleShape2D_oi80u")
 
 [node name="PantanoHotspot" type="Area2D" parent="Bosque encantado 1" unique_id=1937265519]
-position = Vector2(5, 384)
+position = Vector2(21, 384)
 script = ExtResource("29_hotspot")
 target_scene_path = "res://scenes/world/pantano_world.tscn"
 spawn_position = Vector2(590, 1020)

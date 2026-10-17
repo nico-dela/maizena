@@ -120,8 +120,23 @@ func _build_overlay() -> void:
 	_storm_timer.timeout.connect(_on_storm_flash)
 	add_child(_storm_timer)
 
-	get_viewport().size_changed.connect(_resize_overlay)
 	call_deferred("_resize_overlay")
+
+
+func _enter_tree() -> void:
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	if not viewport.size_changed.is_connected(_resize_overlay):
+		viewport.size_changed.connect(_resize_overlay)
+	if is_node_ready():
+		call_deferred("_resize_overlay")
+
+
+func _exit_tree() -> void:
+	var viewport := get_viewport()
+	if viewport != null and viewport.size_changed.is_connected(_resize_overlay):
+		viewport.size_changed.disconnect(_resize_overlay)
 
 
 func _make_rain_texture() -> ImageTexture:
@@ -147,7 +162,12 @@ func _make_fog_texture() -> ImageTexture:
 
 
 func _resize_overlay() -> void:
-	var vp := get_viewport().get_visible_rect().size
+	if _fog == null or _rain == null or not is_inside_tree():
+		return
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	var vp := viewport.get_visible_rect().size
 	var margin := 120.0
 	var center := Vector2(vp.x * 0.5, vp.y * 0.5)
 	var extents := Vector2(vp.x * 0.5 + margin, vp.y * 0.5 + margin)

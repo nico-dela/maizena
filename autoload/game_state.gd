@@ -11,6 +11,7 @@ var boji_chose_pantano := false
 var boji_chose_siluetos := false
 var boji_chose_templo := false
 var boji_siguiendo := false
+var hi_siguiendo := false
 var spinetto_chose_album := false
 var spinetto_chose_island := false
 var silueto1_chose_defend := false
@@ -88,6 +89,7 @@ func reset_session() -> void:
 	boji_chose_siluetos = false
 	boji_chose_templo = false
 	boji_siguiendo = false
+	hi_siguiendo = false
 	spinetto_chose_album = false
 	spinetto_chose_island = false
 	silueto1_chose_defend = false
@@ -96,6 +98,25 @@ func reset_session() -> void:
 	evento_todos_presentes = true
 	_dismiss_active_dialogue_balloons()
 	_sync_canciones_from_meta()
+
+func mision_secundaria_activa() -> Dictionary:
+	if quest_hambre_active and not quest_hambre_completed:
+		return {
+			"titulo": "El hambre del viejo",
+			"detalle": _detalle_hambre(),
+		}
+	return {"titulo": "", "detalle": ""}
+
+
+func _detalle_hambre() -> String:
+	if has_item("hongos"):
+		return "Llevále los hongos a el viejo."
+	var place := "la isla"
+	var spawner := get_node_or_null("/root/HongosSpawner")
+	if spawner != null and str(spawner.hint_place) != "":
+		place = str(spawner.hint_place)
+	return "Buscá hongos en %s." % place
+
 
 func buscar_comida():
 	quest_hambre_active = true
@@ -161,6 +182,7 @@ func _on_bollo_training_finished(victory: bool):
 	_reset_player_movement()
 	if victory:
 		bollo_training_completed = true
+		MaizenaMeta.record_bollo_win()
 
 
 func _reset_player_movement() -> void:

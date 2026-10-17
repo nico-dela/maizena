@@ -60,6 +60,8 @@ var _radio_footer: Label
 var _hallazgos_rows: VBoxContainer
 var _hallazgos_footer: Label
 var _era_val: Label
+var _quest_val: Label
+var _quest_footer: Label
 
 var _mark_seen_on_close := false
 var _card_style: StyleBoxFlat
@@ -473,6 +475,16 @@ func _build_infographic_ui() -> void:
 	_song_val = radio["value"]
 	_radio_footer = radio["footer"]
 
+	var quest := _add_news_card(
+		grid,
+		COLOR_GREEN,
+		"Misión secundaria",
+		"Cuando alguien te pida ayuda, va a aparecer acá.",
+		22
+	)
+	_quest_val = quest["value"]
+	_quest_footer = quest["footer"]
+
 	var hallazgos := _add_hallazgos_card(grid)
 	_hallazgos_rows = hallazgos["rows"]
 	_hallazgos_footer = hallazgos["footer"]
@@ -672,6 +684,8 @@ func _clear_infographic_children() -> void:
 	_hallazgos_rows = null
 	_hallazgos_footer = null
 	_era_val = null
+	_quest_val = null
+	_quest_footer = null
 
 
 func _rebuild_infographic() -> void:
@@ -974,6 +988,20 @@ func _refresh_infographic() -> void:
 		_era_val.text = "Estamos en Pre-Era"
 	else:
 		_era_val.text = "Estamos en la Era %d" % era
+	_fill_side_quest()
+
+
+func _fill_side_quest() -> void:
+	if _quest_val == null or _quest_footer == null:
+		return
+	var quest: Dictionary = GameState.mision_secundaria_activa()
+	var titulo := str(quest.get("titulo", ""))
+	if titulo.is_empty():
+		_quest_val.text = "Ninguna"
+		_quest_footer.text = "Cuando alguien te pida ayuda, va a aparecer acá."
+		return
+	_quest_val.text = titulo
+	_quest_footer.text = str(quest.get("detalle", ""))
 
 
 func _notify_presence_refresh() -> void:

@@ -1,10 +1,16 @@
 ~ start
 
-if GameState.bollo_training_completed:
-	Bollo: Sanjin, gracias por entrenarme. Ahora puedo defenderme un poco mejor.
+if MaizenaMeta.get_bollo_wins() >= 1:
+	Bollo: Sanjin, gracias por entrenarme. Cada vez me acerco un poco más a tu nivel.
 	Sanjin: No te confíes demasiado.
-	Bollo: No prometo heroísmo… pero prometo no caer al primer golpe.
-	=> END
+	Bollo: ¿Otra ronda?
+	- Sí
+		do GameState.start_bollo_training()
+		Bollo: ¡Vamos! Estoy listo.
+		=> END
+	- No
+		Bollo: Cuando quieras, yo espero.
+		=> END
 
 if GameState.quest_hambre_active and not GameState.quest_hambre_completed:
 	Bollo: El viejo tiene hambre… ¿vos podés ayudarlo?

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://clusyevwgaefl"]
 
-[ext_resource type="Script" uid="uid://bi44ghu17sbma" path="res://scripts/gameplay/interactive_object.gd" id="1_1fh6r"]
+[ext_resource type="Script" path="res://scenes/entities/npcs/hi/hi_follow.gd" id="1_1fh6r"]
 [ext_resource type="Texture2D" uid="uid://cs3blnr07ntnx" path="res://assets/art/characters/anim personajes 1.png" id="2_2rou7"]
 [ext_resource type="Resource" uid="uid://crkpbmy0vpqv1" path="res://scenes/entities/npcs/hi/hi.dialogue" id="3_h2bi8"]
 

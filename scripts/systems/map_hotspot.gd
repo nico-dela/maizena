@@ -21,6 +21,12 @@ var _hint_label: Label
 var _hint_style: StyleBoxFlat
 
 
+func _enter_tree() -> void:
+	# El mundo se aparca y vuelve: hay que soltar el viaje anterior.
+	_travel_pending = false
+	_cooldown_until_msec = Time.get_ticks_msec() + 500
+
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	mouse_entered.connect(_on_mouse_entered)
@@ -31,8 +37,6 @@ func _ready() -> void:
 	# El aviso vive en una CanvasLayer para no heredar el zoom de la cámara.
 	_build_hint()
 	ViewportLayout.layout_changed.connect(_apply_hint_scale)
-	# Brief grace so the player does not instantly re-trigger on arrival.
-	_cooldown_until_msec = Time.get_ticks_msec() + 500
 	set_process(true)
 
 
@@ -43,6 +47,7 @@ func _process(_delta: float) -> void:
 	_hint_panel.visible = should_show
 	if should_show:
 		_update_hint_position()
+	_try_travel_overlap()
 
 
 func _build_hint() -> void:
@@ -137,11 +142,22 @@ func _is_player_near() -> bool:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if _travel_pending:
-		return
-	if Time.get_ticks_msec() < _cooldown_until_msec:
-		return
 	if not body.is_in_group("player"):
+		return
+	_begin_travel()
+
+
+func _try_travel_overlap() -> void:
+	if _travel_pending or Time.get_ticks_msec() < _cooldown_until_msec:
+		return
+	for body in get_overlapping_bodies():
+		if body.is_in_group("player"):
+			_begin_travel()
+			return
+
+
+func _begin_travel() -> void:
+	if _travel_pending or Time.get_ticks_msec() < _cooldown_until_msec:
 		return
 	if target_scene_path.is_empty():
 		push_warning("MapHotspot '%s': target_scene_path vacío" % name)

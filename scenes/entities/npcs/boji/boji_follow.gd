@@ -2,15 +2,18 @@ extends "res://scripts/gameplay/interactive_object.gd"
 
 ## Tras la primera charla, Boji sigue a Sanjin. Las caminatas son opcionales.
 
-const FOLLOW_GAP := 14.0
-const FOLLOW_SPEED := 90.0
+const FOLLOW_GAP := 22.0
+const FOLLOW_SPEED := 100.0
 const TALK_RANGE := 36.0
+const TRAIL_STEP := 4.0
+const STOP_DIST := 1.5
 const IDLE_ANIM := "boji_idle_front"
 const IDLE_BACK_ANIM := "boji_idle_back"
 const SIDE_IDLE_ANIM := "boji_side_idle"
 
 var _following := false
 var _face := "down"
+var _trail: Array[Vector2] = []
 
 
 func _ready() -> void:
@@ -65,7 +68,8 @@ func snap_beside_player() -> void:
 	var player := get_tree().get_first_node_in_group("player") as Node2D
 	if player == null:
 		return
-	global_position = player.global_position + Vector2(-FOLLOW_GAP, 4.0)
+	global_position = player.global_position + _behind(player)
+	_trail = [player.global_position]
 	_match_player_face(player)
 	_play_idle()
 
@@ -80,13 +84,34 @@ func _physics_process(delta: float) -> void:
 	if DialogueController.input_locked:
 		_play_idle()
 		return
-	var offset := (player.global_position + _behind(player)) - global_position
+	var body := player as CharacterBody2D
+	var sanjin_moving := body != null and body.velocity.length() > 1.0
+	_push_trail(player.global_position)
+	var goal := _follow_goal(player)
+	var offset := goal - global_position
 	var dist := offset.length()
-	if dist <= 1.5:
+	if dist <= STOP_DIST:
+		global_position = goal
 		_play_idle()
 		return
-	global_position += offset.normalized() * minf(FOLLOW_SPEED * delta, dist)
+	var speed := body.velocity.length() if sanjin_moving and body != null else FOLLOW_SPEED
+	global_position += offset.normalized() * minf(speed * delta, dist)
 	_play_move()
+
+
+func _push_trail(pos: Vector2) -> void:
+	if _trail.is_empty() or _trail[0].distance_to(pos) >= TRAIL_STEP:
+		_trail.push_front(pos)
+	else:
+		_trail[0] = pos
+	var kept: Array[Vector2] = [_trail[0]]
+	var walked := 0.0
+	for i in range(1, _trail.size()):
+		walked += _trail[i - 1].distance_to(_trail[i])
+		kept.append(_trail[i])
+		if walked >= FOLLOW_GAP * 4.0:
+			break
+	_trail = kept
 
 
 func _behind(player: Node2D) -> Vector2:
@@ -102,6 +127,25 @@ func _behind(player: Node2D) -> Vector2:
 			return Vector2(0.0, FOLLOW_GAP)
 		_:
 			return Vector2(0.0, -FOLLOW_GAP)
+
+
+func _follow_goal(player: Node2D) -> Vector2:
+	var behind := player.global_position + _behind(player)
+	if _trail.size() < 2:
+		return behind
+	var left := FOLLOW_GAP
+	var walked := 0.0
+	for i in range(1, _trail.size()):
+		var seg := _trail[i - 1].distance_to(_trail[i])
+		walked += seg
+		if seg <= 0.001:
+			continue
+		if seg >= left:
+			return _trail[i - 1].lerp(_trail[i], left / seg)
+		left -= seg
+	if walked < FOLLOW_GAP:
+		return behind
+	return _trail[_trail.size() - 1]
 
 
 func _unhandled_input(event: InputEvent) -> void:
