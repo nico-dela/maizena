@@ -6,6 +6,7 @@ const BASE_CARD_MIN := Vector2(160, 168)
 const PORTRAIT_FONT_MUL := 1.42
 const PORTRAIT_CARD_MUL := 1.28
 const REBUILD_SCALE_THRESHOLD := 0.18
+const NEWS_FIT_FLOOR := 0.72
 
 const LINKTREE_URL := (
 	"https://linktr.ee/Maizena.ar"
@@ -19,9 +20,7 @@ const COLOR_GREEN := Color(0.45, 0.9, 0.48, 1.0)
 const COLOR_CORAL := Color(0.96, 0.45, 0.42, 1.0)
 const COLOR_VALUE := Color(0.98, 0.98, 1.0, 1.0)
 
-const BACKDROP_WAIT_MS := 2500
-
-enum PopupView { NEWS, CREDITS, QR }
+enum PopupView { NEWS, CREDITS, QR, HOW }
 
 const QR_TEXTURE: Texture2D = preload("res://assets/art/ui/linktree_qr.png")
 const UNKNOWN_SONG_ICON: Texture2D = preload("res://assets/art/ui/unknown_song.png")
@@ -37,6 +36,10 @@ const HEADER_CREDITS := (
 )
 const HEADER_QR := (
 	"[center][color=#72cce8]Seguinos[/color] "
+	+ "[color=#f07828]Maizena.tv[/color][/center]"
+)
+const HEADER_HOW := (
+	"[center][color=#72cce8]Cómo jugar[/color] "
 	+ "[color=#f07828]Maizena.tv[/color][/center]"
 )
 
@@ -78,9 +81,16 @@ var _credits_root: VBoxContainer
 var _qr_root: VBoxContainer
 var _qr_image: TextureRect
 var _credits_nav_btn: LinkButton
+var _how_nav_btn: LinkButton
+var _how_separator: Label
+var _how_root: VBoxContainer
 var _current_view := PopupView.NEWS
 var _applied_layout_scale := 1.0
 var _applied_portrait := false
+var _news_fit := 1.0
+var _news_fit_applied := false
+var _news_fit_waits := 0
+var _news_fit_token := 0
 var _session_auto_open_pending := true
 var _news_scroll_hold := 0.0
 
@@ -97,6 +107,7 @@ func _ready() -> void:
 	close_btn.pressed.connect(_on_close_pressed)
 	_build_infographic_ui()
 	_build_credits_ui()
+	_build_how_ui()
 	_build_qr_ui()
 	_show_news_view()
 	_applied_layout_scale = ViewportLayout.effective_ui_scale()
@@ -142,13 +153,6 @@ func _wait_for_movement_tutorial() -> void:
 
 
 func _wait_for_stable_backdrop() -> void:
-	var weather := get_node_or_null("/root/CordobaWeather")
-	var deadline := Time.get_ticks_msec() + BACKDROP_WAIT_MS
-	while weather != null and not weather.is_available:
-		if Time.get_ticks_msec() >= deadline:
-			break
-		await get_tree().process_frame
-
 	var time_system := get_tree().get_first_node_in_group("time_system")
 	if time_system != null and time_system.has_method("update_time_color"):
 		time_system.update_time_color()
@@ -185,16 +189,24 @@ func _font_boost() -> float:
 
 
 func _layout_font_mul() -> float:
-	return PORTRAIT_FONT_MUL
+	if ViewportLayout.is_portrait:
+		return PORTRAIT_FONT_MUL
+	return 1.0
 
 
 func _layout_card_mul() -> float:
-	return PORTRAIT_CARD_MUL
+	if ViewportLayout.is_portrait:
+		return PORTRAIT_CARD_MUL
+	return 1.0
 
 
 func _scaled_news_font(base: int) -> int:
-	var size := float(base) * _font_boost() * _layout_font_mul()
+	var size := float(base) * _font_boost() * _layout_font_mul() * _news_fit
 	return maxi(1, int(round(size)))
+
+
+func _fit_px(base: float) -> int:
+	return int(round(base * _font_boost() * _news_fit))
 
 
 func _lbl(base_size: int, color: Color, outline := false) -> Label:
@@ -275,9 +287,13 @@ func _setup_footer_links() -> void:
 
 	_footer_link = _make_footer_link("Seguinos en las redes", _on_linktree_pressed)
 	_footer_separator = _make_footer_separator()
+	_how_separator = _make_footer_separator()
+	_how_nav_btn = _make_footer_link("Cómo jugar", _on_how_nav_pressed)
 	_credits_nav_btn = _make_footer_link("Créditos", _on_credits_nav_pressed)
 	links_box.add_child(_footer_link)
 	links_box.add_child(_footer_separator)
+	links_box.add_child(_how_nav_btn)
+	links_box.add_child(_how_separator)
 	links_box.add_child(_credits_nav_btn)
 
 	var spacer := Control.new()
@@ -348,12 +364,15 @@ func _show_qr_view() -> void:
 	infographic_root.visible = false
 	if _credits_root != null:
 		_credits_root.visible = false
+	if _how_root != null:
+		_how_root.visible = false
 	if _qr_root != null:
 		_qr_root.visible = true
 	if _footer_link != null:
 		_footer_link.text = "Volver a las noticias"
 	if scroll_container != null:
 		scroll_container.scroll_vertical = 0
+	_apply_news_scroll_mode()
 	_apply_qr_size()
 
 
@@ -435,6 +454,62 @@ func _add_credits_block(
 	parent.add_child(panel)
 
 
+func _build_how_ui() -> void:
+	var root := VBoxContainer.new()
+	root.visible = false
+	root.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	root.add_theme_constant_override("separation", int(round(14.0 * _font_boost())))
+	scroll_container.add_child(root)
+	_how_root = root
+
+	_add_credits_block(
+		root,
+		COLOR_YELLOW,
+		"Caminar",
+		"Agarrá el joystick y ponete los auriculares. Caminá con la palanca izquierda o con la cruceta."
+	)
+	_add_credits_block(
+		root,
+		COLOR_GREEN,
+		"Hablar",
+		"Acercate a alguien para hablar. Seguí el texto con ×, el botón de abajo."
+	)
+	_add_credits_block(
+		root,
+		COLOR_ORANGE,
+		"Start, Select, L1 y R1",
+		"Start abre los ajustes. Select abre y cierra las noticias. L1 y R1 cambian la canción."
+	)
+
+
+func _show_how_view() -> void:
+	_current_view = PopupView.HOW
+	header_label.text = HEADER_HOW
+	infographic_root.visible = false
+	if _credits_root != null:
+		_credits_root.visible = false
+	if _qr_root != null:
+		_qr_root.visible = false
+	if _how_root != null:
+		_how_root.visible = true
+	if _footer_link != null:
+		_footer_link.text = "Seguinos en las redes"
+	if _how_nav_btn != null:
+		_how_nav_btn.text = "Volver a las noticias"
+	if _credits_nav_btn != null:
+		_credits_nav_btn.text = "Créditos"
+	if scroll_container != null:
+		scroll_container.scroll_vertical = 0
+	_apply_news_scroll_mode()
+
+
+func _on_how_nav_pressed() -> void:
+	if _current_view == PopupView.HOW:
+		_show_news_view()
+	else:
+		_show_how_view()
+
+
 func _show_news_view() -> void:
 	_current_view = PopupView.NEWS
 	header_label.text = HEADER_NEWS
@@ -443,12 +518,19 @@ func _show_news_view() -> void:
 		_credits_root.visible = false
 	if _qr_root != null:
 		_qr_root.visible = false
+	if _how_root != null:
+		_how_root.visible = false
 	if _footer_link != null:
 		_footer_link.text = "Seguinos en las redes"
+	if _how_nav_btn != null:
+		_how_nav_btn.text = "Cómo jugar"
 	if _credits_nav_btn != null:
 		_credits_nav_btn.text = "Créditos"
 	if scroll_container != null:
 		scroll_container.scroll_vertical = 0
+	_apply_news_scroll_mode()
+	if visible and not _news_fit_applied:
+		_schedule_news_fit()
 
 
 func _show_credits_view() -> void:
@@ -457,14 +539,19 @@ func _show_credits_view() -> void:
 	infographic_root.visible = false
 	if _qr_root != null:
 		_qr_root.visible = false
+	if _how_root != null:
+		_how_root.visible = false
 	if _credits_root != null:
 		_credits_root.visible = true
 	if _footer_link != null:
 		_footer_link.text = "Seguinos en las redes"
+	if _how_nav_btn != null:
+		_how_nav_btn.text = "Cómo jugar"
 	if _credits_nav_btn != null:
 		_credits_nav_btn.text = "Volver a las noticias"
 	if scroll_container != null:
 		scroll_container.scroll_vertical = 0
+	_apply_news_scroll_mode()
 
 
 func _on_credits_nav_pressed() -> void:
@@ -478,7 +565,7 @@ func _build_infographic_ui() -> void:
 	var grid := GridContainer.new()
 	var portrait := ViewportLayout.is_portrait
 	grid.columns = 1 if portrait else 2
-	var grid_sep := int(round(18.0 * _font_boost()))
+	var grid_sep := _fit_px(18.0)
 	grid.add_theme_constant_override("h_separation", grid_sep)
 	grid.add_theme_constant_override("v_separation", grid_sep)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -520,7 +607,7 @@ func _build_infographic_ui() -> void:
 
 func _card_style_for_layout() -> StyleBoxFlat:
 	var sb := _make_card_stylebox()
-	var boost := _font_boost()
+	var boost := _font_boost() * _news_fit
 	var margin := int(round(18.0 * boost))
 	sb.content_margin_left = margin
 	sb.content_margin_top = int(round(14.0 * boost))
@@ -546,11 +633,11 @@ func _add_news_card(
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
 	var card_scale := _font_boost() * _layout_card_mul()
-	panel.custom_minimum_size = BASE_CARD_MIN * card_scale
+	panel.custom_minimum_size = Vector2(BASE_CARD_MIN.x * card_scale, 0.0)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", int(round(10.0 * _font_boost())))
+	v.add_theme_constant_override("separation", _fit_px(10.0))
 	panel.add_child(v)
 
 	var header := _lbl(header_size, accent)
@@ -574,11 +661,11 @@ func _add_saturation_card(grid: GridContainer) -> void:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
 	var card_scale := _font_boost() * _layout_card_mul()
-	panel.custom_minimum_size = BASE_CARD_MIN * card_scale
+	panel.custom_minimum_size = Vector2(BASE_CARD_MIN.x * card_scale, 0.0)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
+	v.add_theme_constant_override("separation", _fit_px(8.0))
 	panel.add_child(v)
 
 	var header := _lbl(16, COLOR_GREEN)
@@ -634,11 +721,11 @@ func _add_hallazgos_card(grid: GridContainer) -> Dictionary:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", _card_style_for_layout())
 	var card_scale := _font_boost() * _layout_card_mul()
-	panel.custom_minimum_size = BASE_CARD_MIN * card_scale
+	panel.custom_minimum_size = Vector2(BASE_CARD_MIN.x * card_scale, 0.0)
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", int(round(8.0 * _font_boost())))
+	v.add_theme_constant_override("separation", _fit_px(8.0))
 	panel.add_child(v)
 
 	var header := _lbl(16, COLOR_YELLOW)
@@ -646,7 +733,7 @@ func _add_hallazgos_card(grid: GridContainer) -> Dictionary:
 	v.add_child(header)
 
 	var rows := VBoxContainer.new()
-	rows.add_theme_constant_override("separation", int(round(6.0 * _font_boost())))
+	rows.add_theme_constant_override("separation", _fit_px(6.0))
 	v.add_child(rows)
 
 	var footer := _lbl(14, COLOR_YELLOW)
@@ -731,9 +818,13 @@ func _apply_close_button_padding(boost: float) -> void:
 
 
 func _on_viewport_layout_changed() -> void:
+	var shrunk := not is_equal_approx(_news_fit, 1.0)
+	_reset_news_fit()
 	_apply_responsive_layout()
-	if _needs_infographic_rebuild():
+	if shrunk or _needs_infographic_rebuild():
 		_rebuild_infographic()
+	if visible and _current_view == PopupView.NEWS:
+		_schedule_news_fit()
 
 
 func _needs_infographic_rebuild() -> bool:
@@ -807,6 +898,7 @@ func _apply_responsive_layout() -> void:
 		scroll_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		scroll_container.size_flags_stretch_ratio = 12.0
 		scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		_apply_news_scroll_mode()
 	if close_btn != null:
 		close_btn.size_flags_vertical = Control.SIZE_SHRINK_END
 		close_btn.add_theme_font_size_override("font_size", _scaled_news_font(20))
@@ -827,6 +919,11 @@ func _apply_responsive_layout() -> void:
 	if _credits_nav_btn != null:
 		_credits_nav_btn.visible = true
 		_apply_footer_link_layout(_credits_nav_btn, portrait)
+	if _how_nav_btn != null:
+		_how_nav_btn.visible = true
+		_apply_footer_link_layout(_how_nav_btn, portrait)
+	if _how_separator != null:
+		_apply_footer_separator_layout(_how_separator, portrait)
 	if _footer_spacer != null:
 		_footer_spacer.size_flags_vertical = Control.SIZE_SHRINK_END
 		_footer_spacer.custom_minimum_size.y = maxf(4.0, 6.0 * boost)
@@ -837,6 +934,53 @@ func _apply_responsive_layout() -> void:
 		_infographic_grid.columns = 1 if portrait else 2
 
 
+func _apply_news_scroll_mode() -> void:
+	if scroll_container == null:
+		return
+	var news := _current_view == PopupView.NEWS
+	scroll_container.vertical_scroll_mode = (
+		ScrollContainer.SCROLL_MODE_SHOW_NEVER if news else ScrollContainer.SCROLL_MODE_AUTO
+	)
+
+
+func _reset_news_fit() -> void:
+	_news_fit = 1.0
+	_news_fit_applied = false
+	_news_fit_waits = 0
+
+
+func _schedule_news_fit() -> void:
+	_news_fit_token += 1
+	_run_news_fit(_news_fit_token)
+
+
+func _run_news_fit(token: int) -> void:
+	await get_tree().process_frame
+	if token != _news_fit_token:
+		return
+	_fit_news_once()
+
+
+func _fit_news_once() -> void:
+	if _news_fit_applied or not visible or _current_view != PopupView.NEWS:
+		return
+	if scroll_container == null or infographic_root == null or not infographic_root.visible:
+		return
+	var available := scroll_container.size.y
+	if available < 1.0:
+		if _news_fit_waits < 2:
+			_news_fit_waits += 1
+			_schedule_news_fit()
+		return
+	_news_fit_waits = 0
+	var content := infographic_root.get_combined_minimum_size().y
+	_news_fit_applied = true
+	if content <= available + 1.0:
+		return
+	_news_fit = clampf(available / content, NEWS_FIT_FLOOR, 1.0)
+	_rebuild_infographic()
+
+
 func is_blocking() -> bool:
 	return visible or _session_auto_open_pending
 
@@ -844,11 +988,13 @@ func is_blocking() -> bool:
 func open_welcome(mark_seen_when_closed: bool) -> void:
 	_session_auto_open_pending = false
 	_mark_seen_on_close = mark_seen_when_closed
+	var shrunk := not is_equal_approx(_news_fit, 1.0)
+	_reset_news_fit()
 	_show_news_view()
 	if dim_overlay != null:
 		dim_overlay.color = Color(0.02, 0.04, 0.08, 0.52)
 	ViewportLayout.refresh()
-	if _needs_infographic_rebuild():
+	if shrunk or _needs_infographic_rebuild():
 		_rebuild_infographic()
 	elif _song_val == null:
 		_rebuild_infographic()
@@ -860,6 +1006,7 @@ func open_welcome(mark_seen_when_closed: bool) -> void:
 	_wire_news_focus()
 	call_deferred("_apply_responsive_layout")
 	call_deferred("_focus_news_start")
+	_schedule_news_fit()
 
 
 func _sync_backdrop_before_show() -> void:
@@ -908,7 +1055,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
 	if event.is_action_pressed("ui_cancel"):
-		if _current_view == PopupView.CREDITS:
+		if _current_view == PopupView.CREDITS or _current_view == PopupView.HOW:
 			_show_news_view()
 		else:
 			_on_close_pressed()
@@ -941,7 +1088,7 @@ func _process(delta: float) -> void:
 func _wire_news_focus() -> void:
 	if scroll_container == null or close_btn == null:
 		return
-	if _footer_link == null or _credits_nav_btn == null:
+	if _footer_link == null or _credits_nav_btn == null or _how_nav_btn == null:
 		return
 	if not scroll_container.gui_input.is_connected(_on_news_scroll_input):
 		scroll_container.gui_input.connect(_on_news_scroll_input)
@@ -952,8 +1099,9 @@ func _wire_news_focus() -> void:
 	list_focus.set_corner_radius_all(6)
 	scroll_container.add_theme_stylebox_override("focus", list_focus)
 	_point_focus(scroll_container, scroll_container, _footer_link, scroll_container, scroll_container)
-	_point_focus(_footer_link, scroll_container, close_btn, _footer_link, _credits_nav_btn)
-	_point_focus(_credits_nav_btn, scroll_container, close_btn, _footer_link, _credits_nav_btn)
+	_point_focus(_footer_link, scroll_container, close_btn, _footer_link, _how_nav_btn)
+	_point_focus(_how_nav_btn, scroll_container, close_btn, _footer_link, _credits_nav_btn)
+	_point_focus(_credits_nav_btn, scroll_container, close_btn, _how_nav_btn, _credits_nav_btn)
 	_point_focus(close_btn, _footer_link, close_btn, close_btn, close_btn)
 
 

@@ -1,7 +1,7 @@
 extends Node
 
-## La cima del bosque tapa a Sanjin. La base y los árboles se quedan detrás.
-const FRONT_Z := 4
+## La cima queda sobre el suelo y los árboles. Sanjin (z 2) se dibuja delante.
+const FRONT_Z := 1
 const PEAK_MIN_Y := 10
 const PEAK_MAX_Y := 13
 const CLIFF_X := 33

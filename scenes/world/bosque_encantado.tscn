@@ -16,7 +16,7 @@
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]
 [ext_resource type="Script" uid="uid://byd1xo4sknxrd" path="res://scripts/systems/firefly_layer.gd" id="30_flies"]
 [ext_resource type="Script" uid="uid://hbxci2qtultp" path="res://scripts/systems/crowd_layer.gd" id="31_crowd"]
-[ext_resource type="Script" path="res://scripts/systems/mountain_cover.gd" id="32_cima"]
+[ext_resource type="Script" uid="uid://bp5xrokdv2xjh" path="res://scripts/systems/mountain_cover.gd" id="32_cima"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_oi80u"]
 size = Vector2(64, 36)
@@ -34,7 +34,7 @@ script = ExtResource("30_flies")
 [node name="CrowdLayer" type="Node2D" parent="." unique_id=2068864756]
 script = ExtResource("31_crowd")
 
-[node name="MountainCover" type="Node" parent="."]
+[node name="MountainCover" type="Node" parent="." unique_id=1036729605]
 script = ExtResource("32_cima")
 
 [node name="TimeOfDaySystem" type="Node" parent="." unique_id=1708585194]
@@ -63,7 +63,7 @@ spawn_schedules = Array[Dictionary]([])
 
 [node name="boji" parent="InteractiveObjects" unique_id=2142925047 instance=ExtResource("7_kt4yv")]
 z_index = 1
-position = Vector2(359, 408)
+position = Vector2(422, 378)
 spawn_schedules = Array[Dictionary]([{
 "end": 11.5,
 "probability": 0.75,
@@ -80,7 +80,7 @@ spawn_schedules = Array[Dictionary]([{
 
 [node name="hi" parent="InteractiveObjects" unique_id=1084350328 instance=ExtResource("8_xdcm8")]
 z_index = 1
-position = Vector2(456, 360)
+position = Vector2(368, 410)
 spawn_schedules = Array[Dictionary]([{
 "end": 7.5,
 "probability": 0.35,

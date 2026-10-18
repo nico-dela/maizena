@@ -28,12 +28,6 @@ func _ready() -> void:
 	_build_overlay()
 	_time_system = get_parent()
 
-	var weather := get_node_or_null("/root/CordobaWeather")
-	if weather != null:
-		weather.weather_updated.connect(_on_weather_updated)
-		if weather.is_available:
-			_on_weather_updated(weather.condition, weather.precipitation_mm, weather.cloud_cover)
-
 	_apply_map_ambience()
 	_sync_haze_process()
 	set_process_unhandled_input(OS.is_debug_build())
@@ -48,11 +42,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	_debug_cycle_index = (_debug_cycle_index + 1) % DEBUG_CYCLE.size()
 	var cond: String = DEBUG_CYCLE[_debug_cycle_index]
-	var weather := get_node_or_null("/root/CordobaWeather")
-	if weather != null and weather.has_method("apply_debug_condition"):
-		weather.apply_debug_condition(cond)
-	else:
-		_on_weather_updated(cond, 0.0, 0)
+	_on_weather_updated(cond, 0.0, 0)
 	get_viewport().set_input_as_handled()
 
 
@@ -335,9 +325,7 @@ func _on_storm_flash() -> void:
 func _reapply_weather() -> void:
 	if not is_inside_tree():
 		return
-	var weather := get_node_or_null("/root/CordobaWeather")
-	if weather != null and weather.is_available:
-		_on_weather_updated(weather.condition, weather.precipitation_mm, weather.cloud_cover)
+	_on_weather_updated(_current_condition, 0.0, 0)
 
 
 func _news_popup_visible() -> bool:

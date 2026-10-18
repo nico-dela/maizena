@@ -4,7 +4,6 @@ extends RefCounted
 
 const HEADPHONE_DB := -8.0
 const STICK_DEADZONE := 0.28
-const BOOTH_HOUR := 21.5
 
 
 static func active() -> bool:

@@ -296,6 +296,9 @@ func get_song_title(song_id: int) -> String:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_echo() or _song_change_blocked():
 		return
+	if _news_wheel_blocked(event):
+		get_viewport().set_input_as_handled()
+		return
 	var step := 0
 	if event.is_action_pressed("song_next"):
 		step = 1
@@ -315,6 +318,16 @@ func _song_change_blocked() -> bool:
 		return true
 	var settings := get_tree().get_first_node_in_group("settings_menu")
 	return settings != null and bool(settings.get("is_open"))
+
+
+func _news_wheel_blocked(event: InputEvent) -> bool:
+	if not event is InputEventMouseButton:
+		return false
+	var button := event as InputEventMouseButton
+	if button.button_index != MOUSE_BUTTON_WHEEL_UP and button.button_index != MOUSE_BUTTON_WHEEL_DOWN:
+		return false
+	var news := get_tree().get_first_node_in_group("welcome_popup")
+	return news != null and news.visible
 
 
 func skip_song(step: int) -> void:

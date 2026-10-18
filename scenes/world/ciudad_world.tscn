@@ -19,6 +19,7 @@
 [ext_resource type="Script" uid="uid://dmkmifl6c06y5" path="res://scripts/systems/world_map.gd" id="28_world"]
 [ext_resource type="Script" uid="uid://b5f68tjda2sdg" path="res://scripts/systems/map_hotspot.gd" id="29_hotspot"]
 [ext_resource type="Script" uid="uid://ixyaurb3mek6" path="res://scripts/systems/city_lights.gd" id="30_lamps"]
+[ext_resource type="Script" path="res://scripts/systems/city_drift.gd" id="33_drift"]
 [ext_resource type="Script" uid="uid://b00nlxlv1p33r" path="res://scripts/systems/map_dressing.gd" id="31_dress"]
 [ext_resource type="Script" uid="uid://hbxci2qtultp" path="res://scripts/systems/crowd_layer.gd" id="32_crowd"]
 
@@ -48,6 +49,9 @@ map_ambience = "city"
 
 [node name="CityLights" type="Node2D" parent="." unique_id=1819773840]
 script = ExtResource("30_lamps")
+
+[node name="CityDrift" type="Node2D" parent="."]
+script = ExtResource("33_drift")
 
 [node name="MapDressing" type="Node2D" parent="." unique_id=694253649]
 script = ExtResource("31_dress")

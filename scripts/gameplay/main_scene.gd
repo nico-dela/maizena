@@ -6,13 +6,10 @@ const FADE_COLOR := Color(0.02, 0.03, 0.06, 1.0)
 const FADE_OUT_TIME := 0.22
 const FADE_IN_TIME := 0.3
 
-const FogOverlayScene := preload("res://scenes/world/world_resources/fog_overlay.tscn")
 const SongRelicSpawnerScript := preload("res://scripts/systems/song_relic_spawner.gd")
 const Booth = preload("res://scripts/gameplay/booth.gd")
 const BoothSession := preload("res://scripts/gameplay/booth_session.gd")
 const FestReloadScript := preload("res://scripts/gameplay/fest_reload.gd")
-# Above world (0) and weather (5), below HUD UI (10) / settings (20).
-const FOG_LAYER := 6
 const WARM_WORLD_PATHS: Array[String] = [
 	"res://scenes/world/ciudad_world.tscn",
 	"res://scenes/world/pantano_world.tscn",
@@ -24,16 +21,12 @@ var _fade_rect: ColorRect
 var _travel_busy := false
 ## Solo el mapa recién dejado. El anterior se libera para no retener los tres mundos.
 var _parked_worlds: Dictionary = {}
-var _map_discovery: Node
-var _fog_overlay: Node2D
-var _fog_layer: CanvasLayer
 var _boji_hold: Node2D
 var _boji_visit := 0
 
 
 func _ready() -> void:
 	_build_fade_overlay()
-	_setup_map_discovery()
 	var relics := SongRelicSpawnerScript.new()
 	relics.name = "SongRelicSpawner"
 	add_child(relics)
@@ -51,51 +44,7 @@ func _ready() -> void:
 	call_deferred("_warm_other_worlds")
 
 
-func _setup_map_discovery() -> void:
-	_map_discovery = MapDiscovery.new()
-	_map_discovery.name = "MapDiscovery"
-	add_child(_map_discovery)
-
-	# CanvasLayer above the world (incl. NPCs/props) so fog isn't pierced by z_index.
-	_fog_layer = CanvasLayer.new()
-	_fog_layer.name = "FogLayer"
-	_fog_layer.layer = FOG_LAYER
-	_fog_layer.follow_viewport_enabled = true
-	add_child(_fog_layer)
-
-	_fog_overlay = FogOverlayScene.instantiate() as Node2D
-	_fog_overlay.name = "FogOverlay"
-	_fog_overlay.z_as_relative = false
-	_fog_overlay.z_index = 4096
-	_fog_layer.add_child(_fog_overlay)
-	if _fog_overlay.has_method("bind"):
-		_fog_overlay.bind(_map_discovery)
-
-	call_deferred("_refresh_map_discovery")
-
-
-func _refresh_map_discovery() -> void:
-	var world := get_node_or_null(WORLD_NODE_NAME)
-	if world == null or _map_discovery == null:
-		return
-	if _map_discovery.has_method("flush_pending"):
-		_map_discovery.flush_pending()
-	_map_discovery.setup_from_world(world)
-	if _fog_overlay != null and _fog_overlay.has_method("bind"):
-		_fog_overlay.bind(_map_discovery)
-	if _player == null:
-		_player = get_node_or_null("Player") as Node2D
-	if _player != null and _map_discovery.has_method("reveal_at"):
-		_map_discovery.reveal_at(_player.global_position)
-
-
-func get_map_discovery() -> Node:
-	return _map_discovery
-
-
 func set_crt_scan_clear(clear: bool) -> void:
-	if _fog_layer != null:
-		_fog_layer.visible = not clear
 	var world := get_node_or_null(WORLD_NODE_NAME)
 	if world != null:
 		_set_weather_layer_visible(world, not clear)
@@ -177,7 +126,6 @@ func _swap_world(packed: PackedScene, spawn: Vector2) -> Node:
 		_player.snap_camera_to_player()
 
 	_refresh_minimap()
-	_refresh_map_discovery()
 	_place_hi_follower()
 	_place_boji_for_world(new_world)
 	return new_world

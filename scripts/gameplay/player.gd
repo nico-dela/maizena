@@ -29,7 +29,6 @@ var _is_mobile := false
 const InputPlatformRes := preload("res://scripts/ui/input_platform.gd")
 const Booth := preload("res://scripts/gameplay/booth.gd")
 
-var _map_discovery: Node = null
 var _map_limits := Rect2(0.0, 0.0, 640.0, 640.0)
 
 
@@ -203,20 +202,6 @@ func _physics_process(_delta):
 
 	move_and_slide()
 	global_position = _clamp_to_map(global_position)
-	_update_map_discovery()
-
-
-func _update_map_discovery() -> void:
-	if _map_discovery == null or not is_instance_valid(_map_discovery):
-		var main := get_parent()
-		if main != null and main.has_method("get_map_discovery"):
-			_map_discovery = main.get_map_discovery()
-	if _map_discovery == null or not is_instance_valid(_map_discovery):
-		return
-	if _movement_blocked():
-		return
-	if _map_discovery.has_method("reveal_at"):
-		_map_discovery.reveal_at(global_position)
 
 
 func _movement_blocked() -> bool:
